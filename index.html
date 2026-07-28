@@ -523,6 +523,7 @@ td.inline-edit:hover{background:var(--blue-bg)}
 
 <!-- ===== TAB: NEGOCIO ===== -->
 <div id="tab-op" class="tab-pane on">
+  <div id="modelo-negocio-box" style="margin-bottom:14px"></div>
   <div class="mets" id="mets-op"></div>
   <div class="flow"><div class="flow-items" id="flow-op"></div></div>
   <div id="panels-op"></div>
@@ -1075,7 +1076,7 @@ td.inline-edit:hover{background:var(--blue-bg)}
 <script>
 // ===================== STATE =====================
 let S = {
-  cfg:{nome:'',ramo:'agencia',lblC:'Clientes',lblF:'Fee Mensal',lblCol:'Colaboradores',lblCargo:'Cargo',moeda:'R$',mes:'Abril 2026',logo:''},
+  cfg:{nome:'',ramo:'agencia',lblC:'Clientes',lblF:'Fee Mensal',lblCol:'Colaboradores',lblCargo:'Cargo',moeda:'R$',mes:'Abril 2026',logo:'',modeloNegocio:'ambos'},
   clientes:[],
   colaboradores:[],
   imposto:0,
@@ -1436,6 +1437,7 @@ function catMap(items){const m={};items.forEach(it=>{m[it.cat]=(m[it.cat]||0)+it
 // ===================== RENDER ALL =====================
 function renderAll(){
   applyLabels();
+  renderModeloNegocio();
   renderMets();
   renderFlowOp();
   renderPanels('op',document.getElementById('panels-op'));
@@ -1509,6 +1511,39 @@ function applyLabels(){
   setEl('nc-fee-lbl',C.lblF+' ('+C.moeda+')');
   setEl('nco-cargo-lbl',C.lblCargo);
 }
+// ===================== MODELO DE NEGÓCIO =====================
+function renderModeloNegocio(){
+  var el = document.getElementById('modelo-negocio-box');
+  if(!el) return;
+  var modelo = (S.cfg && S.cfg.modeloNegocio) || 'ambos';
+  var opcoes = [
+    {id:'recorrente', icon:'🔄', label:'Recorrência', desc:'Fee mensal fixo'},
+    {id:'avulso', icon:'🎯', label:'Projetos avulsos', desc:'Serviço único'},
+    {id:'ambos', icon:'🔀', label:'Ambos', desc:'Recorrente + avulso'}
+  ];
+  el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💼 Como sua empresa fatura?</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    +opcoes.map(function(o){
+      var ativo = o.id === modelo;
+      return '<button onclick="setModeloNegocio(\''+o.id+'\')" style="flex:1;min-width:110px;padding:10px 8px;border:1.5px solid '+(ativo?'var(--indigo,#4f46e5)':'var(--border)')+';background:'+(ativo?'var(--indigo,#4f46e5)':'var(--bg)')+';color:'+(ativo?'#fff':'var(--text)')+';border-radius:9px;cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)">'
+        +'<div style="font-size:16px;margin-bottom:2px">'+o.icon+'</div>'
+        +'<div style="font-size:11px;font-weight:700">'+o.label+'</div>'
+        +'<div style="font-size:9px;opacity:.8;margin-top:1px">'+o.desc+'</div>'
+        +'</button>';
+    }).join('')
+    +'</div>'
+    +'</div>';
+}
+function setModeloNegocio(modelo){
+  if(!S.cfg) S.cfg = {};
+  S.cfg.modeloNegocio = modelo;
+  save();
+  renderModeloNegocio();
+  renderMets();
+}
+window.setModeloNegocio = setModeloNegocio;
+
 function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function setVal(id,v){const e=document.getElementById(id);if(e&&!e.matches(':focus'))e.value=v||'';}
 
@@ -1523,17 +1558,22 @@ function renderMets(){
   // Classificação qualitativa da margem
   const mNivel = m>=30?'Excelente':m>=20?'Boa':m>=10?'Apertada':m>=0?'Crítica':'Negativa';
   const mCor = m>=20?'g':m>=10?'a':'r';
-  el.innerHTML=`
-    <!-- LINHA 1 -->
-    <div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>
-    <div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">MRR recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>
-    <div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>
-    <div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(S.imposto)}</div><div class="met-sub">${pct(r>0?S.imposto/r*100:0)} receita</div></div>
-    <!-- LINHA 2 -->
-    <div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">Extras avulsos</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} avulso${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>
-    <div class="met ${l>=0?'g':'r'}"><div class="met-lbl">Lucro operacional</div><div class="met-val ${l>=0?'g':'r'} num">${fmt(l)}</div><div class="met-sub ${l>=0?'p':'n'}">${pct(m)} margem</div></div>
-    <div class="met t"><div class="met-lbl">Ticket médio</div><div class="met-val num">${fmt(t)}</div><div class="met-sub">por ${S.cfg.lblC.toLowerCase()}</div></div>
-    <div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
+  const modelo = (S.cfg && S.cfg.modeloNegocio) || 'ambos';
+  const mostraRec = modelo==='recorrente' || modelo==='ambos';
+  const mostraAvu = modelo==='avulso' || modelo==='ambos';
+
+  var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
+  if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">MRR recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
+  linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
+  linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(S.imposto)}</div><div class="met-sub">${pct(r>0?S.imposto/r*100:0)} receita</div></div>`;
+
+  var linha2 = '';
+  if(mostraAvu) linha2 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">${modelo==='avulso'?'Receita de projetos':'Extras avulsos'}</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} ${modelo==='avulso'?'projeto':'avulso'}${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>`;
+  linha2 += `<div class="met ${l>=0?'g':'r'}"><div class="met-lbl">Lucro operacional</div><div class="met-val ${l>=0?'g':'r'} num">${fmt(l)}</div><div class="met-sub ${l>=0?'p':'n'}">${pct(m)} margem</div></div>`;
+  linha2 += `<div class="met t"><div class="met-lbl">Ticket médio</div><div class="met-val num">${fmt(t)}</div><div class="met-sub">por ${S.cfg.lblC.toLowerCase()}</div></div>`;
+  linha2 += `<div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
+
+  el.innerHTML = linha1 + linha2;
 }
 
 function renderFlowOp(){

@@ -149,12 +149,12 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* TABLE */
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:280px}
-th{font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:10px 13px;text-align:left;background:var(--bg3);border-bottom:1px solid var(--border)}
-td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle}
+th{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:11px 14px;text-align:left;background:var(--bg3);border-bottom:1px solid var(--border)}
+td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:14.5px;color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(0,0,0,.015)}
 .tr-tot td{background:var(--bg3);font-weight:700;border-top:2px solid var(--border2)}
-td.num{font-family:'Open Sans',Arial,sans-serif;font-size:12.5px}
+td.num{font-family:'Open Sans',Arial,sans-serif;font-size:14px;font-weight:600}
 td.r{text-align:right}
 td.gc{color:var(--green);font-weight:700}
 td.rc{color:var(--red);font-weight:700}
@@ -168,7 +168,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 .ie-inp{font-family:var(--font);font-size:13px;padding:4px 7px;border:1.5px solid var(--blue);border-radius:6px;outline:none;background:var(--bg2);color:var(--text);width:100%}
 
 /* BADGE */
-.badge{display:inline-flex;align-items:center;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
 .badge.ed{cursor:pointer}.badge.ed::after{content:' ✏';font-size:8px;opacity:.5}
 .bg-green{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
 .bg-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
@@ -1631,7 +1631,7 @@ function renderMets(){
   const mostraAvu = modelo==='avulso' || modelo==='ambos';
 
   var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
-  if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">MRR recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
+  if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">Receita recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
   linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
   linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(S.imposto)}</div><div class="met-sub">${pct(r>0?S.imposto/r*100:0)} receita</div></div>`;
 
@@ -1749,10 +1749,12 @@ function buildPanel(p,tab,pi){
     </tbody></table></div>
     <div id="recebidos-summary-${pi}"></div><div class="chart-row"><div class="chart-box"><div class="chart-ttl">Receita por ${S.cfg.lblC.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
-      <span style="font-size:11px;color:var(--text3)">Duplo clique na célula para editar</span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <span style="font-size:11.5px;color:var(--text3)">Toque na célula para editar</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-gh btn-sm" onclick="openImportCli()">📥 Importar lista</button>
-        <button class="btn btn-g btn-sm" onclick="openMo('mo-cli')">+ Adicionar</button>
+        <button onclick="openMo('mo-cli')" style="font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 20px;border:none;border-radius:11px;background:linear-gradient(135deg,#059669,#0d9488);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(5,150,105,.3);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 5px 14px rgba(5,150,105,.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 10px rgba(5,150,105,.3)'">
+          <span style="font-size:16px;line-height:1">➕</span> Adicionar cliente
+        </button>
       </div>
     </div>`;
   }
@@ -1778,9 +1780,11 @@ function buildPanel(p,tab,pi){
     <div class="chart-row"><div class="chart-box"><div class="chart-ttl">Custo por ${S.cfg.lblCol.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
       <span></span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-gh btn-sm" onclick="openImportCol()">📥 Importar lista</button>
-        <button class="btn btn-b btn-sm" onclick="openMo('mo-col')">+ Adicionar</button>
+        <button onclick="openMo('mo-col')" style="font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 20px;border:none;border-radius:11px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,.3);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 5px 14px rgba(37,99,235,.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 10px rgba(37,99,235,.3)'">
+          <span style="font-size:16px;line-height:1">➕</span> Adicionar colaborador
+        </button>
       </div>
     </div>`;
   }
@@ -1819,7 +1823,7 @@ function buildPanel(p,tab,pi){
     </tbody></table></div>
     ${items.length>0&&tab!=='pes'?`<div class="chart-row"><div class="chart-box"><div class="chart-ttl">Por categoria</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>`:''}
     <div class="add-row">
-      <span style="font-size:10px;color:var(--text3)">Duplo clique para editar · clique na tag para mudar</span>
+      <span style="font-size:11px;color:var(--text3)">Toque para editar · clique na tag para mudar</span>
       <div style="display:flex;gap:6px;flex-wrap:wrap">
         ${p.id==='jul'?`<button class="btn btn-gh btn-sm" onclick="openImportPagos('${tab}',${pi})">📥 Importar lista</button>`:''}
         <button class="btn btn-g btn-sm" onclick="openAddItemModal('${tab}',${pi})">+ Adicionar linha</button>
@@ -3197,7 +3201,7 @@ function renderListboxes(){
         +'<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Total pago</div>'
         +'<div style="font-size:15px;font-weight:700;color:#059669">'+fmtD(totalPago)+'</div></div>'
         +'<div style="flex:1;min-width:100px;padding:9px 14px;background:var(--bg3)">'
-        +'<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Saldo disponível</div>'
+        +'<div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Falta pagar</div>'
         +'<div style="font-size:15px;font-weight:700;color:'+(saldoDisp>0?'#d97706':'#059669')+'">'+fmtD(saldoDisp)+'</div></div>'
         +'</div>';
     });
@@ -3262,7 +3266,7 @@ function buildListBox(box,tab,li){
     </table></div>
     <div id="lb-saldo-${box.id}" style="border-top:1px solid var(--border)"></div>
     <div class="add-row">
-      <span style="font-size:10px;color:var(--text3)">Duplo clique para editar · clique Pago para marcar</span>
+      <span style="font-size:11px;color:var(--text3)">Toque para editar · clique Pago para marcar</span>
       <button class="btn btn-g btn-sm" onclick="lbAddInline('${tab}',${li})">+ Adicionar linha</button>
     </div>
   </div>`;
@@ -4737,7 +4741,7 @@ function renderColSaldo(){
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Total previsto',totalPrev,'Folha do m\u00eas',false)
     +mkC('Total pago',totalPago,'J\u00e1 marcados',false)
-    +mkC('Saldo dispon\u00edvel',saldoDisp,'A pagar ainda',true)
+    +mkC('Falta pagar',saldoDisp,'A pagar ainda',true)
     +'</div></div>';
 }
 
@@ -4799,13 +4803,13 @@ function renderSaldoGeral(){
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
-    +mkC('Receita prevista',receitaTotal,'MRR todos os clientes','#059669',false)
+    +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)
     +mkC('Total custos',totalCustos,'Folha + impostos + fixos + extras','#dc2626',false)
     +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos',lucroLiquido>=0?'#059669':'#dc2626',true)
     +'</div>'
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
     +mkC('Total pago',totalPago,'Colaboradores j\u00e1 pagos','#2563eb',false)
-    +mkC('Saldo dispon\u00edvel',saldoDisp,'Receita \u2212 pagamentos','#059669',false)
+    +mkC('Caixa atual',saldoDisp,'Receita \u2212 pagamentos','#059669',false)
     +mkC('A pagar ainda',totalCustos-totalPago,'Custos n\u00e3o liquidados',totalCustos-totalPago>0?'#d97706':'#059669',true)
     +'</div>'
     +'<div style="padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap">'
@@ -6152,7 +6156,7 @@ function renderCfTable(){
     +'<tr class="tr-tot"><td colspan="2"><strong>TOTAL</strong></td>'
     +'<td class="num r" style="color:#d97706"><strong>'+fmt(total)+'</strong></td><td></td></tr>'
     +'</table></div>'
-    +'<div style="font-size:10px;color:var(--text3);padding:6px 4px 0">Duplo clique para editar</div>';
+    +'<div style="font-size:11px;color:var(--text3);padding:6px 4px 0">Toque para editar</div>';
 }
 // Edição inline (toque) pros itens de custos fixos
 function cfEditField(td,ii,field){
@@ -7988,7 +7992,7 @@ function buildMesDetailHTML(snap,i,accentColor){
     +'</div>'
     +'</div>'
     +'<div style="display:flex;flex-wrap:wrap;background:var(--card)">'
-    +mkHCard('Receita',fmt(snap.receita),'MRR clientes','#059669',false)
+    +mkHCard('Receita',fmt(snap.receita),'Clientes ativos','#059669',false)
     +mkHCard('Folha PJ',fmt(snap.folha),'Colaboradores','#2563eb',false)
     +mkHCard('Imposto',fmt(snap.imposto),'Estimado','#d97706',false)
     +mkHCard('Lucro',fmt(snap.lucro),margem+'% margem',snap.lucro>=0?'#059669':'#dc2626',false)

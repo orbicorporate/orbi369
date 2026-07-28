@@ -524,6 +524,7 @@ td.inline-edit:hover{background:var(--blue-bg)}
 <!-- ===== TAB: NEGOCIO ===== -->
 <div id="tab-op" class="tab-pane on">
   <div id="modelo-negocio-box" style="margin-bottom:14px"></div>
+  <div id="foco-mes-box" style="margin-bottom:14px"></div>
   <div class="mets" id="mets-op"></div>
   <div class="flow"><div class="flow-items" id="flow-op"></div></div>
   <div id="panels-op"></div>
@@ -1438,6 +1439,7 @@ function catMap(items){const m={};items.forEach(it=>{m[it.cat]=(m[it.cat]||0)+it
 function renderAll(){
   applyLabels();
   renderModeloNegocio();
+  renderFocoDoMes();
   renderMets();
   renderFlowOp();
   renderPanels('op',document.getElementById('panels-op'));
@@ -1511,7 +1513,72 @@ function applyLabels(){
   setEl('nc-fee-lbl',C.lblF+' ('+C.moeda+')');
   setEl('nco-cargo-lbl',C.lblCargo);
 }
-// ===================== MODELO DE NEGÓCIO =====================
+// ===================== FOCO DO MÊS + PROJEÇÃO DE FLUXO DE CAIXA =====================
+function renderFocoDoMes(){
+  var el = document.getElementById('foco-mes-box');
+  if(!el) return;
+  var r=calcR(), f=calcF(), l=calcL(), m=calcM();
+  var ativos = S.clientes.filter(function(c){return c.status==='ativo';});
+  var at = ativos.length;
+
+  // ----- 1. Escolhe UM insight prioritário (regras em ordem de urgência) -----
+  var foco = null;
+  if(l < 0){
+    foco = {icone:'🚨', cor:'red', titulo:'Lucro no vermelho este mês', texto:'Suas despesas superam a receita em '+fmt(Math.abs(l))+'. Prioridade máxima: cortar custos ou fechar novos clientes ainda este mês.'};
+  } else if(at===0){
+    foco = {icone:'👋', cor:'blue', titulo:'Nenhum cliente cadastrado ainda', texto:'Cadastre seu primeiro cliente pra começar a acompanhar sua receita.'};
+  } else if(m < 10){
+    foco = {icone:'⚠️', cor:'amber', titulo:'Margem apertada ('+m.toFixed(1)+'%)', texto:'Sua margem de lucro está abaixo do saudável (ideal ≥20%). Revise custos fixos ou reajuste preços.'};
+  } else {
+    // Verifica concentração de receita em 1 cliente só (risco de dependência)
+    var maior = ativos.slice().sort(function(a,b){return b.valor-a.valor;})[0];
+    var pctMaior = maior && r>0 ? (maior.valor/r*100) : 0;
+    if(maior && pctMaior >= 40){
+      foco = {icone:'📊', cor:'amber', titulo:'"'+maior.nome+'" é '+pctMaior.toFixed(0)+'% da sua receita', texto:'Alta dependência de um único cliente é um risco. Se possível, diversifique a carteira nos próximos meses.'};
+    } else {
+      foco = {icone:'✅', cor:'green', titulo:'Tudo em ordem — margem de '+m.toFixed(1)+'%', texto:'Seu negócio está saudável este mês. Considere reinvestir parte do lucro ou aumentar a meta de crescimento.'};
+    }
+  }
+
+  var bgMap = {red:'var(--red-bg)', amber:'var(--amber-bg)', blue:'var(--blue-bg)', green:'var(--green-bg)'};
+  var borderMap = {red:'var(--red)', amber:'var(--amber)', blue:'var(--blue)', green:'var(--green)'};
+  var txtMap = {red:'var(--red)', amber:'var(--amber)', blue:'var(--blue)', green:'var(--green)'};
+
+  // ----- 2. Projeção de fluxo de caixa (30/60/90 dias) -----
+  // Projeção simples: assume que o padrão de receita/custo recorrente se repete
+  var lucroMensal = l;
+  var proj30 = lucroMensal;
+  var proj60 = lucroMensal * 2;
+  var proj90 = lucroMensal * 3;
+
+  el.innerHTML =
+    '<div style="background:'+bgMap[foco.cor]+';border-left:4px solid '+borderMap[foco.cor]+';border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start">'
+    +'<span style="font-size:22px;flex-shrink:0">'+foco.icone+'</span>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="font-size:10px;font-weight:700;color:'+txtMap[foco.cor]+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">🎯 Foco do mês</div>'
+    +'<div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">'+foco.titulo+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);line-height:1.5">'+foco.texto+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">📈 Projeção de fluxo de caixa (mantendo o ritmo atual)</div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+    +'<div style="flex:1;min-width:90px;text-align:center;padding:8px;background:var(--bg);border-radius:8px">'
+    +'<div style="font-size:10px;color:var(--text3);margin-bottom:3px">30 dias</div>'
+    +'<div class="num" style="font-size:14px;font-weight:700;color:'+(proj30>=0?'var(--green)':'var(--red)')+'">'+fmt(proj30)+'</div>'
+    +'</div>'
+    +'<div style="flex:1;min-width:90px;text-align:center;padding:8px;background:var(--bg);border-radius:8px">'
+    +'<div style="font-size:10px;color:var(--text3);margin-bottom:3px">60 dias</div>'
+    +'<div class="num" style="font-size:14px;font-weight:700;color:'+(proj60>=0?'var(--green)':'var(--red)')+'">'+fmt(proj60)+'</div>'
+    +'</div>'
+    +'<div style="flex:1;min-width:90px;text-align:center;padding:8px;background:var(--bg);border-radius:8px">'
+    +'<div style="font-size:10px;color:var(--text3);margin-bottom:3px">90 dias</div>'
+    +'<div class="num" style="font-size:14px;font-weight:700;color:'+(proj90>=0?'var(--green)':'var(--red)')+'">'+fmt(proj90)+'</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="font-size:10px;color:var(--text3);margin-top:8px;line-height:1.4">ℹ️ Projeção simplificada baseada no lucro atual, assumindo receita e custos estáveis. Não considera sazonalidade nem novos contratos.</div>'
+    +'</div>';
+}
 function renderModeloNegocio(){
   var el = document.getElementById('modelo-negocio-box');
   if(!el) return;

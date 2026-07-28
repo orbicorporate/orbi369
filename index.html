@@ -114,6 +114,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   to { opacity: 1; }
 }
 .panel-hdr-menu{background:rgba(255,255,255,.15);border:none;color:#fff;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;position:relative;z-index:5;pointer-events:auto}
+.panel-help-btn{background:#0a0e17 !important;color:#fff !important;font-weight:800;font-size:13px !important}
+.panel-help-btn:hover{background:#1a2235 !important}
 .panel-body{padding:14px 16px}
 
 /* PANEL COLOR THEMES */
@@ -516,7 +518,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   </div>
   <div class="hdr-right">
     <div class="hdr-mes" id="hdr-mes">—</div>
-    <button class="hdr-btn" title="Rever tour de introdução" onclick="reverIntroducao()">❓</button>
+    <button class="hdr-btn panel-help-btn" title="Rever tour de introdução" onclick="reverIntroducao()">?</button>
     <button class="hdr-btn" onclick="openMo('mo-config')">⚙️</button>
   </div>
 </div>
@@ -573,7 +575,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="entpes-total">R$&nbsp;0,00<small>total previsto</small></div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')">?</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-entradas','Entradas previstas','ph-green')">✏️</button>
       </div>
     </div>
@@ -604,7 +606,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="pagos-total-hdr">R$&nbsp;0,00<small>total pago</small></div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz...) conforme forem sendo pagas. Toque no texto do item pra marcar como pago, ou no ✏️ pra editar nome e valor.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz...) conforme forem sendo pagas. Toque no texto do item pra marcar como pago, ou no ✏️ pra editar nome e valor.')">?</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')">✏️</button>
       </div>
     </div>
@@ -639,7 +641,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="cf-total-hdr">R$ 0,00<small>total mensal</small></div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Previsão de custos fixos','Cadastre aqui seus custos pessoais fixos que se repetem todo mês (assinaturas, mensalidades, etc). Isso ajuda a projetar quanto vai sobrar antes mesmo do mês fechar.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Previsão de custos fixos','Cadastre aqui seus custos pessoais fixos que se repetem todo mês (assinaturas, mensalidades, etc). Isso ajuda a projetar quanto vai sobrar antes mesmo do mês fechar.')">?</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-cf','Previsão de custos fixos','ph-amber')">✏️</button>
       </div>
     </div>
@@ -720,7 +722,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="tempo-hora-val">R$ 0</div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Tempo = Dinheiro','Calcula quanto vale sua hora de trabalho (lucro ÷ horas trabalhadas no mês). Use isso pra decidir se vale a pena gastar tempo numa tarefa específica ou terceirizar.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Tempo = Dinheiro','Calcula quanto vale sua hora de trabalho (lucro ÷ horas trabalhadas no mês). Use isso pra decidir se vale a pena gastar tempo numa tarefa específica ou terceirizar.')">?</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-tempo','Tempo = Dinheiro','ph-teal')">✏️</button>
       </div>
     </div>
@@ -742,7 +744,7 @@ td.inline-edit:active{background:var(--blue-bg)}
         </div>
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Minha Orbi','Pergunta qualquer coisa sobre suas finanças em linguagem natural — \'qual minha margem?\', \'vale contratar?\', \'e se eu perder meu maior cliente?\'. Ela responde com base nos seus dados reais, não é um chatbot genérico.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Minha Orbi','Pergunta qualquer coisa sobre suas finanças em linguagem natural — \'qual minha margem?\', \'vale contratar?\', \'e se eu perder meu maior cliente?\'. Ela responde com base nos seus dados reais, não é um chatbot genérico.')">?</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-assistente','Minha Orbi','ph-purple')">✏️</button>
       </div>
     </div>
@@ -760,7 +762,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="dec-stats">0</div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Decisões a tomar','Escreva uma decisão que você precisa tomar (contratar, comprar algo, reajustar cliente) e a IA faz 4 perguntas rápidas pra te ajudar a decidir com mais clareza, considerando seus números reais.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Decisões a tomar','Escreva uma decisão que você precisa tomar (contratar, comprar algo, reajustar cliente) e a IA faz 4 perguntas rápidas pra te ajudar a decidir com mais clareza, considerando seus números reais.')">?</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')">✏️</button>
       </div>
     </div>
@@ -886,7 +888,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num" id="inv-total-hdr">R$ 0</div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Carteira de investimentos','Cadastre cada ativo separado (Tesouro Direto, ações, fundos...) com valor investido e data. O app estima o rendimento com base nas taxas de mercado — edite a taxa manualmente se quiser simular algo específico.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Carteira de investimentos','Cadastre cada ativo separado (Tesouro Direto, ações, fundos...) com valor investido e data. O app estima o rendimento com base nas taxas de mercado — edite a taxa manualmente se quiser simular algo específico.')">?</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('inv-carteira','Carteira de investimentos','ph-green')">✏️</button>
       </div>
     </div>
@@ -1997,7 +1999,7 @@ function buildPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${headerVal}</div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">?</button>
         <button class="panel-hdr-menu" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✏️</button>
       </div>
     </div>
@@ -3328,7 +3330,7 @@ function buildFaturaPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(displayTotal)}<small>${p.fatObs||'fatura do mês'}</small></div>
-        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')">❓</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')">?</button>
         <button class="panel-hdr-menu" title="Excluir este painel de cartão" onclick="confirmarExcluirPainel('${tab}',${pi})">🗑</button>
       </div>
     </div>
@@ -5025,7 +5027,7 @@ function renderColSaldo(){
     +'</div></div>'
     +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
     +'<div class="panel-hdr-val num">'+fmt(totalPago)+'<small>total pago</small></div>'
-    +'<button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp(\'Pagamentos Colaboradores\',\'Marque aqui cada colaborador conforme você for pagando ele no mês. Falta pagar mostra quanto ainda resta da folha total.\')">❓</button>'
+    +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Pagamentos Colaboradores\',\'Marque aqui cada colaborador conforme você for pagando ele no mês. Falta pagar mostra quanto ainda resta da folha total.\')">?</button>'
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Total previsto',totalPrev,'Folha do m\u00eas',false)
@@ -5091,7 +5093,7 @@ function renderSaldoGeral(){
     +'</div></div>'
     +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
-    +'<button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">❓</button>'
+    +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">?</button>'
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)

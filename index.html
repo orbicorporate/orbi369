@@ -1747,6 +1747,8 @@ function setVal(id,v){const e=document.getElementById(id);if(e&&!e.matches(':foc
 function renderMets(){
   const r=calcR(),f=calcF(),l=calcL(),m=calcM(),t=calcT();
   const rRec=calcR_Rec(), rAvu=calcR_Avu();
+  const impNF=calcImpostoNF();
+  const impostoTotal=(S.imposto||0)+impNF;
   const ativos=S.clientes.filter(c=>c.status==='ativo');
   const at=ativos.length;
   const atRec=ativos.filter(c=>c.tipo==='recorrente'||!c.tipo).length;
@@ -1762,7 +1764,7 @@ function renderMets(){
   var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
   if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">Receita recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
   linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
-  linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(S.imposto)}</div><div class="met-sub">${pct(r>0?S.imposto/r*100:0)} receita</div></div>`;
+  linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(impostoTotal)}</div><div class="met-sub">${pct(r>0?impostoTotal/r*100:0)} receita${impNF>0?' · inclui '+fmt(impNF)+' de NF':''}</div></div>`;
 
   var linha2 = '';
   if(mostraAvu) linha2 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">${modelo==='avulso'?'Receita de projetos':'Extras avulsos'}</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} ${modelo==='avulso'?'projeto':'avulso'}${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>`;
@@ -1775,20 +1777,17 @@ function renderMets(){
 
 function renderFlowOp(){
   const r=calcR(),f=calcF(),l=calcL(),ext=calcPagExtras(),impNF=calcImpostoNF();
+  const impostoTotal=(S.imposto||0)+impNF;
   const el=document.getElementById('flow-op');if(!el)return;
   var extBlock = ext>0
     ? `<div class="f-arr">−</div><div class="fi"><div class="fi-lbl">Extras</div><div class="fi-val num" style="color:var(--red)">${fmt(ext)}</div></div>`
-    : '';
-  var impNFBlock = impNF>0
-    ? `<div class="f-arr">−</div><div class="fi"><div class="fi-lbl">Imposto NF</div><div class="fi-val num" style="color:var(--red)">${fmt(impNF)}</div></div>`
     : '';
   el.innerHTML=`
     <div class="fi"><div class="fi-lbl">Receita</div><div class="fi-val num" style="color:var(--green)">${fmt(r)}</div></div>
     <div class="f-arr">−</div>
     <div class="fi"><div class="fi-lbl">${S.cfg.lblCol}</div><div class="fi-val num" style="color:var(--red)">${fmt(f)}</div></div>
     <div class="f-arr">−</div>
-    <div class="fi"><div class="fi-lbl">Imposto</div><div class="fi-val num" style="color:var(--red)">${fmt(S.imposto)}</div></div>
-    ${impNFBlock}
+    <div class="fi"><div class="fi-lbl">Imposto${impNF>0?' (+NF)':''}</div><div class="fi-val num" style="color:var(--red)">${fmt(impostoTotal)}</div></div>
     ${extBlock}
     <div class="f-arr">=</div>
     <div class="fi"><div class="fi-lbl">Lucro</div><div class="fi-val num" style="color:var(--${l>=0?'green':'red'})">${fmt(l)}</div></div>`;
@@ -1894,8 +1893,9 @@ function buildPanel(p,tab,pi){
           <td>${rec?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">&#10003; Recebido</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">Recebido</button>`}</td>
           <td><button class="btn btn-r btn-sm" onclick="removeCli(${oi})">&#10005;</button></td></tr>`;
       }).join('')}
-      <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r gc">${fmt(r)}</td><td colspan="6"></td></tr>
+      <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r gc">${fmt(r)}</td><td colspan="2"></td><td class="num r" style="color:var(--red)">${totalImpostoNF>0?'-'+fmt(totalImpostoNF):'—'}</td><td colspan="3"></td></tr>
     </tbody></table></div>
+    ${totalImpostoNF>0?`<div style="padding:8px 14px;background:var(--red-bg);border-top:1px solid var(--red-border);font-size:11.5px;color:var(--red)">🧾 Imposto sobre NF (${nComNF} cliente${nComNF!==1?'s':''}): <strong>${fmt(totalImpostoNF)}</strong> — já descontado do faturamento no card "Imposto" e no Lucro operacional.</div>`:''}
     <div id="recebidos-summary-${pi}"></div><div class="chart-row"><div class="chart-box"><div class="chart-ttl">Receita por ${S.cfg.lblC.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
       <span style="font-size:11.5px;color:var(--text3)">Toque na célula para editar</span>

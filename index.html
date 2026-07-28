@@ -516,6 +516,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   </div>
   <div class="hdr-right">
     <div class="hdr-mes" id="hdr-mes">—</div>
+    <button class="hdr-btn" title="Rever tour de introdução" onclick="reverIntroducao()">❓</button>
     <button class="hdr-btn" onclick="openMo('mo-config')">⚙️</button>
   </div>
 </div>
@@ -3002,14 +3003,13 @@ function showOnboardingModal(){
   document.body.appendChild(mo);
   renderOnbStep();
 }
-function renderOnbStep(){
-  var bx = document.getElementById('onb-box');
-  if(!bx) return;
-  var steps = [
+// Lista de passos do onboarding — compartilhada entre renderOnbStep e onbNext
+function getOnbSteps(){
+  return [
     {
       icon: '👋',
       titulo: 'Bem-vindo(a) ao Orbi369!',
-      texto: 'Vamos configurar seu painel em menos de 1 minuto. É rápido e você pode mudar tudo depois.',
+      texto: 'Vamos fazer um tour rápido pelas principais abas do app — leva menos de 1 minuto e você pode pular a qualquer momento.',
       cta: 'Vamos começar →'
     },
     {
@@ -3023,12 +3023,48 @@ function renderOnbStep(){
       ]
     },
     {
+      icon: '📊',
+      titulo: 'Aba Negócio',
+      texto: 'Cadastre clientes, colaboradores e imposto. O app calcula receita, custos e lucro automaticamente. Clica em "+ Adicionar" pra começar, ou "📥 Importar lista" se já tem tudo numa planilha.',
+      cta: 'Entendi →'
+    },
+    {
+      icon: '👔',
+      titulo: 'Aba Pessoal',
+      texto: 'Aqui ficam suas finanças pessoais: cartões de crédito, contas fixas, checklist de pagamentos e recomendações de investimento — separado do seu negócio.',
+      cta: 'Entendi →'
+    },
+    {
+      icon: '📈',
+      titulo: 'Aba Investimentos',
+      texto: 'Cadastre seus ativos (Tesouro, ações, fundos...) e acompanhe rendimento estimado, com um guia educativo pra cada tipo de investimento.',
+      cta: 'Entendi →'
+    },
+    {
+      icon: '📅',
+      titulo: 'Aba Histórico',
+      texto: 'Todo mês fechado vira um snapshot aqui — dá pra rever qualquer mês anterior (somente leitura, mas dá pra desbloquear edição se precisar corrigir algo).',
+      cta: 'Entendi →'
+    },
+    {
+      icon: '🤖',
+      titulo: 'Minha Orbi',
+      texto: 'Sua assistente financeira. Pergunta qualquer coisa sobre seus números ("qual minha margem?", "vale contratar?") ou use "Decisões a tomar" pra ela te ajudar a decidir algo com 4 perguntas rápidas.',
+      cta: 'Entendi →'
+    },
+    {
       icon: '👥',
       titulo: 'Cadastre seu primeiro cliente',
-      texto: 'Vá na aba Negócio e clica em "+ Adicionar" no painel de clientes. Você pode importar uma lista inteira também.',
-      cta: 'Entendi, vamos lá! 🚀'
+      texto: 'Agora é com você! Vá na aba Negócio e clica em "+ Adicionar cliente". Você pode importar uma lista inteira também.',
+      cta: 'Pronto, vamos lá! 🚀'
     }
   ];
+}
+
+function renderOnbStep(){
+  var bx = document.getElementById('onb-box');
+  if(!bx) return;
+  var steps = getOnbSteps();
   var s = steps[_onbStep-1];
   var dots = steps.map(function(_,i){
     return '<span style="width:7px;height:7px;border-radius:50%;background:'+((i+1)===_onbStep?'var(--indigo,#4f46e5)':'var(--border)')+';display:inline-block;transition:background .2s"></span>';
@@ -3057,7 +3093,7 @@ function renderOnbStep(){
 }
 function onbNext(){
   _onbStep++;
-  if(_onbStep > 3){ onbFinish(); return; }
+  if(_onbStep > getOnbSteps().length){ onbFinish(); return; }
   renderOnbStep();
 }
 function onbSelectModelo(modelo){

@@ -703,30 +703,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   </div>
   <div id="notes-container"></div>
 
-  <!-- ============ DECISÕES A TOMAR (COM IA GUIADA) ============ -->
-  <div class="panel" style="margin-top:20px;margin-bottom:14px">
-    <div class="panel-hdr ph-indigo" data-fpk="note-decisoes">
-      <div class="panel-hdr-l">
-        <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Decisões a tomar</div>
-          <div class="panel-sub">A IA te faz 4 perguntas simples e te ajuda a decidir</div>
-        </div>
-      </div>
-      <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <div class="panel-hdr-val num" id="dec-stats">0</div>
-        <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')">✏️</button>
-      </div>
-    </div>
-    <div style="padding:12px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:180px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Qual decisão você precisa tomar?</label>
-        <input type="text" id="dec-titulo" placeholder="Ex: Contratar designer, Reajustar cliente X, Comprar MacBook novo..." style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')decAdd()">
-      </div>
-      <button class="btn btn-g btn-sm" style="height:33px;padding:0 16px" onclick="decAdd()">+ Analisar</button>
-    </div>
-    <div id="dec-container" style="padding:14px;background:var(--card)"></div>
-  </div>
-
   <!-- ============ TEMPO = DINHEIRO ============ -->
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-teal" data-fpk="note-tempo">
@@ -764,6 +740,30 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
     </div>
     <div id="assist-container" style="padding:16px;background:var(--card)"></div>
+  </div>
+
+  <!-- ============ DECISÕES A TOMAR (COM IA GUIADA) ============ -->
+  <div class="panel" style="margin-bottom:14px">
+    <div class="panel-hdr ph-indigo" data-fpk="note-decisoes">
+      <div class="panel-hdr-l">
+        <div class="panel-hdr-info">
+          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Decisões a tomar</div>
+          <div class="panel-sub">A IA te faz 4 perguntas simples e te ajuda a decidir</div>
+        </div>
+      </div>
+      <div class="panel-hdr-r" style="position:relative;z-index:2">
+        <div class="panel-hdr-val num" id="dec-stats">0</div>
+        <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')">✏️</button>
+      </div>
+    </div>
+    <div style="padding:12px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:180px">
+        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Qual decisão você precisa tomar?</label>
+        <input type="text" id="dec-titulo" placeholder="Ex: Contratar designer, Reajustar cliente X, Comprar MacBook novo..." style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')decAdd()">
+      </div>
+      <button class="btn btn-g btn-sm" style="height:33px;padding:0 16px" onclick="decAdd()">+ Analisar</button>
+    </div>
+    <div id="dec-container" style="padding:14px;background:var(--card)"></div>
   </div>
 </div>
 

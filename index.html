@@ -72,9 +72,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* TABS */
 .tabs{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;padding:10px 16px;gap:8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:60px;z-index:190;box-shadow:0 2px 5px rgba(0,0,0,.04)}
 .tabs::-webkit-scrollbar{display:none}
-.tb{font-family:var(--font);font-size:12.5px;font-weight:700;color:#fff;padding:11px 16px;border:none;background:#0a0e17;border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .2s;box-shadow:0 2px 6px rgba(10,14,23,.2)}
-.tb:hover{background:#1a2235;transform:translateY(-1px)}
-.tb.on{background:#1e3a5f;box-shadow:0 3px 10px rgba(30,58,95,.4)}
+.tb{font-family:var(--font);font-size:12.5px;font-weight:400;color:#fff;padding:11px 16px;border:none;background:linear-gradient(135deg,#0a0e17,#12233d);border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .2s;box-shadow:0 2px 6px rgba(10,14,23,.2);display:inline-flex;align-items:center;justify-content:center;gap:7px;text-align:center}
+.tb:hover{background:linear-gradient(135deg,#12233d,#1e3a5f);transform:translateY(-1px)}
+.tb.on{background:linear-gradient(135deg,#12233d,#1e3a5f);box-shadow:0 3px 10px rgba(30,58,95,.45)}
+.tb-ic{width:15px;height:15px;flex-shrink:0;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tab-pane{display:none;padding:22px 16px;max-width:1100px;margin:0 auto;animation:fi .2s ease}
 .tab-pane.on{display:block}
 @keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
@@ -526,13 +527,13 @@ td.inline-edit:active{background:var(--blue-bg)}
 </div>
 
 <div class="tabs">
-  <button class="tb on" data-tabid="op" data-fixed="1" onclick="showTab('op',this)">📊 Negócio</button>
-  <button class="tb" data-tabid="pes" data-fixed="1" onclick="showTab('pes',this)">👔 Pessoal</button>
-  <button class="tb" data-tabid="invest" data-fixed="1" onclick="showTab('invest',this)">📈 Investimentos</button>
-  <button class="tb" data-tabid="hist" data-fixed="1" onclick="showTab('hist',this)">📅 Histórico</button>
-  <button class="tb" data-tabid="note" data-fixed="1" onclick="showTab('note',this)">📝 Note</button>
-  <button class="tb" data-tabid="orbi" data-fixed="1" onclick="showTab('orbi',this)">🤖 Minha Orbi</button>
-  <button class="tb" data-tabid="cfg" data-fixed="1" onclick="showTab('cfg',this)">⚙️ Editar</button>
+  <button class="tb on" data-tabid="op" data-fixed="1" onclick="showTab('op',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span>Negócio</span></button>
+  <button class="tb" data-tabid="pes" data-fixed="1" onclick="showTab('pes',this)"><svg class="tb-ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-4 3.2-6.5 7-6.5s7 2.5 7 6.5"/></svg><span>Pessoal</span></button>
+  <button class="tb" data-tabid="invest" data-fixed="1" onclick="showTab('invest',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M4 16l5-5 4 4 7-8M16 6h4v4"/></svg><span>Investimentos</span></button>
+  <button class="tb" data-tabid="hist" data-fixed="1" onclick="showTab('hist',this)"><svg class="tb-ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/></svg><span>Histórico</span></button>
+  <button class="tb" data-tabid="note" data-fixed="1" onclick="showTab('note',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M9 10h6M9 14h6M9 18h3"/></svg><span>Note</span></button>
+  <button class="tb" data-tabid="orbi" data-fixed="1" onclick="showTab('orbi',this)"><svg class="tb-ic" viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="10" rx="3"/><circle cx="9.5" cy="13" r="1.3" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13" r="1.3" fill="currentColor" stroke="none"/><path d="M12 8V5M9 5h6"/></svg><span>Minha Orbi</span></button>
+  <button class="tb" data-tabid="cfg" data-fixed="1" onclick="showTab('cfg',this)"><svg class="tb-ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M4.2 7.8l2.6 1.5M17.2 14.7l2.6 1.5M4.2 16.2l2.6-1.5M17.2 9.3l2.6-1.5"/></svg><span>Editar</span></button>
 </div>
 
 <div class="toast" id="toast"></div>

@@ -1045,6 +1045,9 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <button class="btn btn-b btn-blk" onclick="saveQuickCfg()">💾 Salvar</button>
       <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px">
+        <button class="btn btn-gh btn-blk" onclick="closeMo('mo-config');reverIntroducao()">👋 Rever introdução</button>
+      </div>
+      <div style="margin-top:8px">
         <button class="btn btn-r btn-blk" onclick="closeMo('mo-config');authLogout()">🚪 Sair da conta</button>
       </div>
     </div>
@@ -1092,6 +1095,35 @@ td.inline-edit:active{background:var(--blue-bg)}
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════════
+   ORBI369 — ÍNDICE DO CÓDIGO (guia rápido pra quem for mexer aqui depois)
+   ───────────────────────────────────────────────────────────────────────
+   Busque pelos marcadores "=====" abaixo (Ctrl+F) pra pular direto:
+
+   • STATE                     → estrutura de dados principal (objeto S)
+   • CALC (calcR, calcF...)    → fórmulas de receita/custo/lucro/imposto
+   • RENDER ALL                → orquestra a re-renderização de toda a UI
+   • MODELO DE NEGÓCIO         → seletor recorrente/avulso/ambos
+   • FOCO DO MÊS               → card de insight priorizado + projeção caixa
+   • buildPanel                → renderiza clientes/colaboradores/lançamentos
+   • buildFaturaPanel          → renderiza painéis de cartão de crédito
+   • buildListBox              → renderiza listas simples (nome+valor)
+   • renderCustomLists         → renderiza listas personalizadas do usuário
+   • ASSISTENTE (assistResponder) → "cérebro" compartilhado do chat e da
+     aba Minha Orbi — perguntas e respostas ficam TODAS aqui
+   • processCmd                → comandos de ação do chat flutuante
+     (adicionar/remover cliente etc.) — delega pra assistResponder pras
+     perguntas puras
+   • HISTÓRICO (abrirMesHistorico, voltarAoMesAtual) → snapshot mensal e
+     modo somente-leitura
+   • AUTH (onAuthSuccess, bootApp, save/load) → login e sincronização
+     com Supabase
+
+   REGRA DE OURO: qualquer função nova que precise saber "quanto o negócio
+   fatura/lucra" deve usar calcR()/calcF()/calcL() — nunca recalcular na
+   unha, pra não dessincronizar do resto do app.
+   ═══════════════════════════════════════════════════════════════════════ */
+
 // ===================== STATE =====================
 let S = {
   cfg:{nome:'',ramo:'agencia',lblC:'Clientes',lblF:'Fee Mensal',lblCol:'Colaboradores',lblCargo:'Cargo',moeda:'R$',mes:'Abril 2026',logo:'',modeloNegocio:'ambos'},
@@ -2942,6 +2974,12 @@ async function bootApp(){
 }
 
 // ===================== ONBOARDING =====================
+// Permite reabrir o onboarding manualmente a qualquer momento (aba Config → "Rever introdução")
+function reverIntroducao(){
+  setTimeout(showOnboardingModal, 150);
+}
+window.reverIntroducao = reverIntroducao;
+
 function checkShowOnboarding(){
   if(S.cfg && S.cfg.onboardingDone) return;
   var semDados = (!S.clientes || S.clientes.length===0) && (!S.colaboradores || S.colaboradores.length===0);
@@ -3621,8 +3659,6 @@ async function extractPdfLines(file){
       if(line)allLines.push(line);
     });
   }
-  console.log('[Orbi PDF] Extraídas '+allLines.length+' linhas de '+pdf.numPages+' página(s)');
-  if(allLines.length>0)console.log('[Orbi PDF] Amostra das 5 primeiras linhas:',allLines.slice(0,5));
   return allLines;
 }
 

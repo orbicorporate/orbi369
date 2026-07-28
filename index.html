@@ -378,7 +378,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 .auth-msg{font-size:12px;padding:9px 12px;border-radius:8px;margin-bottom:14px;line-height:1.5}
 .auth-msg.err{background:#fee2e2;color:#dc2626}
 .auth-msg.ok{background:#dcfce7;color:#059669}
-#auth-logout-btn{position:fixed;bottom:18px;right:18px;z-index:500;width:44px;height:44px;border-radius:50%;background:#0a0e17;color:#fff;border:none;font-size:18px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);display:none;align-items:center;justify-content:center}
+#auth-logout-btn{display:none !important}
 </style>
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
@@ -434,7 +434,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 <!-- SETUP -->
 <div id="setup" style="display:none">
   <div class="setup-box">
-    <div class="setup-orbi"><div style="width:56px;height:56px;background:#0a0e17;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><span style="font-size:12px;font-weight:300;color:#fff;letter-spacing:1.5px">orbi</span></div><div class="setup-orbi-word">orbi finance</div><div class="setup-orbi-sub">sistema financeiro inteligente</div></div>
+    <div class="setup-orbi"><div style="width:56px;height:56px;background:#0a0e17;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px"><span style="font-size:12px;font-weight:300;color:#fff;letter-spacing:1.5px">orbi</span></div><div class="setup-orbi-word">Orbi369</div><div class="setup-orbi-sub">sistema financeiro inteligente</div></div>
     <div class="s-title">Configure sua empresa</div>
     <div class="s-desc">Pode editar tudo depois. Leva 30 segundos.</div>
     <div class="s-group"><label>Nome da empresa</label><input type="text" id="s-nome" placeholder="Ex: Minha Empresa"></div>
@@ -510,7 +510,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       <img id="hdr-logo-img" src="" alt="">
       <span id="hdr-orbi-txt">orbi</span>
     </div>
-    <div style="font-size:22px;font-weight:100;letter-spacing:3px;color:var(--text);font-family:var(--font)">Orbibox</div>
+    <div style="font-size:22px;font-weight:100;letter-spacing:3px;color:var(--text);font-family:var(--font)">Orbi369</div>
   </div>
   <div class="hdr-right">
     <div class="hdr-mes" id="hdr-mes">—</div>
@@ -524,6 +524,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   <button class="tb" data-tabid="invest" data-fixed="1" onclick="showTab('invest',this)">📈 Investimentos</button>
   <button class="tb" data-tabid="hist" data-fixed="1" onclick="showTab('hist',this)">📅 Histórico</button>
   <button class="tb" data-tabid="note" data-fixed="1" onclick="showTab('note',this)">📝 Note</button>
+  <button class="tb" data-tabid="orbi" data-fixed="1" onclick="showTab('orbi',this)">🤖 Minha Orbi</button>
   <button class="tb" data-tabid="cfg" data-fixed="1" onclick="showTab('cfg',this)">⚙️ Editar</button>
 </div>
 
@@ -745,21 +746,25 @@ td.inline-edit:active{background:var(--blue-bg)}
     <div id="tempo-container" style="padding:14px;background:var(--card)"></div>
   </div>
 
-  <!-- ============ ASSISTENTE QUE CONHECE SEU DINHEIRO ============ -->
+  </div>
+</div>
+
+<!-- ===== TAB: MINHA ORBI (assistente conversacional) ===== -->
+<div id="tab-orbi" class="tab-pane">
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-purple" data-fpk="note-assistente">
       <div class="panel-hdr-l">
         <div class="panel-hdr-icon">🤖</div>
         <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Assistente que conhece seu dinheiro</div>
-          <div class="panel-sub">Pergunte qualquer coisa sobre suas finanças e decisões</div>
+          <div style="font-size:15px;font-weight:700;color:#fff" data-fpk-title>Minha Orbi</div>
+          <div class="panel-sub">Sua assistente financeira — conhece seus números de verdade</div>
         </div>
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-assistente','Assistente que conhece seu dinheiro','ph-purple')">✏️</button>
+        <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-assistente','Minha Orbi','ph-purple')">✏️</button>
       </div>
     </div>
-    <div id="assist-container" style="padding:14px;background:var(--card)"></div>
+    <div id="assist-container" style="padding:16px;background:var(--card)"></div>
   </div>
 </div>
 
@@ -1047,6 +1052,9 @@ td.inline-edit:active{background:var(--blue-bg)}
         </div>
       </div>
       <button class="btn btn-b btn-blk" onclick="saveQuickCfg()">💾 Salvar</button>
+      <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px">
+        <button class="btn btn-r btn-blk" onclick="closeMo('mo-config');authLogout()">🚪 Sair da conta</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1163,12 +1171,18 @@ const calcR_Rec=()=>S.clientes.filter(c=>c.status==='ativo' && (c.tipo==='recorr
 // Receita avulsa = só clientes com tipo 'avulso' ativos (que AINDA não foram marcados como recebidos)
 const calcR_Avu=()=>S.clientes.filter(c=>c.status==='ativo' && c.tipo==='avulso').reduce((s,c)=>s+c.valor,0);
 const calcF=()=>S.colaboradores.reduce((s,c)=>s+c.valor,0);
+// Imposto automático — soma de (valor × % imposto) de todos os clientes marcados "Com NF"
+const calcImpostoNF=()=>{
+  var pctNF = (S.cfg && S.cfg.impostoNFPct) || 0;
+  return S.clientes.filter(function(c){return c.status==='ativo' && c.comNF;})
+    .reduce(function(s,c){return s+(Number(c.valor)||0)*(pctNF/100);},0);
+};
 // Pagamentos extras — gastos variados do negócio que não são folha/imposto/fixo (listbox 'pag-extras')
 const calcPagExtras=()=>{
   var lb = (S.listboxes && S.listboxes.op) ? S.listboxes.op.find(function(l){return l.id==='pag-extras';}) : null;
   return lb ? (lb.items||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0) : 0;
 };
-const calcL=()=>calcR()-calcF()-S.imposto-calcPagExtras();
+const calcL=()=>calcR()-calcF()-S.imposto-calcImpostoNF()-calcPagExtras();
 const calcM=()=>{const r=calcR();return r>0?(calcL()/r)*100:0};
 const calcT=()=>{const at=S.clientes.filter(c=>c.status==='ativo');return at.length>0?calcR()/at.length:0};
 
@@ -1651,10 +1665,13 @@ function renderMets(){
 }
 
 function renderFlowOp(){
-  const r=calcR(),f=calcF(),l=calcL(),ext=calcPagExtras();
+  const r=calcR(),f=calcF(),l=calcL(),ext=calcPagExtras(),impNF=calcImpostoNF();
   const el=document.getElementById('flow-op');if(!el)return;
   var extBlock = ext>0
     ? `<div class="f-arr">−</div><div class="fi"><div class="fi-lbl">Extras</div><div class="fi-val num" style="color:var(--red)">${fmt(ext)}</div></div>`
+    : '';
+  var impNFBlock = impNF>0
+    ? `<div class="f-arr">−</div><div class="fi"><div class="fi-lbl">Imposto NF</div><div class="fi-val num" style="color:var(--red)">${fmt(impNF)}</div></div>`
     : '';
   el.innerHTML=`
     <div class="fi"><div class="fi-lbl">Receita</div><div class="fi-val num" style="color:var(--green)">${fmt(r)}</div></div>
@@ -1662,6 +1679,7 @@ function renderFlowOp(){
     <div class="fi"><div class="fi-lbl">${S.cfg.lblCol}</div><div class="fi-val num" style="color:var(--red)">${fmt(f)}</div></div>
     <div class="f-arr">−</div>
     <div class="fi"><div class="fi-lbl">Imposto</div><div class="fi-val num" style="color:var(--red)">${fmt(S.imposto)}</div></div>
+    ${impNFBlock}
     ${extBlock}
     <div class="f-arr">=</div>
     <div class="fi"><div class="fi-lbl">Lucro</div><div class="fi-val num" style="color:var(--${l>=0?'green':'red'})">${fmt(l)}</div></div>`;
@@ -1730,8 +1748,21 @@ function buildPanel(p,tab,pi){
     const sorted=[...S.clientes].sort((a,b)=>b.valor-a.valor);
     const atRec=S.clientes.filter(c=>c.status==='ativo' && (c.tipo==='recorrente'||!c.tipo)).length;
     const atAvu=S.clientes.filter(c=>c.status==='ativo' && c.tipo==='avulso').length;
+    const pctNF = (S.cfg && S.cfg.impostoNFPct) || 0;
+    const totalImpostoNF = calcImpostoNF();
+    const nComNF = S.clientes.filter(c=>c.status==='ativo' && c.comNF).length;
     headerVal=`${fmt(r)}<small>${atRec} recorrente${atRec!==1?'s':''}${atAvu>0?' + '+atAvu+' avulso'+(atAvu>1?'s':''):''}</small>`;
-    bodyHTML=`<div class="tw"><table><thead><tr><th>#</th><th>${S.cfg.lblC}</th><th>Tipo</th><th>${S.cfg.lblF}</th><th>%</th><th>Status</th><th title="Dia do recebimento no mês atual">Dia receb.</th><th>Recebimento</th><th></th></tr></thead><tbody>
+    bodyHTML=(`<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;font-weight:700;color:var(--text2)">🧾 % Imposto sobre NF:</span>
+        <input type="number" id="cfg-imposto-nf-pct" value="${pctNF}" min="0" max="100" step="0.1"
+          style="width:70px;font-family:var(--font);font-size:13px;padding:6px 9px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);outline:none;text-align:center"
+          onchange="setImpostoNFPct(this.value)">
+        <span style="font-size:11px;color:var(--text3)">%</span>
+      </div>
+      ${nComNF>0?`<div style="flex:1;min-width:180px;text-align:right"><span style="font-size:10.5px;color:var(--text3)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático:</span> <strong class="num" style="color:var(--red);font-size:13px">${fmt(totalImpostoNF)}</strong></div>`:''}
+    </div>`)
+    +`<div class="tw"><table><thead><tr><th>#</th><th>${S.cfg.lblC}</th><th>Tipo</th><th>${S.cfg.lblF}</th><th>%</th><th>Status</th><th title="Marque se esse cliente emite Nota Fiscal — aplica o % de imposto configurado acima">Com NF</th><th title="Dia do recebimento no mês atual">Dia receb.</th><th>Recebimento</th><th></th></tr></thead><tbody>
       ${sorted.map((c,i)=>{
         const pp=r>0?(c.valor/r)*100:0,oi=S.clientes.indexOf(c);
         const bs=c.status==='ativo'?'bg-green':c.status==='pausado'?'bg-amber':'bg-blue';
@@ -1741,17 +1772,20 @@ function buildPanel(p,tab,pi){
           ? '<span class="badge ed" style="background:#fef3c7;color:#854f0b;border:1px solid #fde68a;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Avulso — não aparece no próximo mês após receber">🎯 Avulso</span>'
           : '<span class="badge ed" style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
         const diaReceb = extrairDia(c.dataReceb);
+        const comNF = !!c.comNF;
+        const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;
         return `<tr style="${rec?'background:var(--green-bg)':''}"><td class="mu">${i+1}</td>
           <td class="inline-edit nome-cell" onclick="inlineEdit(this,'cli','nome',${oi})">${c.nome}</td>
           <td>${tipoBadge}</td>
           <td class="num r inline-edit" onclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</td>
           <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--green)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
           <td><span class="badge ${bs} ed" onclick="cycleStatus('cli',${oi})">${c.status}</span></td>
+          <td><label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:16px;height:16px;cursor:pointer">${comNF&&pctNF>0?`<span style="font-size:9.5px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}</label></td>
           <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" style="width:50px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()"></td>
           <td>${rec?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">&#10003; Recebido</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">Recebido</button>`}</td>
           <td><button class="btn btn-r btn-sm" onclick="removeCli(${oi})">&#10005;</button></td></tr>`;
       }).join('')}
-      <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r gc">${fmt(r)}</td><td colspan="5"></td></tr>
+      <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r gc">${fmt(r)}</td><td colspan="6"></td></tr>
     </tbody></table></div>
     <div id="recebidos-summary-${pi}"></div><div class="chart-row"><div class="chart-box"><div class="chart-ttl">Receita por ${S.cfg.lblC.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
@@ -2139,6 +2173,27 @@ function addCli(){
   save();renderAll();showToast('✅ '+S.cfg.lblC+' "'+nome+'" adicionado!');
 }
 function removeCli(i){const n=S.clientes[i].nome;S.clientes.splice(i,1);save();renderAll();showToast('🗑️ "'+n+'" removido.');}
+// Marca/desmarca um cliente como "Com NF" (aplica % de imposto configurado)
+function toggleComNF(oi){
+  if(!S.clientes[oi])return;
+  S.clientes[oi].comNF = !S.clientes[oi].comNF;
+  save();renderAll();
+  var nome=S.clientes[oi].nome;
+  showToast(S.clientes[oi].comNF ? '🧾 "'+nome+'" marcado como Com NF' : '"'+nome+'" desmarcado');
+}
+window.toggleComNF=toggleComNF;
+
+// Define a % de imposto aplicada sobre clientes marcados "Com NF"
+function setImpostoNFPct(valor){
+  var v=parseFloat(valor);
+  if(isNaN(v)||v<0)v=0;
+  if(!S.cfg)S.cfg={};
+  S.cfg.impostoNFPct=v;
+  save();renderAll();
+  showToast('🧾 Imposto sobre NF definido em '+v+'%');
+}
+window.setImpostoNFPct=setImpostoNFPct;
+
 function cycleStatus(type,i){
   const item=type==='cli'?S.clientes[i]:null;if(!item)return;
   const cycle={ativo:'pausado',pausado:'proposta',proposta:'ativo'};
@@ -2885,7 +2940,7 @@ function renderOnbStep(){
   var steps = [
     {
       icon: '👋',
-      titulo: 'Bem-vindo(a) ao Orbibox!',
+      titulo: 'Bem-vindo(a) ao Orbi369!',
       texto: 'Vamos configurar seu painel em menos de 1 minuto. É rápido e você pode mudar tudo depois.',
       cta: 'Vamos começar →'
     },
@@ -4790,6 +4845,7 @@ function renderSaldoGeral(){
   // CUSTOS FIXOS
   var colaboradores=calcF();     // folha PJ
   var impostos=S.imposto||0;     // imposto mensal
+  var impostosNF=calcImpostoNF(); // imposto automático sobre clientes com NF
 
   // CUSTOS VARIAVEIS - listboxes op (todas as listboxes da aba Negócio)
   var listboxesCost=0;
@@ -4806,7 +4862,7 @@ function renderSaldoGeral(){
   });
 
   // TOTAL CUSTOS
-  var totalCustos=colaboradores+impostos+listboxesCost+saidasOp;
+  var totalCustos=colaboradores+impostos+impostosNF+listboxesCost+saidasOp;
   var lucroLiquido=receitaTotal-totalCustos;
   var margem=receitaTotal>0?(lucroLiquido/receitaTotal)*100:0;
 
@@ -4837,7 +4893,7 @@ function renderSaldoGeral(){
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)
-    +mkC('Total custos',totalCustos,'Folha + impostos + fixos + extras','#dc2626',false)
+    +mkC('Total custos',totalCustos,'Folha + impostos + NF + fixos + extras','#dc2626',false)
     +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos',lucroLiquido>=0?'#059669':'#dc2626',true)
     +'</div>'
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
@@ -7100,6 +7156,54 @@ function assistResponder(pergunta){
       +(vh<=0?'Cadastre seus números do negócio pra calcular.':'Usa isso pra decidir se vale gastar X horas em Y tarefa.');
   }
 
+  // "risco" / "dependência" de cliente
+  if(/depend[êe]ncia|risco.*cliente|concentra[çc][ãa]o/.test(q)){
+    var ativos = (S.clientes||[]).filter(function(c){return c.status==='ativo';});
+    if(ativos.length===0) return '📊 Você ainda não tem clientes ativos cadastrados.';
+    var maior = ativos.slice().sort(function(a,b){return b.valor-a.valor;})[0];
+    var pctMaior = r>0?(maior.valor/r*100):0;
+    return '⚠️ Análise de risco: seu maior cliente é <strong>"'+maior.nome+'"</strong>, representando <strong>'+pctMaior.toFixed(0)+'%</strong> da sua receita.<br>'
+      +(pctMaior>=40?'Isso é uma dependência alta — se ele sair, seu negócio sofre muito. Priorize diversificar.':pctMaior>=25?'Está numa faixa de atenção. Não é crítico, mas vale trazer mais clientes.':'Sua carteira está bem distribuída — baixo risco de concentração.');
+  }
+
+  // "diversificar" / "novos clientes"
+  if(/diversific|novos clientes|crescer.*receita|aumentar.*receita/.test(q)){
+    var nAtivos = (S.clientes||[]).filter(function(c){return c.status==='ativo';}).length;
+    var tk = (typeof calcT==='function')?calcT():0;
+    return '📈 Você tem <strong>'+nAtivos+'</strong> clientes ativos, ticket médio de '+fmt(tk)+'.<br>'
+      +'Pra crescer 20% a receita ('+fmt(r*0.2)+'/mês a mais), você precisaria de aproximadamente <strong>'+Math.ceil((r*0.2)/(tk||1))+' cliente'+(Math.ceil((r*0.2)/(tk||1))!==1?'s':'')+' novo'+(Math.ceil((r*0.2)/(tk||1))!==1?'s':'')+'</strong> no ticket médio atual, ou reajustar preços dos atuais.';
+  }
+
+  // "sócio" / "pró-labore"
+  if(/s[óo]cio|pr[óo]-labore|prolabore/.test(q)){
+    var socios = (S.colaboradores||[]).filter(function(c){return c.tipo==='Sócio';});
+    var totalPL = socios.reduce(function(s,c){return s+(Number(c.valor)||0);},0);
+    if(socios.length===0) return '👑 Você ainda não tem sócios cadastrados. Vá em Colaboradores e marque o Tipo como "Sócio" pra registrar pró-labore.';
+    return '👑 Você tem <strong>'+socios.length+'</strong> sócio(s), pró-labore total de <strong>'+fmt(totalPL)+'</strong>/mês ('+pct(r>0?totalPL/r*100:0)+' da receita).<br>'
+      +'Isso já está incluído no cálculo de folha e no lucro operacional.';
+  }
+
+  // "cartão" / "quanto devo no cartão"
+  if(/cart[ãa]o|fatura/.test(q)){
+    var totalCartao=0;
+    (S.panels&&S.panels.pes||[]).forEach(function(p){
+      if(p.type==='fatura'){
+        var itemsSum=(p.fatItems||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
+        totalCartao+=itemsSum>0?itemsSum:(Number(p.fatTotal)||0);
+      }
+    });
+    return '💳 Total em faturas de cartão este mês: <strong>'+fmt(totalCartao)+'</strong>.<br>'
+      +(totalCartao>0?'Confira a aba Pessoal pra ver a distribuição por cartão.':'Nenhuma fatura lançada ainda.');
+  }
+
+  // "investir quanto" / "quanto guardar"
+  if(/quanto.*investir|quanto.*guardar|meta.*investimento/.test(q)){
+    var metaPct = (S.cfg&&S.cfg.metaInvest)||20;
+    var entTotal=(S.entradasPes||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
+    return '💎 Sua meta de investimento configurada é <strong>'+metaPct+'%</strong> das entradas pessoais.<br>'
+      +'Você pode ajustar isso na aba Pessoal, em Recomendações inteligentes.';
+  }
+
   // Ajuda
   if(/ajuda|como|o que.*per[gj]/.test(q)){
     return '🤖 Eu respondo perguntas baseado nos seus dados reais. Exemplos:<br>'
@@ -7110,7 +7214,11 @@ function assistResponder(pergunta){
       +'• "vale contratar agora?"<br>'
       +'• "como está minha margem?"<br>'
       +'• "quanto vale minha hora?"<br>'
-      +'• "quantas decisões pendentes?"';
+      +'• "quantas decisões pendentes?"<br>'
+      +'• "tenho risco de dependência de cliente?"<br>'
+      +'• "como diversificar minha receita?"<br>'
+      +'• "quanto pago de pró-labore?"<br>'
+      +'• "quanto devo no cartão?"';
   }
 
   // Default
@@ -7129,34 +7237,39 @@ function renderAssistente(){
   var hist = S.assistHistory||[];
 
   var html = '<div style="display:flex;gap:8px;margin-bottom:12px">'
-    +'<input type="text" id="assist-input" placeholder="Pergunte: posso gastar 2000? vale reajustar? qual meu lucro? ..." style="flex:1;font-family:var(--font);font-size:13px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key===\'Enter\')assistAsk()">'
-    +'<button class="btn btn-b" onclick="assistAsk()">Perguntar</button>'
+    +'<input type="text" id="assist-input" placeholder="Pergunte: posso gastar 2000? vale reajustar? qual meu lucro? ..." style="flex:1;font-family:var(--font);font-size:14px;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key===\'Enter\')assistAsk()">'
+    +'<button class="btn btn-b" onclick="assistAsk()" style="padding:11px 20px">Perguntar</button>'
     +'</div>';
 
-  // Sugestões rápidas
-  html += '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px">'
-    +['quanto tenho de lucro?','qual meu ticket médio?','vale reajustar?','posso gastar 1000?','como está minha margem?','quanto vale minha hora?','decisões pendentes?','ajuda'].map(function(p){
-      return '<button onclick="document.getElementById(\'assist-input\').value=\''+p+'\';assistAsk()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 10px;border-radius:12px;cursor:pointer">'+p+'</button>';
+  // Sugestões rápidas — perguntas estratégicas
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">'
+    +['quanto tenho de lucro?','qual meu ticket médio?','vale reajustar?','como está minha margem?','tenho risco de dependência de cliente?','como diversificar minha receita?','quanto pago de pró-labore?','quanto devo no cartão?','quanto vale minha hora?','decisões pendentes?'].map(function(p){
+      return '<button onclick="document.getElementById(\'assist-input\').value=\''+p+'\';assistAsk()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:6px 12px;border-radius:14px;cursor:pointer;transition:all .15s" onmouseover="this.style.background=\'var(--purple-bg)\'" onmouseout="this.style.background=\'var(--bg3)\'">'+p+'</button>';
     }).join('')
     +'</div>';
 
   if(hist.length===0){
-    html += '<div style="text-align:center;padding:28px;color:var(--text3);font-size:12px;line-height:1.6;background:var(--bg3);border-radius:8px">'
-      +'<div style="font-size:28px;margin-bottom:6px">🤖</div>'
-      +'<strong>Pergunte qualquer coisa sobre seu dinheiro.</strong><br>'
+    html += '<div style="text-align:center;padding:32px;color:var(--text3);font-size:13px;line-height:1.6;background:var(--bg3);border-radius:12px">'
+      +'<div style="font-size:32px;margin-bottom:8px">🤖</div>'
+      +'<strong style="color:var(--text2)">Pergunte qualquer coisa sobre seu dinheiro.</strong><br>'
       +'Diferente de outros chatbots, eu <strong>sei seus números reais</strong> e respondo com dados.<br>'
-      +'<em style="font-size:11px">Experimente clicar numa sugestão acima pra ver.</em>'
+      +'<em style="font-size:11.5px">Experimente clicar numa sugestão acima pra ver.</em>'
       +'</div>';
   } else {
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
-      +'<div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Histórico recente</div>'
-      +'<button onclick="assistLimpar()" style="background:transparent;border:none;color:var(--text3);font-size:10px;cursor:pointer">🗑 Limpar</button>'
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+      +'<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">💬 Conversa</div>'
+      +'<button onclick="assistLimpar()" style="background:transparent;border:none;color:var(--text3);font-size:11px;cursor:pointer">🗑 Limpar</button>'
       +'</div>';
     hist.forEach(function(h){
-      html += '<div style="margin-bottom:10px">'
-        +'<div style="font-size:11px;color:var(--text3);margin-bottom:3px">👤 '+h.ts+' — você perguntou:</div>'
-        +'<div style="padding:8px 12px;background:var(--bg3);border-radius:8px;margin-bottom:5px;font-size:12px;color:var(--text)">'+h.q+'</div>'
-        +'<div style="padding:10px 12px;background:var(--purple-bg);border-left:3px solid var(--purple);border-radius:6px;font-size:12px;color:var(--text);line-height:1.55">'+h.a+'</div>'
+      html += '<div style="margin-bottom:14px">'
+        +'<div style="display:flex;justify-content:flex-end;margin-bottom:6px">'
+        +'<div style="max-width:85%;padding:10px 14px;background:var(--blue);color:#fff;border-radius:14px 14px 3px 14px;font-size:13.5px">'+h.q+'</div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:flex-start;align-items:flex-start;gap:8px">'
+        +'<span style="font-size:18px;flex-shrink:0">🤖</span>'
+        +'<div style="max-width:85%;padding:11px 14px;background:var(--purple-bg);border-radius:14px 14px 14px 3px;font-size:13.5px;color:var(--text);line-height:1.55">'+h.a+'</div>'
+        +'</div>'
+        +'<div style="font-size:10px;color:var(--text3);margin-top:4px;padding-left:26px">'+h.ts+'</div>'
         +'</div>';
     });
   }

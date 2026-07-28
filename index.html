@@ -87,7 +87,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;flex:1}
 .panel-hdr-icon{width:36px;height:36px;background:rgba(255,255,255,.18);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;cursor:pointer}
 .panel-hdr-info{min-width:0}
-.panel-title-edit{font-size:16px;font-weight:700;color:#fff;background:transparent;border:none;outline:none;width:100%;font-family:var(--font);cursor:pointer}
+.panel-title-edit{font-size:13px;font-weight:700;color:#fff;background:transparent;border:none;outline:none;width:100%;font-family:var(--font);cursor:pointer}
 .panel-title-edit:focus{background:rgba(255,255,255,.15);border-radius:5px;padding:2px 6px;cursor:text}
 .panel-sub{font-size:11.5px;color:rgba(255,255,255,.7);margin-top:2px}
 .panel-hdr-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
@@ -594,7 +594,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-green" data-fpk="pes-pagos">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">&#10003;</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Checklist</div>
           <div class="panel-sub" id="pagos-sub">0 itens pagos</div>
@@ -677,7 +676,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-dark">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">📝</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Nova nota / lista</div>
           <div class="panel-sub">Crie uma lista de mercado, tarefa, lembrete...</div>
@@ -709,7 +707,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-top:20px;margin-bottom:14px">
     <div class="panel-hdr ph-indigo" data-fpk="note-decisoes">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">🧭</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Decisões a tomar</div>
           <div class="panel-sub">A IA te faz 4 perguntas simples e te ajuda a decidir</div>
@@ -758,7 +755,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       <div class="panel-hdr-l">
         <div class="panel-hdr-icon">🤖</div>
         <div class="panel-hdr-info">
-          <div style="font-size:15px;font-weight:700;color:#fff" data-fpk-title>Minha Orbi</div>
+          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Minha Orbi</div>
           <div class="panel-sub">Sua assistente financeira — conhece seus números de verdade</div>
         </div>
       </div>
@@ -777,7 +774,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-dark">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">📅</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Fechar mês atual</div>
           <div class="panel-sub">Salva snapshot e reinicia lançamentos para o próximo mês</div>
@@ -788,7 +784,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
     </div>
     <div class="panel-body" style="padding:14px 16px">
-      <p style="font-size:12px;color:var(--text2);margin:0 0 8px">O fechamento salva um snapshot completo do mês atual e <strong>zera:</strong> lançamentos dos cartões (fatItems), painel Pagamentos da conta, marcações de recebidos e colaboradores pagos. As <strong>previsões, clientes e colaboradores são mantidos</strong>.</p>
+      <p style="font-size:12px;color:var(--text2);margin:0 0 8px">O fechamento salva um snapshot completo do mês atual e <strong>zera:</strong> lançamentos dos cartões (fatItems), painel Pagamentos por PIX (extras), marcações de recebidos e colaboradores pagos. As <strong>previsões, clientes e colaboradores são mantidos</strong>.</p>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <span style="font-size:12px;color:var(--text3)">Mês atual:</span>
         <span class="badge bg-blue num" id="hist-mes-atual" style="font-size:12px;padding:4px 10px">—</span>
@@ -799,7 +795,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel">
     <div class="panel-hdr ph-slate">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">🗂️</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Meses anteriores</div>
           <div class="panel-sub" id="hist-count-sub">0 meses salvos</div>
@@ -823,7 +818,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-green">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">➕</div>
         <div class="panel-hdr-info">
           <div class="panel-title-edit" style="color:#fff;font-weight:700">Adicionar investimento</div>
           <div class="panel-sub">Inclua cada ativo separado</div>
@@ -898,7 +892,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   <!-- Chart -->
   <div class="panel">
     <div class="panel-hdr ph-teal">
-      <div class="panel-hdr-l"><div class="panel-hdr-icon">🥧</div><div class="panel-hdr-info"><div class="panel-title-edit" style="color:#fff;font-weight:700">Distribuição por tipo</div></div></div>
+      <div class="panel-hdr-l"><div class="panel-hdr-info"><div class="panel-title-edit" style="color:#fff;font-weight:700">Distribuição por tipo</div></div></div>
     </div>
     <div class="chart-row"><div class="chart-box"><div class="chart-ttl">Valor atual por tipo de ativo</div><div class="chart-wrap"><canvas id="chart-inv"></canvas></div></div></div>
   </div>
@@ -917,7 +911,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-dark">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">📋</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Gerenciar abas</div>
           <div class="panel-sub">Renomeie ou exclua abas personalizadas</div>
@@ -931,7 +924,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-teal">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">➕</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Adicionar nova aba</div>
           <div class="panel-sub">Escolha um modelo ou crie do zero</div>
@@ -992,7 +984,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-dark">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">🗂️</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Gerenciar painéis</div>
           <div class="panel-sub">Clique em Excluir para remover um painel</div>
@@ -1006,7 +997,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel">
     <div class="panel-hdr ph-slate">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">💾</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">Backup</div>
           <div class="panel-sub" id="bkp-txt">Exportar ou restaurar dados</div>
@@ -1129,7 +1119,7 @@ let S = {
       {id:'imp',title:'Imposto mensal',icon:'🧾',color:'ph-amber',type:'imposto',items:[]},
     ],
     pes:[
-      {id:'jul',title:'Pagamentos da conta',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]},
+      {id:'jul',title:'Pagamentos por PIX (extras)',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]},
     ],
     ext:[],
   },
@@ -1325,7 +1315,7 @@ function load(){
     if(!S.calEvents)S.calEvents={};if(!S.recebidos)S.recebidos={};if(!S.colPagos)S.colPagos={};if(!S.lbPagos)S.lbPagos={};if(!S.pagosMarcados)S.pagosMarcados={};if(!S.entradasPes)S.entradasPes=[];
     var OLD_NAMES=['Saídas Conta Juliana','Extrato Conta Juliana','Pagamentos feitos gerais','Pagamentos feitos'];
     if(S.panels){['op','pes','ext'].forEach(function(tab){(S.panels[tab]||[]).forEach(function(p){
-      if(OLD_NAMES.indexOf(p.title)>=0)p.title='Pagamentos da conta';
+      if(OLD_NAMES.indexOf(p.title)>=0)p.title='Pagamentos por PIX (extras)';
       // Migração v6→v7: cartaoTypes passa de ["Amex","Santander"] para [{nome,cor}]
       if(p.type==='fatura'&&Array.isArray(p.cartaoTypes)){
         p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
@@ -2102,7 +2092,7 @@ function renderCustomLists(){
     const total=list.items.reduce((s,it)=>s+it.valor,0);
     return `<div class="panel">
       <div class="panel-hdr ${isE?'ph-green':list.tipo==='misto'?'ph-teal':'ph-red'}">
-        <div class="panel-hdr-l"><div class="panel-hdr-icon">📋</div><div class="panel-hdr-info">
+        <div class="panel-hdr-l"><div class="panel-hdr-info">
           <input class="panel-title-edit" value="${list.nome}" onchange="S.customLists[${li}].nome=this.value;save()">
           <div class="panel-sub">${list.desc||list.tipo} · toque para editar</div>
         </div></div>
@@ -2557,7 +2547,7 @@ function importListaPagos(tab, pi){
   });
 
   if(erros.length > 0){
-    _mostrarErrosImport('Pagamentos da conta', erros, added, linhasValidas.length, 'pagos');
+    _mostrarErrosImport('Pagamentos por PIX (extras)', erros, added, linhasValidas.length, 'pagos');
     return;
   }
 
@@ -5060,10 +5050,10 @@ function ensurePesPanels(){
       fatObs:'Edite o nome clicando no painel. Adicione lançamentos manualmente ou importe PDF/lista da fatura.'
     });
   }
-  // Garante que existe o painel "Pagamentos da conta"
+  // Garante que existe o painel "Pagamentos por PIX (extras)"
   var temPag = S.panels.pes.some(function(p){return p.id==='jul';});
   if(!temPag){
-    S.panels.pes.push({id:'jul',title:'Pagamentos da conta',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]});
+    S.panels.pes.push({id:'jul',title:'Pagamentos por PIX (extras)',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]});
   }
 }
 
@@ -5166,7 +5156,7 @@ function renderPesSaldo(fatTotalOverride){
   // 3. Custos fixos
   var totalCF=(S.custosFix||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
 
-  // Pagamentos da conta (painel 'jul' tipo lancamentos) — ESTE é o valor real das contas
+  // Pagamentos por PIX (extras) (painel 'jul' tipo lancamentos) — ESTE é o valor real das contas
   var totalPago=0;
   var nLancPago=0;
   var pesPanelsAll=(S.panels&&S.panels.pes)||[];
@@ -5270,7 +5260,7 @@ function renderPesRecomendacoes(){
     }
   });
 
-  // Pagamentos da conta (jul) — separar Moradia dos demais
+  // Pagamentos por PIX (extras) (jul) — separar Moradia dos demais
   var totalMoradia=0;
   var totalExtrasGerais=0;
   var nLancExtras=0;
@@ -5570,7 +5560,7 @@ function renderPesRecomendacoes(){
 
     // Disclaimer
     +'<div style="padding:10px 18px;background:var(--bg3);border-top:1px solid var(--border);font-size:10px;color:var(--text3);line-height:1.5">'
-    +'ℹ️ Limites saudáveis: Moradia ≤30%, Cartões ≤35%, Extras ≤15%. Moradia detecta itens com palavras-chave em "Pagamentos da conta" (aluguel, financiamento, condomínio, IPTU). '
+    +'ℹ️ Limites saudáveis: Moradia ≤30%, Cartões ≤35%, Extras ≤15%. Moradia detecta itens com palavras-chave em "Pagamentos por PIX (extras)" (aluguel, financiamento, condomínio, IPTU). '
     +'Projeção no CDI a 11% a.a., sem IR nem inflação.'
     +'</div>'
     +'</div>';
@@ -6107,7 +6097,6 @@ function renderInvGuia(){
     +'<div class="panel" style="margin-bottom:14px">'
     +'<div class="panel-hdr ph-teal">'
     +'<div class="panel-hdr-l">'
-    +'<div class="panel-hdr-icon">⚙️</div>'
     +'<div class="panel-hdr-info">'
     +'<div style="font-size:13px;font-weight:700;color:#fff">Taxas-base do mercado</div>'
     +'<div class="panel-sub">SELIC e IPCA oficiais — as taxas dos investimentos derivam destas</div>'
@@ -6126,7 +6115,6 @@ function renderInvGuia(){
     +'<div class="panel" style="margin-bottom:14px">'
     +'<div class="panel-hdr ph-indigo">'
     +'<div class="panel-hdr-l">'
-    +'<div class="panel-hdr-icon">🧮</div>'
     +'<div class="panel-hdr-info">'
     +'<div style="font-size:13px;font-weight:700;color:#fff">Simulador comparativo</div>'
     +'<div class="panel-sub">Média geral do mercado — você pode editar as taxas pra simular seu investimento específico</div>'
@@ -7691,7 +7679,7 @@ function fecharMes(){
     avulsosPendentes.forEach(function(c){msgAvulsos+='  • '+c.nome+' ('+fmt(c.valor)+')\n';});
   }
 
-  if(!confirm('Fechar o mês "'+mes+'" e iniciar novo?\n\nIsso vai:\n✅ Salvar snapshot completo\n🔄 Zerar lançamentos dos cartões\n🔄 Zerar Pagamentos da conta\n🔄 Copiar custos fixos + entradas recorrentes pro novo mês\n🔄 Limpar marcações de recebidos/pagos'+msgAvulsos))return;
+  if(!confirm('Fechar o mês "'+mes+'" e iniciar novo?\n\nIsso vai:\n✅ Salvar snapshot completo\n🔄 Zerar lançamentos dos cartões\n🔄 Zerar Pagamentos por PIX (extras)\n🔄 Copiar custos fixos + entradas recorrentes pro novo mês\n🔄 Limpar marcações de recebidos/pagos'+msgAvulsos))return;
 
   _executarFechamento(false);
 }
@@ -7757,7 +7745,7 @@ function _executarFechamento(automatico){
         p.fatItems=[];
         p.fatTotal=0;
       }
-      // Zera lancamentos do painel Pagamentos da conta
+      // Zera lancamentos do painel Pagamentos por PIX (extras)
       if(p.type==='lancamentos' && p.id==='jul'){
         p.items=[];
       }
@@ -7783,7 +7771,7 @@ function _executarFechamento(automatico){
   }
 
   // ===== AUTOMAÇÕES NOVAS pro novo mês =====
-  // 1. Copia custos fixos previstos pra virarem itens do painel "Pagamentos da conta"
+  // 1. Copia custos fixos previstos pra virarem itens do painel "Pagamentos por PIX (extras)"
   //    Assim o usuário só precisa marcar como pago no novo mês
   var painelPag = (S.panels.pes||[]).find(function(p){return p.id==='jul'&&p.type==='lancamentos';});
   if(painelPag && (S.custosFix||[]).length>0){
@@ -8252,7 +8240,7 @@ function buildMesDetailHTML(snap,i,accentColor){
     +'<div style="padding:12px 16px 4px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;background:var(--card)">Colaboradores</div>'
     +'<div class="tw" style="background:var(--card)"><table><thead><tr><th>Nome</th><th>Cargo</th><th>Custo</th><th>Pagamento</th></tr></thead><tbody>'+colRows+'</tbody></table></div>'
     +(pagItems.length?
-      '<div style="padding:12px 16px 4px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;background:var(--card)">Pagamentos da conta</div>'
+      '<div style="padding:12px 16px 4px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;background:var(--card)">Pagamentos por PIX (extras)</div>'
       +'<div class="tw" style="background:var(--card)"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th></tr></thead><tbody>'+pagRows+'</tbody>'
       +'<tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r rc">'+fmt(pagTotal)+'</td></tr></table></div>'
       :'')
@@ -8889,7 +8877,6 @@ function renderNoteCalendar(){
   var hdr=document.createElement('div');
   hdr.className='panel-hdr ph-dark';
   hdr.innerHTML='<div class="panel-hdr-l">'
-    +'<div class="panel-hdr-icon">📅</div>'
     +'<div class="panel-hdr-info">'
     +'<div style="font-size:13px;font-weight:700;color:#fff">'+MESES_PT[mIdx]+' '+ano+'</div>'
     +'<div class="panel-sub">Clique em uma data para anotar um dia de pagamento como lembrete</div>'

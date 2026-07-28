@@ -96,11 +96,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* Chip de mês — linha fina ao lado do valor nos cabeçalhos coloridos */
 .hdr-mes-chip{display:inline-block;margin-left:8px;padding:2px 8px;font-size:9px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;letter-spacing:.4px;text-transform:lowercase;vertical-align:middle;font-family:'Open Sans',Arial,sans-serif}
 /* Animação pra destacar botão de perguntas decisivas quando "Pense mais" */
-/* Efeito de luz correndo ao redor do botão — usado no "Adicionar cliente" */
-.btn-laser-wrap{position:relative;display:inline-block;border-radius:13px;padding:2.5px;isolation:isolate}
-.btn-laser-wrap::before{content:'';position:absolute;inset:-3px;border-radius:15px;background:conic-gradient(from 0deg,transparent 0%,#22d3ee 8%,#a7f3d0 14%,transparent 22%,transparent 100%);animation:laserSpin 2.2s linear infinite;z-index:0}
-.btn-laser-inner{position:relative;z-index:1;font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 22px;border:none;border-radius:11px;background:linear-gradient(135deg,#059669,#0d9488);color:#fff !important;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(5,150,105,.35)}
-@keyframes laserSpin{to{transform:rotate(360deg)}}
+/* Botão de adicionar com degradê animado (verde escuro ↔ verde claro) */
+.btn-add-animated{font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 22px;border:none;border-radius:13px;background:linear-gradient(115deg,#065f46,#059669,#34d399,#059669,#065f46);background-size:300% 100%;animation:addGradientMove 3.5s ease-in-out infinite;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 3px 12px rgba(5,150,105,.35)}
+.btn-add-animated .plus-ic{font-size:17px;font-weight:800;color:#fff;line-height:1}
+@keyframes addGradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -127,6 +126,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .ph-indigo{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
 .ph-pink{background:linear-gradient(135deg,#db2777,#7c3aed)}
 .ph-slate{background:linear-gradient(135deg,#475569,#1a2235)}
+.ph-purple{background:linear-gradient(135deg,#7c3aed,#a855f7)}
 
 /* COLOR PICKER */
 .color-picker-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
@@ -155,7 +155,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* TABLE */
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:280px}
-th{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:11px 14px;text-align:left;background:var(--bg3);border-bottom:1px solid var(--border)}
+th{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;padding:11px 14px;text-align:left;background:var(--bg3);border-bottom:1px solid var(--border);white-space:nowrap}
 td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:14.5px;color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(0,0,0,.015)}
@@ -166,7 +166,7 @@ td.gc{color:var(--green);font-weight:700}
 td.rc{color:var(--red);font-weight:700}
 td.ac{color:var(--amber);font-weight:700}
 td.mu{color:var(--text3)}
-td.nome-cell{font-weight:700;font-size:15.5px;color:var(--text)}
+td.nome-cell{font-size:15.5px;color:var(--text)}
 td.inline-edit{cursor:pointer;border-bottom:1px dashed var(--border2,#ccc);transition:background .15s}
 td.inline-edit:hover{background:var(--blue-bg)}
 td.inline-edit:active{background:var(--blue-bg)}
@@ -882,7 +882,7 @@ td.inline-edit:active{background:var(--blue-bg)}
     </div>
     <div class="tw">
       <table>
-        <thead><tr><th>Ativo / Nome</th><th>Tipo</th><th>Investido</th><th title="Tempo em anos desde que investiu">Anos</th><th title="Taxa usada no cálculo. Padrão (auto) vem do tipo; edite pra personalizar 🔧">Taxa</th><th>Atual</th><th>Rendimento</th><th>%</th><th></th></tr></thead>
+        <thead><tr><th>Ativo</th><th>Tipo</th><th>Investido</th><th title="Tempo em anos desde que investiu">Anos</th><th title="Taxa usada no cálculo. Padrão (auto) vem do tipo; edite pra personalizar 🔧">Taxa</th><th>Atual</th><th>Rendimento</th><th>%</th><th></th></tr></thead>
         <tbody id="inv-tbody"></tbody>
       </table>
     </div>
@@ -1602,9 +1602,8 @@ function renderModeloNegocio(){
     +opcoes.map(function(o){
       var ativo = o.id === modelo;
       return '<button onclick="setModeloNegocio(\''+o.id+'\')" style="flex:1;min-width:120px;padding:13px 10px;border:1.5px solid '+(ativo?'var(--indigo,#4f46e5)':'var(--border)')+';background:'+(ativo?'var(--indigo,#4f46e5)':'var(--bg)')+';color:'+(ativo?'#fff':'var(--text)')+';border-radius:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)">'
-        +'<div style="font-size:19px;margin-bottom:4px">'+o.icon+'</div>'
-        +'<div style="font-size:12.5px;font-weight:700">'+o.label+'</div>'
-        +'<div style="font-size:10px;opacity:.85;margin-top:2px">'+o.desc+'</div>'
+        +'<div style="font-size:13.5px;font-weight:700">'+o.label+'</div>'
+        +'<div style="font-size:10.5px;opacity:.85;margin-top:3px">'+o.desc+'</div>'
         +'</button>';
     }).join('')
     +'</div>'
@@ -1759,11 +1758,9 @@ function buildPanel(p,tab,pi){
       <span style="font-size:11.5px;color:var(--text3)">Toque na célula para editar</span>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-gh btn-sm" onclick="openImportCli()">📥 Importar lista</button>
-        <div class="btn-laser-wrap">
-          <button class="btn-laser-inner" onclick="openMo('mo-cli')">
-            <span style="font-size:16px;line-height:1">➕</span> Adicionar cliente
-          </button>
-        </div>
+        <button class="btn-add-animated" onclick="openMo('mo-cli')">
+          <span class="plus-ic">+</span> Adicionar cliente
+        </button>
       </div>
     </div>`;
   }
@@ -1808,8 +1805,8 @@ function buildPanel(p,tab,pi){
       <span></span>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-gh btn-sm" onclick="openImportCol()">📥 Importar lista</button>
-        <button onclick="openMo('mo-col')" style="font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 20px;border:none;border-radius:11px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(37,99,235,.3);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 5px 14px rgba(37,99,235,.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 10px rgba(37,99,235,.3)'">
-          <span style="font-size:16px;line-height:1">➕</span> Adicionar colaborador
+        <button onclick="openMo('mo-col')" style="font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 20px;border:none;border-radius:11px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 3px 10px rgba(37,99,235,.3);transition:transform .15s,box-shadow .15s" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 5px 14px rgba(37,99,235,.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 10px rgba(37,99,235,.3)'">
+          <span style="font-size:17px;font-weight:800;color:#fff;line-height:1">+</span> Adicionar colaborador
         </button>
       </div>
     </div>`;
@@ -3132,6 +3129,16 @@ function buildFaturaPanel(p,tab,pi){
         <span class="fat-subtotal num">Total: <strong>${fmtD(itemsTotal)}</strong></span>
       </div>
     </div>`:''}
+
+    <div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--bg2)">
+      <div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💳 Valor total da fatura (rápido)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="fman-total-${tab}-${pi}" type="number" placeholder="Ex: 5000" value="${items.length===0&&total>0?total:''}"
+          style="flex:1;min-width:140px;font-family:var(--font);font-size:14px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none">
+        <button class="btn btn-b btn-sm" onclick="setFatTotalDireto('${tab}',${pi})">Salvar total</button>
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4">Se você lançar itens individuais abaixo, o total passa a ser calculado automaticamente pela soma deles.</div>
+    </div>
 
     <div style="padding:12px 14px;border-top:1px solid var(--border)">
       <div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Adicionar lançamento</div>
@@ -6052,8 +6059,10 @@ function renderInvGuia(){
   }
 
   var painelCards=''
-    +'<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;padding:0 2px">📚 Guia de investimentos</div>'
-    +'<div style="font-size:11px;color:var(--text3);margin-bottom:12px;padding:0 2px">Cada investimento tem um perfil diferente. Aqui está o quando, porquê e pra quê de cada um — com análise baseada nas taxas atuais.</div>'
+    +'<div style="margin:28px 0 18px;padding:16px 18px;background:linear-gradient(135deg,#7c3aed,#a855f7);border-radius:14px;box-shadow:0 4px 14px rgba(124,58,237,.25)">'
+    +'<div style="font-size:17px;font-weight:800;color:#fff;letter-spacing:-.2px">📚 Guia de investimentos</div>'
+    +'<div style="font-size:12px;color:rgba(255,255,255,.85);margin-top:4px;line-height:1.5">Cada investimento tem um perfil diferente. Aqui está o quando, porquê e pra quê de cada um — com análise baseada nas taxas atuais.</div>'
+    +'</div>'
     +investimentos.map(mkInvCard).join('');
 
   // Disclaimer final
@@ -6169,7 +6178,7 @@ function renderCfTable(){
   items.forEach(function(it,ii){
     var venc=it.dataPrev?it.dataPrev:'—';
     rows+='<tr>'
-      +'<td class="inline-edit nome-cell" style="font-weight:700;font-size:15px" onclick="cfEditField(this,'+ii+',\'nome\')">'+it.nome+'</td>'
+      +'<td class="inline-edit nome-cell" style="font-size:15px" onclick="cfEditField(this,'+ii+',\'nome\')">'+it.nome+'</td>'
       +'<td class="num r inline-edit" style="font-size:14px;color:#d97706;font-weight:700" onclick="cfEditField(this,'+ii+',\'valor\')">'+fmt(it.valor)+'</td>'
       +'<td class="inline-edit" style="font-size:12.5px;color:var(--text3)" onclick="cfEditField(this,'+ii+',\'dataPrev\')">'+venc+'</td>'
       +'<td><button class="btn btn-r btn-sm" onclick="cfDel('+ii+')">&#10005;</button></td>'
@@ -9223,6 +9232,20 @@ function confirmarExcluirPainel(tab,pi){
 }
 window.confirmarExcluirPainel=confirmarExcluirPainel;
 
+
+// Define o valor total da fatura diretamente, sem precisar lançar item por item
+function setFatTotalDireto(tab,pi){
+  var p=S.panels&&S.panels[tab]&&S.panels[tab][pi];
+  if(!p)return;
+  var inp=document.getElementById('fman-total-'+tab+'-'+pi);
+  if(!inp)return;
+  var v=parseFloat(inp.value);
+  if(isNaN(v)||v<0){showToast('⚠️ Digite um valor válido.');return;}
+  p.fatTotal=v;
+  save();renderAll();
+  showToast('✅ Total da fatura atualizado!');
+}
+window.setFatTotalDireto=setFatTotalDireto;
 
 function addFatItemManual(tab,pi){
   var data=document.getElementById('fman-data-'+tab+'-'+pi);

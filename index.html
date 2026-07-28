@@ -1071,13 +1071,18 @@ td.inline-edit:active{background:var(--blue-bg)}
       <div class="msg-ts">agora</div>
     </div>
     <div class="ch-sugs" id="ch-sugs-inicial">
-      <button onclick="sendSug(this)" class="sug-chip">Minha margem?</button>
-      <button onclick="sendSug(this)" class="sug-chip">Pontos de atenção?</button>
-      <button onclick="sendSug(this)" class="sug-chip">Como crescer?</button>
-      <button onclick="sendSug(this)" class="sug-chip">Risco de cliente?</button>
-      <button onclick="sendSug(this)" class="sug-chip">Vale contratar?</button>
-      <button onclick="sendSug(this)" class="sug-chip">Pró-labore dos sócios?</button>
+      <button onclick="sendSug(this)" class="sug-chip">quanto tenho de lucro?</button>
+      <button onclick="sendSug(this)" class="sug-chip">qual meu ticket médio?</button>
+      <button onclick="sendSug(this)" class="sug-chip">vale reajustar?</button>
+      <button onclick="sendSug(this)" class="sug-chip">como está minha margem?</button>
+      <button onclick="sendSug(this)" class="sug-chip">tenho risco de dependência de cliente?</button>
+      <button onclick="sendSug(this)" class="sug-chip">como diversificar minha receita?</button>
+      <button onclick="sendSug(this)" class="sug-chip">quanto pago de pró-labore?</button>
+      <button onclick="sendSug(this)" class="sug-chip">quanto devo no cartão?</button>
+      <button onclick="sendSug(this)" class="sug-chip">quanto vale minha hora?</button>
+      <button onclick="sendSug(this)" class="sug-chip">decisões pendentes?</button>
     </div>
+    <div style="font-size:10px;color:var(--text3);margin-top:6px;padding:0 4px">Ou pergunte qualquer outra coisa — eu entendo linguagem natural.</div>
   </div>
   <div class="ch-inp-row">
     <input type="text" id="chat-inp" placeholder="Comando ou pergunta..." onkeydown="if(event.key==='Enter')sendChat()">
@@ -2728,10 +2733,17 @@ function sendChat(){
   },450+Math.random()*350);
 }
 // Sugestões contextuais que reaparecem depois de cada resposta, pra manter a conversa fluindo
+// Sugestões contextuais elaboradas — usa a MESMA lista de perguntas da aba Minha Orbi
+var POOL_SUGESTOES_ELABORADAS=[
+  'quanto tenho de lucro?','qual meu ticket médio?','vale reajustar?','como está minha margem?',
+  'tenho risco de dependência de cliente?','como diversificar minha receita?','quanto pago de pró-labore?',
+  'quanto devo no cartão?','quanto vale minha hora?','decisões pendentes?',
+  'e se eu perder meu maior cliente?','qual meu ponto de equilíbrio?','vale a pena contratar agora?',
+  'como estou comparado ao mês passado?','quanto preciso faturar pra lucrar mais?'
+];
 function addFollowUpSugs(){
   const msgs=document.getElementById('chat-msgs');
-  const pool=['Minha margem?','Pontos de atenção?','Como crescer?','Risco de cliente?','Vale contratar?','Pró-labore dos sócios?','Vale reajustar?','Quanto devo no cartão?'];
-  const escolhidas=pool.sort(()=>Math.random()-0.5).slice(0,3);
+  const escolhidas=POOL_SUGESTOES_ELABORADAS.slice().sort(()=>Math.random()-0.5).slice(0,3);
   const d=document.createElement('div');
   d.className='ch-sugs';
   d.style.marginLeft='4px';
@@ -2843,85 +2855,12 @@ function processCmd(msg){
   const impM=m.match(/(?:imposto|custo\s+fixo|taxa)\s+(?:para\s+|de\s+)?(?:r\$\s*)?(\d[\d.,]*)/i);
   if(impM){const v=parseFloat(impM[1].replace(/\./g,'').replace(',','.'));if(v>=0){S.imposto=v;save();renderAll();return `Beleza, atualizei o imposto pra <strong>${fmt(v)}/mês</strong>. Isso deixa seu lucro em <strong>${fmt(calcL())}</strong>.`;}}
 
-  // MARGEM / LUCRO — resposta narrativa
-  if(m.includes('margem')||m.includes('lucro')){
-    var nivel = mg>=30?'excelente':mg>=20?'saudável':mg>=10?'meio apertada':mg>=0?'crítica':'negativa';
-    var comentario = mg>=30 ? 'Isso é ótimo — você tem espaço pra reinvestir ou tirar mais pró-labore sem sufoco.'
-      : mg>=20 ? 'É uma margem saudável pra maioria dos negócios de serviço. Dá pra melhorar, mas não é motivo de alarme.'
-      : mg>=10 ? 'Tá funcionando, mas com pouca gordura. Um imprevisto grande pode apertar o mês.'
-      : mg>=0 ? 'Aqui eu ficaria de olho — a margem tá crítica, vale revisar custos fixos ou repensar precificação.'
-      : 'O negócio está no vermelho esse mês. Prioridade número um é entender de onde vem o rombo antes de qualquer outra decisão.';
-    return `Sua margem está em <strong>${mg.toFixed(1)}%</strong>, o que eu classificaria como <strong>${nivel}</strong>. Em números, isso é <strong>${fmt(l)}</strong> de lucro sobrando no mês. ${comentario}`;
-  }
-
-  // RISCO / dependência de cliente
-  if(m.includes('risco')||m.includes('depend')){
-    var ativosR=S.clientes.filter(function(c){return c.status==='ativo';});
-    if(ativosR.length===0) return 'Você ainda não tem clientes ativos cadastrados, então não dá pra analisar risco de concentração ainda.';
-    var maiorR=ativosR.slice().sort(function(a,b){return b.valor-a.valor;})[0];
-    var pctMaiorR=r>0?(maiorR.valor/r*100):0;
-    if(pctMaiorR>=40) return `Olha, seu maior risco agora é concentração: <strong>"${maiorR.nome}"</strong> sozinho representa <strong>${pctMaiorR.toFixed(0)}%</strong> da sua receita. Se ele sair, o impacto é sério. Eu priorizaria trazer 1 ou 2 clientes novos nos próximos meses pra diluir isso.`;
-    if(pctMaiorR>=25) return `Seu maior cliente ("${maiorR.nome}") é <strong>${pctMaiorR.toFixed(0)}%</strong> da receita — não é crítico, mas é uma faixa de atenção. Vale ir diversificando aos poucos.`;
-    return `Sua carteira está bem distribuída — nenhum cliente sozinho passa de ${pctMaiorR.toFixed(0)}% da receita. Baixo risco de concentração por aqui.`;
-  }
-
-  // CRESCER
-  if(m.includes('crescer')||m.includes('aumentar')){
-    return `Vejo 3 caminhos realistas pra crescer a partir de onde você está:<br>`
-      +`1️⃣ Trazer <strong>2 ${S.cfg.lblC.toLowerCase()}</strong> no ticket médio atual → <strong>+${fmt(Math.round(t*2))}/mês</strong><br>`
-      +`2️⃣ Reajustar preços em <strong>10%</strong> pros clientes atuais → <strong>+${fmt(Math.round(r*0.1))}/mês</strong><br>`
-      +`3️⃣ Revisar custos fixos — mesmo uma economia de 5% já libera caixa pra reinvestir<br>`
-      +`Qual desses faz mais sentido pro seu momento?`;
-  }
-
-  // INVESTIR / PATRIMÔNIO
-  if(m.includes('invest')||m.includes('patrimônio')){
-    var sobra = Math.max(l - 32268, 0);
-    if(sobra<=0) return 'Com o lucro atual, não sobra uma folga clara pra investir sem apertar o caixa. Bora primeiro estabilizar o operacional antes de pensar em aporte.';
-    return `Estimando seus custos pessoais, sobra algo em torno de <strong>${fmt(sobra)}/mês</strong> livre. Se você investir metade disso todo mês, em 12 meses já teria acumulado perto de <strong>${fmt(Math.round(sobra*0.5*12))}</strong> — e olha que isso é sem contar rendimento.`;
-  }
-
-  // PRÓ-LABORE / SÓCIOS
-  if(m.includes('sócio')||m.includes('socio')||m.includes('pró-labore')||m.includes('prolabore')){
-    var sociosC=(S.colaboradores||[]).filter(function(c){return c.tipo==='Sócio';});
-    var totalPLc=sociosC.reduce(function(s,c){return s+(Number(c.valor)||0);},0);
-    if(sociosC.length===0) return 'Você ainda não tem nenhum sócio cadastrado. Se quiser registrar pró-labore, vai em Colaboradores e marca o Tipo como "Sócio".';
-    return `Você tem <strong>${sociosC.length}</strong> sócio(s) recebendo pró-labore, somando <strong>${fmt(totalPLc)}/mês</strong> (${pct(r>0?totalPLc/r*100:0)} da receita). Isso já está descontado no lucro operacional que te mostro.`;
-  }
-
-  // CARTÃO
-  if(m.includes('cartão')||m.includes('cartao')||m.includes('fatura')){
-    var totalCartaoC=0;
-    (S.panels&&S.panels.pes||[]).forEach(function(p){
-      if(p.type==='fatura'){
-        var itemsSum=(p.fatItems||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
-        totalCartaoC+=itemsSum>0?itemsSum:(Number(p.fatTotal)||0);
-      }
-    });
-    return totalCartaoC>0
-      ? `Suas faturas de cartão somam <strong>${fmt(totalCartaoC)}</strong> esse mês. Dá uma olhada na aba Pessoal pra ver a distribuição por categoria.`
-      : 'Não vejo nenhuma fatura de cartão lançada ainda esse mês.';
-  }
-
-  // VALE CONTRATAR
-  if(m.includes('contrat')){
-    const nCol=(S.colaboradores||[]).length;
-    const pctFolha = r>0?(f/r*100):0;
-    if(pctFolha>50) return `Sua folha já está em <strong>${pctFolha.toFixed(0)}%</strong> da receita — isso é alto. Eu seguraria contratação até a receita crescer ou a margem melhorar.`;
-    if(pctFolha>35) return `Folha em <strong>${pctFolha.toFixed(0)}%</strong> — é uma faixa saudável. Dá pra contratar se a nova pessoa trouxer receita nova que compense o custo.`;
-    return `Sua folha está em <strong>${pctFolha.toFixed(0)}%</strong> da receita, bem confortável. Se você tem trabalho suficiente pra ocupar uma nova contratação, o momento é bom.`;
-  }
-
-  if(m.includes('cliente')&&m.includes('list'))
-    return `Você tem ${S.clientes.length} ${S.cfg.lblC.toLowerCase()} cadastrados, sendo ${at} ativos. Receita total: <strong>${fmt(r)}</strong>.`;
-  if(m.includes('ajuda')||m.includes('help')||m.includes('comando'))
-    return `Posso conversar sobre margem, crescimento, risco de clientes, contratação, sócios, cartão... e também fazer coisas por você:<br>• <em>"Adiciona cliente [nome] [valor]"</em><br>• <em>"Remove cliente [nome]"</em><br>• <em>"Pausa/ativa cliente [nome]"</em><br>• <em>"Adiciona colaborador [nome] [valor]"</em><br>• <em>"Imposto para [valor]"</em><br>• Ou cola um extrato bancário direto aqui que eu importo!`;
-
-  return variar([
-    `Seu negócio hoje: receita de <strong>${fmt(r)}</strong>, lucro de <strong>${fmt(l)}</strong> (margem ${mg.toFixed(1)}%), ${at} ${S.cfg.lblC.toLowerCase()} ativos. Me pergunta algo mais específico que eu aprofundo.`,
-    `Resumo rápido: <strong>${fmt(r)}</strong> de receita e <strong>${fmt(l)}</strong> de lucro esse mês. Quer que eu analise algo em particular — margem, crescimento, risco?`,
-    `Não peguei bem sua pergunta, mas seus números atuais são: receita ${fmt(r)}, lucro ${fmt(l)}. Tenta reformular ou pergunta "ajuda" pra ver o que eu sei fazer.`
-  ]);
+  // A partir daqui, delega pro mesmo "cérebro" usado na aba Minha Orbi —
+  // garante respostas idênticas e evita manter duas lógicas separadas.
+  // Cobre: margem/lucro, ticket médio, posso gastar X, reajustar, contratar,
+  // decisões pendentes, tempo=dinheiro, risco/dependência, diversificar,
+  // sócios/pró-labore, cartão/fatura, ajuda, e resposta padrão.
+  return assistResponder(msg);
 }
 
 // ADD ITEM MODAL
@@ -7174,6 +7113,70 @@ function assistResponder(pergunta){
   var m = (typeof calcM==='function')?calcM():0;
   var imp = (S.imposto)||0;
 
+  // CENÁRIO: PERDER O MAIOR CLIENTE
+  if(/perder.*(cliente|maior)|se eu perder/.test(q)){
+    var ativosP=S.clientes.filter(function(c){return c.status==='ativo';});
+    if(ativosP.length===0) return '📊 Você ainda não tem clientes ativos cadastrados pra eu simular esse cenário.';
+    var maiorP=ativosP.slice().sort(function(a,b){return b.valor-a.valor;})[0];
+    var receitaSemMaior=r-maiorP.valor;
+    var impNFsim=(typeof calcImpostoNF==='function')?calcImpostoNF():0;
+    var extrasSim=(typeof calcPagExtras==='function')?calcPagExtras():0;
+    var lucroSemMaior=receitaSemMaior-f-imp-impNFsim-extrasSim;
+    return `⚠️ Se você perdesse <strong>"${maiorP.nome}"</strong> (seu maior cliente, ${fmt(maiorP.valor)}/mês), sua receita cairia pra <strong>${fmt(receitaSemMaior)}</strong> e o lucro iria pra <strong>${fmt(lucroSemMaior)}</strong>.`
+      +(lucroSemMaior<0?' Isso colocaria o negócio no vermelho — sinal claro de que vale diversificar a carteira o quanto antes.':' Ainda ficaria positivo, mas sempre vale ter um plano pra repor essa receita rápido.');
+  }
+
+  // PONTO DE EQUILÍBRIO (BREAKEVEN)
+  if(/ponto de equil[íi]brio|breakeven|break-even/.test(q)){
+    var impNFbe=(typeof calcImpostoNF==='function')?calcImpostoNF():0;
+    var custoFixoTotal=f+imp+impNFbe;
+    return `🧮 Seu ponto de equilíbrio (o mínimo pra cobrir os custos fixos) é de aproximadamente <strong>${fmt(custoFixoTotal)}/mês</strong>. Hoje você fatura <strong>${fmt(r)}</strong>, ou seja, está <strong>${r>=custoFixoTotal?fmt(r-custoFixoTotal)+' acima':fmt(custoFixoTotal-r)+' abaixo'}</strong> desse ponto.`;
+  }
+
+  // META DE FATURAMENTO REVERSA
+  var metaM = q.match(/quanto.*(?:faturar|vender).*(?:lucrar|ganhar|ter de lucro)\s*(?:r\$\s*)?(\d[\d.,]*)/i) || q.match(/lucrar\s*(?:r\$\s*)?(\d[\d.,]*)/i);
+  if(metaM){
+    var metaLucro=parseFloat(metaM[1].replace(/\./g,'').replace(',','.'));
+    var impNFmeta=(typeof calcImpostoNF==='function')?calcImpostoNF():0;
+    var extrasMeta=(typeof calcPagExtras==='function')?calcPagExtras():0;
+    var custoFixoAtual=f+imp+impNFmeta+extrasMeta;
+    var faturamentoNecessario=metaLucro+custoFixoAtual;
+    var diferenca=faturamentoNecessario-r;
+    return `🎯 Pra lucrar <strong>${fmt(metaLucro)}</strong>, considerando seus custos fixos atuais (${fmt(custoFixoAtual)}), você precisaria faturar <strong>${fmt(faturamentoNecessario)}</strong>.`
+      +(diferenca>0?` Isso é <strong>${fmt(diferenca)}</strong> a mais do que você fatura hoje.`:' Boa notícia: você já fatura o suficiente pra bater essa meta com a estrutura de custos atual!');
+  }
+
+  // COMPENSA BAIXAR PREÇO
+  if(/baixar.*pre[çc]o|baratear|desconto.*fechar|competir.*pre[çc]o/.test(q)){
+    return `💭 Cuidado com essa estratégia. Baixar preço geralmente atrai o tipo errado de cliente — mais sensível a preço, mais rotativo. Antes de baratear, eu tentaria reforçar o valor que você entrega ou segmentar melhor quem você busca. Baixar preço pra todo mundo corta sua margem de forma permanente.`;
+  }
+
+  // ESTOU COBRANDO BARATO?
+  if(/cobrando barato|pre[çc]o.*(bom|baixo|justo)|deveria cobrar mais/.test(q)){
+    return `🤔 Difícil saber com certeza sem comparar com o mercado, mas um sinal de alerta é margem abaixo de 20% mesmo com clientes satisfeitos. Sua margem hoje é <strong>${m.toFixed(1)}%</strong>. ${m<20?'Isso sugere que talvez você esteja cobrando pouco pra cobrir seu tempo e risco.':'Isso está numa faixa razoável, mas sempre vale testar um reajuste com clientes novos primeiro.'}`;
+  }
+
+  // RESERVA DE EMERGÊNCIA
+  if(/reserva de emerg[êe]ncia|reserva financeira|quanto.*juntar/.test(q)){
+    var metaReserva=(f+imp)*6;
+    if(l<=0) return '💭 Com o lucro atual negativo ou zerado, ainda não dá pra planejar reserva de emergência. Foco primeiro em deixar o operacional saudável.';
+    var mesesParaJuntar=Math.ceil(metaReserva/l);
+    return `🏦 Uma reserva de emergência saudável cobre uns 6 meses de custos fixos — no seu caso, isso é <strong>${fmt(metaReserva)}</strong>. Guardando todo seu lucro atual (<strong>${fmt(l)}</strong>/mês), você levaria cerca de <strong>${mesesParaJuntar} meses</strong> pra montar essa reserva do zero.`;
+  }
+
+  // COMPARAR COM MÊS ANTERIOR
+  if(/m[êe]s (passado|anterior)|comparad[oa]/.test(q)){
+    var hist=(S.historico||[]);
+    if(hist.length===0) return '📊 Ainda não tenho nenhum mês fechado no histórico pra comparar. Assim que você fechar o mês atual, eu consigo te dar essa comparação.';
+    var ultimo=hist[hist.length-1];
+    var lucroAnterior=Number(ultimo.lucro||0);
+    var diff=l-lucroAnterior;
+    var pctDiff=lucroAnterior!==0?(diff/Math.abs(lucroAnterior)*100):0;
+    return diff>=0
+      ? `📈 Comparando com o último mês fechado (${ultimo.mes||'anterior'}), seu lucro <strong>subiu ${fmt(Math.abs(diff))}</strong> (${pctDiff.toFixed(0)}% a mais). Tá indo na direção certa.`
+      : `📉 Comparando com o último mês fechado (${ultimo.mes||'anterior'}), seu lucro <strong>caiu ${fmt(Math.abs(diff))}</strong> (${Math.abs(pctDiff).toFixed(0)}% a menos). Vale entender se foi custo extra ou queda de receita.`;
+  }
+
   // Pergunta: "quanto tenho" / "saldo" / "sobra"
   if(/quanto (tenho|sobra|sobra)|saldo|caixa/.test(q)){
     return '💰 Lucro operacional do mês (depois de folha e imposto): <strong>'+fmt(l)+'</strong>. '
@@ -7307,7 +7310,12 @@ function assistResponder(pergunta){
       +'• "tenho risco de dependência de cliente?"<br>'
       +'• "como diversificar minha receita?"<br>'
       +'• "quanto pago de pró-labore?"<br>'
-      +'• "quanto devo no cartão?"';
+      +'• "quanto devo no cartão?"<br>'
+      +'• "e se eu perder meu maior cliente?"<br>'
+      +'• "qual meu ponto de equilíbrio?"<br>'
+      +'• "quanto preciso faturar pra lucrar 20000?"<br>'
+      +'• "como estou comparado ao mês passado?"<br>'
+      +'• "quanto tempo pra juntar uma reserva de emergência?"';
   }
 
   // Default
@@ -7330,9 +7338,9 @@ function renderAssistente(){
     +'<button class="btn btn-b" onclick="assistAsk()" style="padding:11px 20px">Perguntar</button>'
     +'</div>';
 
-  // Sugestões rápidas — perguntas estratégicas
+  // Sugestões rápidas — perguntas estratégicas (mesmo pool usado no chat flutuante)
   html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">'
-    +['quanto tenho de lucro?','qual meu ticket médio?','vale reajustar?','como está minha margem?','tenho risco de dependência de cliente?','como diversificar minha receita?','quanto pago de pró-labore?','quanto devo no cartão?','quanto vale minha hora?','decisões pendentes?'].map(function(p){
+    +POOL_SUGESTOES_ELABORADAS.map(function(p){
       return '<button onclick="document.getElementById(\'assist-input\').value=\''+p+'\';assistAsk()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:6px 12px;border-radius:14px;cursor:pointer;transition:all .15s" onmouseover="this.style.background=\'var(--purple-bg)\'" onmouseout="this.style.background=\'var(--bg3)\'">'+p+'</button>';
     }).join('')
     +'</div>';

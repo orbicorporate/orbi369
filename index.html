@@ -2737,7 +2737,110 @@ async function bootApp(){
   // Adiciona ícones de editar/excluir e aplica labels customizadas das abas fixas
   enhanceAllTabs();
   applyCustomTabLabels();
+  // Onboarding — só aparece pra quem nunca configurou nada ainda
+  checkShowOnboarding();
 }
+
+// ===================== ONBOARDING =====================
+function checkShowOnboarding(){
+  if(S.cfg && S.cfg.onboardingDone) return;
+  var semDados = (!S.clientes || S.clientes.length===0) && (!S.colaboradores || S.colaboradores.length===0);
+  if(!semDados) { if(!S.cfg) S.cfg={}; S.cfg.onboardingDone = true; save(); return; } // já tem dados, não mostra
+  setTimeout(showOnboardingModal, 500);
+}
+
+var _onbStep = 1;
+function showOnboardingModal(){
+  var old = document.getElementById('mo-onboarding');
+  if(old) old.remove();
+  _onbStep = 1;
+  var mo = document.createElement('div');
+  mo.id = 'mo-onboarding';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
+  var bx = document.createElement('div');
+  bx.id = 'onb-box';
+  bx.style.cssText = 'background:var(--bg);border-radius:16px;padding:28px 24px;width:400px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)';
+  mo.appendChild(bx);
+  document.body.appendChild(mo);
+  renderOnbStep();
+}
+function renderOnbStep(){
+  var bx = document.getElementById('onb-box');
+  if(!bx) return;
+  var steps = [
+    {
+      icon: '👋',
+      titulo: 'Bem-vindo(a) ao Orbibox!',
+      texto: 'Vamos configurar seu painel em menos de 1 minuto. É rápido e você pode mudar tudo depois.',
+      cta: 'Vamos começar →'
+    },
+    {
+      icon: '💼',
+      titulo: 'Como sua empresa fatura?',
+      texto: 'Isso ajusta os termos e métricas certas pra você em toda a aba Negócio.',
+      opcoes: [
+        {id:'recorrente', label:'🔄 Recorrência (fee mensal)'},
+        {id:'avulso', label:'🎯 Projetos avulsos'},
+        {id:'ambos', label:'🔀 Ambos'}
+      ]
+    },
+    {
+      icon: '👥',
+      titulo: 'Cadastre seu primeiro cliente',
+      texto: 'Vá na aba Negócio e clica em "+ Adicionar" no painel de clientes. Você pode importar uma lista inteira também.',
+      cta: 'Entendi, vamos lá! 🚀'
+    }
+  ];
+  var s = steps[_onbStep-1];
+  var dots = steps.map(function(_,i){
+    return '<span style="width:7px;height:7px;border-radius:50%;background:'+((i+1)===_onbStep?'var(--indigo,#4f46e5)':'var(--border)')+';display:inline-block;transition:background .2s"></span>';
+  }).join('');
+
+  var html = '<div style="text-align:center;margin-bottom:16px">'
+    +'<div style="font-size:40px;margin-bottom:10px">'+s.icon+'</div>'
+    +'<div style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">'+s.titulo+'</div>'
+    +'<div style="font-size:13px;color:var(--text2);line-height:1.55">'+s.texto+'</div>'
+    +'</div>';
+
+  if(s.opcoes){
+    html += '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px">';
+    s.opcoes.forEach(function(o){
+      html += '<button onclick="onbSelectModelo(\''+o.id+'\')" style="padding:12px 14px;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);border-radius:10px;font-size:13px;font-weight:600;text-align:left;cursor:pointer;font-family:var(--font)">'+o.label+'</button>';
+    });
+    html += '</div>';
+  } else {
+    html += '<button onclick="onbNext()" class="btn btn-g btn-blk" style="width:100%;padding:12px;font-size:14px;font-weight:700;margin-bottom:12px">'+s.cta+'</button>';
+  }
+
+  html += '<div style="display:flex;justify-content:center;gap:6px;margin-bottom:8px">'+dots+'</div>';
+  html += '<div style="text-align:center"><span onclick="onbSkip()" style="font-size:11px;color:var(--text3);cursor:pointer;text-decoration:underline">Pular introdução</span></div>';
+
+  bx.innerHTML = html;
+}
+function onbNext(){
+  _onbStep++;
+  if(_onbStep > 3){ onbFinish(); return; }
+  renderOnbStep();
+}
+function onbSelectModelo(modelo){
+  if(!S.cfg) S.cfg = {};
+  S.cfg.modeloNegocio = modelo;
+  save();
+  onbNext();
+}
+function onbSkip(){ onbFinish(); }
+function onbFinish(){
+  if(!S.cfg) S.cfg = {};
+  S.cfg.onboardingDone = true;
+  save();
+  var mo = document.getElementById('mo-onboarding');
+  if(mo) mo.remove();
+  renderAll();
+  showToast('✅ Tudo pronto! Explore o painel.');
+}
+window.onbNext = onbNext;
+window.onbSelectModelo = onbSelectModelo;
+window.onbSkip = onbSkip;
 window.bootApp = bootApp;
 
 // Verifica sessão existente do Supabase assim que a página carrega

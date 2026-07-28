@@ -570,7 +570,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-green" data-fpk="pes-entradas">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">&#128200;</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Entradas previstas</div>
           <div class="panel-sub" id="entpes-sub">0 entradas</div>
@@ -636,7 +635,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-amber" data-fpk="pes-cf">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">&#128204;</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Previsão de custos fixos</div>
           <div class="panel-sub" id="cf-sub">0 itens</div>
@@ -717,7 +715,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-teal" data-fpk="note-tempo">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">⏱️</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Tempo = Dinheiro</div>
           <div class="panel-sub">Quanto vale sua hora — e quanto cada tarefa realmente custa</div>
@@ -890,7 +887,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="panel">
     <div class="panel-hdr ph-green" data-fpk="inv-carteira">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">📈</div>
         <div class="panel-hdr-info">
           <div class="panel-title-edit" style="color:#fff;font-weight:700" data-fpk-title>Carteira de investimentos</div>
           <div class="panel-sub" id="inv-sub">0 ativos</div>
@@ -2004,7 +2000,7 @@ function buildPanel(p,tab,pi){
   return `
     <div class="panel-hdr ${colorClass}">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon" onclick="openMo('mo-color');activePanelRef={tab:'${tab}',pi:${pi}}">${p.icon||'📋'}</div>
+        ${/pagamento|saldo/i.test(p.title||'') ? `<div class="panel-hdr-icon" onclick="openMo('mo-color');activePanelRef={tab:'${tab}',pi:${pi}}">${p.icon||'💰'}</div>` : ''}
         <div class="panel-hdr-info">
           <input class="panel-title-edit" value="${p.title}" onchange="renamePanel('${tab}',${pi},this.value)" onclick="this.select()">
           <div class="panel-sub">${p.type==='lancamentos'?(p.items||[]).length+' lançamentos':p.type==='clientes'?S.clientes.length+' cadastrados':p.type==='colaboradores'?S.colaboradores.length+' colaboradores':''}</div>
@@ -3353,7 +3349,6 @@ function buildFaturaPanel(p,tab,pi){
   return `<div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ${color}">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">${p.icon||'💳'}</div>
         <div class="panel-hdr-info">
           <div style="font-size:13px;font-weight:700;color:#fff">${p.title||'Cartões'}</div>
           <div class="panel-sub">${items.length} lançamentos · ${fmtD(itemsTotal)}</div>
@@ -3556,7 +3551,7 @@ function buildListBox(box,tab,li){
   return `<div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ${color}">
       <div class="panel-hdr-l">
-        <div class="panel-hdr-icon">${box.icon||'📋'}</div>
+        ${/pagamento|saldo/i.test(box.title||'') ? `<div class="panel-hdr-icon">${box.icon||'💰'}</div>` : ''}
         <div class="panel-hdr-info">
           <input class="panel-title-edit" value="${box.title}" onchange="lbRename('${tab}',${li},this.value)">
           <div class="panel-sub">${items.length} itens · toque para editar</div>
@@ -7609,7 +7604,7 @@ function buildNoteCard(note,ni){
   var prog=items.length>0?'<div style="height:3px;background:var(--border);border-radius:2px;margin:0 14px 8px"><div style="height:3px;background:#059669;border-radius:2px;width:'+pct_+'%"></div></div>':'';
   return '<div class="panel" style="margin-bottom:14px">'
     +'<div class="panel-hdr '+color+'"><div class="panel-hdr-l">'
-    +'<div class="panel-hdr-icon">'+catLabel.split(' ')[0]+'</div>'
+    +(/pagamento|saldo/i.test(note.nome||'')||/pagamento|saldo/i.test(catLabel||'') ? '<div class="panel-hdr-icon">'+catLabel.split(' ')[0]+'</div>' : '')
     +'<div class="panel-hdr-info"><div style="font-size:13px;font-weight:700;color:#fff">'+note.nome+'</div>'
     +'<div class="panel-sub">'+catLabel+' &middot; '+ndone+'/'+items.length+' feitos'+(items.length>0?' ('+pct_+'%)':'')+'</div>'
     +'</div></div>'

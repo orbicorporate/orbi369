@@ -826,6 +826,13 @@ td.inline-edit:active{background:var(--blue-bg)}
 <div id="tab-invest" class="tab-pane">
   <div class="alert al-i"><p>ℹ️ <strong>Os valores desta aba são independentes</strong> — não afetam receita, lucro nem despesas do negócio. É seu controle patrimonial pessoal.</p></div>
 
+  <!-- Sub-abas: Minha Carteira / Aprenda a Investir -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:2px solid var(--border)">
+    <button class="inv-subtab on" data-sub="carteira" onclick="showInvestSubTab('carteira',this)" style="font-family:var(--font);font-size:13px;font-weight:700;padding:10px 16px;border:none;background:transparent;cursor:pointer;border-bottom:3px solid var(--green);margin-bottom:-2px;color:var(--green)">💼 Minha Carteira</button>
+    <button class="inv-subtab" data-sub="guia" onclick="showInvestSubTab('guia',this)" style="font-family:var(--font);font-size:13px;font-weight:700;padding:10px 16px;border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--text3)">📚 Aprenda a Investir</button>
+  </div>
+
+  <div id="inv-subtab-carteira" class="inv-subtab-pane">
   <!-- Add item form at top -->
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-green">
@@ -912,9 +919,12 @@ td.inline-edit:active{background:var(--blue-bg)}
 
   <!-- Dica inteligente da IA sobre a distribuição -->
   <div id="inv-dica-box" style="margin-top:14px"></div>
+  </div>
 
+  <div id="inv-subtab-guia" class="inv-subtab-pane" style="display:none">
   <!-- Guia educativo + simulador -->
-  <div id="inv-guia-box" style="margin-top:20px"></div>
+  <div id="inv-guia-box"></div>
+  </div>
 </div>
 
 <!-- ===== TAB: EDITAR ===== -->
@@ -2804,6 +2814,24 @@ function importCSV(inp){
 }
 
 // ===================== UI =====================
+// Sub-abas dentro de Investimentos: Minha Carteira / Aprenda a Investir
+function showInvestSubTab(id, btn){
+  document.querySelectorAll('.inv-subtab-pane').forEach(function(p){ p.style.display = 'none'; });
+  var target = document.getElementById('inv-subtab-'+id);
+  if(target) target.style.display = '';
+  document.querySelectorAll('.inv-subtab').forEach(function(b){
+    b.classList.remove('on');
+    b.style.borderBottomColor = 'transparent';
+    b.style.color = 'var(--text3)';
+  });
+  if(btn){
+    btn.classList.add('on');
+    btn.style.borderBottomColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+  }
+}
+window.showInvestSubTab = showInvestSubTab;
+
 function showTab(id,btn){
   document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));

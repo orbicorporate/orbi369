@@ -536,6 +536,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 <!-- ===== TAB: NEGOCIO ===== -->
 <div id="tab-op" class="tab-pane on">
   <div id="modelo-negocio-box" style="margin-bottom:14px"></div>
+  <div id="proximos-passos-box" style="margin-bottom:14px"></div>
   <div id="foco-mes-box" style="margin-bottom:14px"></div>
   <div class="mets" id="mets-op"></div>
   <div class="flow"><div class="flow-items" id="flow-op"></div></div>
@@ -572,6 +573,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="entpes-total">R$&nbsp;0,00<small>total previsto</small></div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')">❓</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-entradas','Entradas previstas','ph-green')">✏️</button>
       </div>
     </div>
@@ -602,6 +604,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="pagos-total-hdr">R$&nbsp;0,00<small>total pago</small></div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz...) conforme forem sendo pagas. Toque no texto do item pra marcar como pago, ou no ✏️ pra editar nome e valor.')">❓</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')">✏️</button>
       </div>
     </div>
@@ -636,6 +639,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="cf-total-hdr">R$ 0,00<small>total mensal</small></div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Previsão de custos fixos','Cadastre aqui seus custos pessoais fixos que se repetem todo mês (assinaturas, mensalidades, etc). Isso ajuda a projetar quanto vai sobrar antes mesmo do mês fechar.')">❓</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-cf','Previsão de custos fixos','ph-amber')">✏️</button>
       </div>
     </div>
@@ -716,6 +720,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="tempo-hora-val">R$ 0</div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Tempo = Dinheiro','Calcula quanto vale sua hora de trabalho (lucro ÷ horas trabalhadas no mês). Use isso pra decidir se vale a pena gastar tempo numa tarefa específica ou terceirizar.')">❓</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-tempo','Tempo = Dinheiro','ph-teal')">✏️</button>
       </div>
     </div>
@@ -737,6 +742,7 @@ td.inline-edit:active{background:var(--blue-bg)}
         </div>
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Minha Orbi','Pergunta qualquer coisa sobre suas finanças em linguagem natural — \'qual minha margem?\', \'vale contratar?\', \'e se eu perder meu maior cliente?\'. Ela responde com base nos seus dados reais, não é um chatbot genérico.')">❓</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-assistente','Minha Orbi','ph-purple')">✏️</button>
       </div>
     </div>
@@ -754,6 +760,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="dec-stats">0</div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Decisões a tomar','Escreva uma decisão que você precisa tomar (contratar, comprar algo, reajustar cliente) e a IA faz 4 perguntas rápidas pra te ajudar a decidir com mais clareza, considerando seus números reais.')">❓</button>
         <button class="panel-hdr-menu" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')">✏️</button>
       </div>
     </div>
@@ -879,6 +886,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num" id="inv-total-hdr">R$ 0</div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('Carteira de investimentos','Cadastre cada ativo separado (Tesouro Direto, ações, fundos...) com valor investido e data. O app estima o rendimento com base nas taxas de mercado — edite a taxa manualmente se quiser simular algo específico.')">❓</button>
         <button class="panel-hdr-menu" title="Editar nome e cor" onclick="_editFixedPanelModal('inv-carteira','Carteira de investimentos','ph-green')">✏️</button>
       </div>
     </div>
@@ -1495,6 +1503,7 @@ function catMap(items){const m={};items.forEach(it=>{m[it.cat]=(m[it.cat]||0)+it
 function renderAll(){
   applyLabels();
   renderModeloNegocio();
+  renderProximosPassos();
   renderFocoDoMes();
   renderMets();
   renderFlowOp();
@@ -1570,6 +1579,61 @@ function applyLabels(){
   setEl('nco-cargo-lbl',C.lblCargo);
 }
 // ===================== FOCO DO MÊS + PROJEÇÃO DE FLUXO DE CAIXA =====================
+// ===================== PRÓXIMOS PASSOS (continua o onboarding depois que ele fecha) =====================
+function renderProximosPassos(){
+  var el = document.getElementById('proximos-passos-box');
+  if(!el) return;
+  // Só mostra depois que o onboarding inicial já rodou, e se o usuário não dispensou
+  if(!S.cfg || !S.cfg.onboardingDone || S.cfg.proximosPassosDismissed){ el.innerHTML=''; return; }
+
+  var passos = [
+    { feito: (S.clientes||[]).length>0, label: 'Cadastrar seu primeiro '+S.cfg.lblC.toLowerCase().replace(/s$/,''), tab:'op' },
+    { feito: (S.colaboradores||[]).length>0, label: 'Cadastrar '+S.cfg.lblCol.toLowerCase(), tab:'op' },
+    { feito: (S.imposto||0)>0, label: 'Configurar o imposto mensal', tab:'op' },
+    { feito: (S.custosFix||[]).length>0 || (S.pagosItens||[]).length>0, label: 'Lançar suas contas fixas pessoais', tab:'pes' },
+    { feito: (S.assistHistory||[]).length>0, label: 'Perguntar algo pra Minha Orbi', tab:'orbi' }
+  ];
+  var feitos = passos.filter(function(p){return p.feito;}).length;
+
+  // Se já completou tudo, mostra uma vez com parabéns e depois some sozinho
+  if(feitos === passos.length){
+    el.innerHTML = '<div style="background:var(--green-bg);border:1.5px solid var(--green-border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px">'
+      +'<span style="font-size:22px">🎉</span>'
+      +'<div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--green)">Você já configurou o essencial!</div>'
+      +'<div style="font-size:11.5px;color:var(--text2);margin-top:2px">Pode continuar explorando o app à vontade.</div></div>'
+      +'<button onclick="dismissProximosPassos()" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:16px">✕</button>'
+      +'</div>';
+    return;
+  }
+
+  el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px">'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+    +'<div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">🧭 Próximos passos ('+feitos+'/'+passos.length+')</div>'
+    +'<button onclick="dismissProximosPassos()" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px" title="Dispensar">✕</button>'
+    +'</div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px">'
+    +passos.map(function(p){
+      return '<div onclick="'+(p.feito?'':'showTabFromChecklist(\''+p.tab+'\')')+'" style="display:flex;align-items:center;gap:10px;cursor:'+(p.feito?'default':'pointer')+'">'
+        +'<span style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;background:'+(p.feito?'var(--green)':'var(--bg3)')+';color:'+(p.feito?'#fff':'var(--text3)')+';border:'+(p.feito?'none':'1.5px solid var(--border)')+'">'+(p.feito?'✓':'')+'</span>'
+        +'<span style="font-size:13px;color:'+(p.feito?'var(--text3)':'var(--text)')+';text-decoration:'+(p.feito?'line-through':'none')+'">'+p.label+'</span>'
+        +'</div>';
+    }).join('')
+    +'</div>'
+    +'</div>';
+}
+function dismissProximosPassos(){
+  if(!S.cfg) S.cfg = {};
+  S.cfg.proximosPassosDismissed = true;
+  save();
+  renderProximosPassos();
+}
+window.dismissProximosPassos = dismissProximosPassos;
+function showTabFromChecklist(tabid){
+  var btn = document.querySelector('.tb[data-tabid="'+tabid+'"]');
+  if(btn) btn.click();
+}
+window.showTabFromChecklist = showTabFromChecklist;
+
 function renderFocoDoMes(){
   var el = document.getElementById('foco-mes-box');
   if(!el) return;
@@ -1933,6 +1997,7 @@ function buildPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${headerVal}</div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">❓</button>
         <button class="panel-hdr-menu" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✏️</button>
       </div>
     </div>
@@ -2976,6 +3041,38 @@ async function bootApp(){
 
 // ===================== ONBOARDING =====================
 // Permite reabrir o onboarding manualmente a qualquer momento (aba Config → "Rever introdução")
+// Retorna o texto de ajuda contextual pro tipo de painel (usado nos botões ❓)
+function helpTextoPainel(tipo, tab){
+  var textos = {
+    clientes: 'Cada '+S.cfg.lblC.toLowerCase().replace(/s$/,'')+' cadastrado aqui entra na conta da sua receita mensal. Marque "Com NF" se ele emite nota fiscal, pra calcular o imposto automaticamente. Toque em qualquer célula pra editar.',
+    colaboradores: 'Todos os seus custos de equipe entram aqui — PJ, CLT ou Sócio. Marcar alguém como "Sócio" destaca o pró-labore dele separadamente nos relatórios. O total soma na sua Folha de custos.',
+    lancamentos: tab==='pes' ? 'Lance aqui seus pagamentos do mês (contas, PIX, boletos). Esse total conta como "Falta pagar" e entra no cálculo do Saldo Pessoal.' : 'Lançamentos avulsos de entrada ou saída que não se encaixam nos painéis fixos.'
+  };
+  return textos[tipo] || 'Painel de dados do seu negócio ou finanças pessoais.';
+}
+window.helpTextoPainel = helpTextoPainel;
+
+
+function showPanelHelp(titulo, texto){
+  var old = document.getElementById('mo-panel-help');
+  if(old) old.remove();
+  var mo = document.createElement('div');
+  mo.id = 'mo-panel-help';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10200;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
+  var bx = document.createElement('div');
+  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:340px;max-width:100%;box-shadow:0 12px 40px rgba(0,0,0,.3)';
+  bx.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
+    +'<span style="font-size:22px">💡</span>'
+    +'<div style="font-size:15px;font-weight:700;color:var(--text)">'+titulo+'</div>'
+    +'</div>'
+    +'<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px">'+texto+'</div>'
+    +'<button class="btn btn-b btn-blk" onclick="document.getElementById(\'mo-panel-help\').remove()">Entendi</button>';
+  mo.appendChild(bx);
+  document.body.appendChild(mo);
+}
+window.showPanelHelp = showPanelHelp;
+
 function reverIntroducao(){
   setTimeout(showOnboardingModal, 150);
 }
@@ -3231,6 +3328,7 @@ function buildFaturaPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(displayTotal)}<small>${p.fatObs||'fatura do mês'}</small></div>
+        <button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')">❓</button>
         <button class="panel-hdr-menu" title="Excluir este painel de cartão" onclick="confirmarExcluirPainel('${tab}',${pi})">🗑</button>
       </div>
     </div>
@@ -4927,6 +5025,7 @@ function renderColSaldo(){
     +'</div></div>'
     +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
     +'<div class="panel-hdr-val num">'+fmt(totalPago)+'<small>total pago</small></div>'
+    +'<button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp(\'Pagamentos Colaboradores\',\'Marque aqui cada colaborador conforme você for pagando ele no mês. Falta pagar mostra quanto ainda resta da folha total.\')">❓</button>'
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Total previsto',totalPrev,'Folha do m\u00eas',false)
@@ -4992,6 +5091,7 @@ function renderSaldoGeral(){
     +'</div></div>'
     +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
+    +'<button class="panel-hdr-menu" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">❓</button>'
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)

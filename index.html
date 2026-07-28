@@ -2989,11 +2989,11 @@ function buildFaturaPanel(p,tab,pi){
     const dm=(it.data||'').match(/(\d{1,2})[\/\-\.](\d{1,2})/);
     const dataSortable=dm?(dm[2].padStart(2,'0')+'-'+dm[1].padStart(2,'0')):'99-99';
     return `<tr data-cartao="${(it.cartao||'').toLowerCase()}" data-cat="${(it.cat||'').toLowerCase()}" data-desc="${(it.desc||'').toLowerCase()}" data-valor="${Number(it.valor)||0}" data-data="${dataSortable}">
-      <td class="num mu">${it.data||''}</td>
-      <td>${it.desc||''}</td>
+      <td class="num mu inline-edit" onclick="fatEditItem('${tab}',${pi},${ii},'data')">${it.data||''}</td>
+      <td class="inline-edit" onclick="fatEditItem('${tab}',${pi},${ii},'desc')">${it.desc||''}</td>
       <td>${cb}</td>
       <td><span class="badge ${tc}" style="font-size:10px">${it.cat||'—'}</span></td>
-      <td class="num r rc">${fmtD(it.valor||0)}</td>
+      <td class="num r rc inline-edit" onclick="fatEditItem('${tab}',${pi},${ii},'valor')">${fmtD(it.valor||0)}</td>
       <td><button class="btn btn-r btn-sm" onclick="delFatItem('${tab}',${pi},${ii})">✕</button></td>
     </tr>`;
   }).join('');
@@ -3800,6 +3800,35 @@ function delFatItem(tab,pi,ii){
   if(p.fatItems&&p.fatItems.length>0)p.fatTotal=p.fatItems.reduce((s,it)=>s+(it.valor||0),0);
   save();renderAll();
 }
+// Edição inline (toque) pros itens de fatura de cartão
+function fatEditItem(tab,pi,ii,field){
+  const p=S.panels[tab][pi];
+  if(!p||!p.fatItems||!p.fatItems[ii])return;
+  const item=p.fatItems[ii];
+  setTimeout(()=>{
+    const tr=document.querySelectorAll('#panels-'+tab+' tbody tr')[ii];
+    if(!tr)return;
+    const colMap={data:0,desc:1,valor:4};
+    const td=tr.cells[colMap[field]];if(!td)return;
+    const inp=document.createElement('input');
+    inp.className='ie-inp';inp.type=field==='valor'?'number':'text';
+    inp.value=field==='valor'?item.valor:item[field];
+    const orig=td.innerHTML;td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+    function commit(){
+      let v=inp.value.trim();if(!v){td.innerHTML=orig;return;}
+      if(field==='valor'){
+        v=parseFloat(v);
+        if(isNaN(v)||v<0){td.innerHTML=orig;return;}
+      }
+      item[field]=v;
+      if(p.fatItems.length>0)p.fatTotal=p.fatItems.reduce((s,it)=>s+(Number(it.valor)||0),0);
+      save();renderAll();
+    }
+    inp.addEventListener('blur',commit);
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter')commit();if(e.key==='Escape')td.innerHTML=orig;});
+  },10);
+}
+window.fatEditItem=fatEditItem;
 function clearFatItems(tab,pi){
   var p=S.panels&&S.panels[tab]&&S.panels[tab][pi];if(!p)return;
   var items=p.fatItems||[];
@@ -4469,22 +4498,22 @@ function renderPagos(){
   var chipsEl=document.getElementById('pagos-chips');
   if(chipsEl){
     chipsEl.innerHTML='';
-    itens.forEach(function(it){
+    itens.forEach(function(it,idx){
       var pago=!!marcados[it.nome];
-      var btn=document.createElement('button');
-      btn.style.fontFamily='var(--font)';
-      btn.style.fontSize='11px';
-      btn.style.fontWeight='700';
-      btn.style.padding='5px 12px';
-      btn.style.borderRadius='20px';
-      btn.style.cursor='pointer';
-      btn.style.border='1.5px solid '+(pago?'#059669':'#ddddd8');
-      btn.style.background=pago?'#059669':'#f7f7f3';
-      btn.style.color=pago?'#fff':'#4a4a4a';
-      btn.style.marginBottom='3px';
-      btn.innerHTML=(pago?'&#10003; ':'')+it.nome+(it.valor>0?' ('+fmt(it.valor)+')':'');
-      btn.onclick=function(){pagosMarca(it.nome);};
-      chipsEl.appendChild(btn);
+      var wrap=document.createElement('span');
+      wrap.style.cssText='display:inline-flex;align-items:center;gap:3px;border-radius:20px;border:1.5px solid '+(pago?'#059669':'#ddddd8')+';background:'+(pago?'#059669':'#f7f7f3')+';margin:0 4px 4px 0;overflow:hidden';
+      var label=document.createElement('span');
+      label.style.cssText='font-family:var(--font);font-size:11px;font-weight:700;padding:5px 4px 5px 12px;cursor:pointer;color:'+(pago?'#fff':'#4a4a4a');
+      label.innerHTML=(pago?'&#10003; ':'')+it.nome+(it.valor>0?' ('+fmt(it.valor)+')':'');
+      label.onclick=function(){pagosMarca(it.nome);};
+      var editBtn=document.createElement('span');
+      editBtn.textContent='✏️';
+      editBtn.title='Editar nome/valor';
+      editBtn.style.cssText='cursor:pointer;font-size:10px;padding:5px 10px 5px 4px;opacity:'+(pago?'.9':'.6');
+      editBtn.onclick=function(e){e.stopPropagation();pagosEditItem(idx);};
+      wrap.appendChild(label);
+      wrap.appendChild(editBtn);
+      chipsEl.appendChild(wrap);
     });
   }
   var tblEl=document.getElementById('pagos-table');
@@ -4496,9 +4525,10 @@ function renderPagos(){
   }
   var rows='';
   paid.forEach(function(it){
+    var idx=itens.indexOf(it);
     rows+='<tr style="background:var(--green-bg)">'
-      +'<td><strong>&#10003; '+it.nome+'</strong></td>'
-      +'<td class="num r gc">'+fmt(Number(it.valor)||0)+'</td>'
+      +'<td class="inline-edit" onclick="pagosEditItem('+idx+')"><strong>&#10003; '+it.nome+'</strong></td>'
+      +'<td class="num r gc inline-edit" onclick="pagosEditItem('+idx+')">'+fmt(Number(it.valor)||0)+'</td>'
       +'<td><button class="btn btn-r btn-sm" onclick="pagosDesmarcar(\''+it.nome+'\')" style="font-size:10px">Desmarcar</button></td>'
       +'</tr>';
   });
@@ -4512,6 +4542,70 @@ function renderPagos(){
   var saldoEl=document.getElementById('pagos-saldo');
   if(saldoEl)saldoEl.innerHTML='';
 }
+// Edição do nome/valor de um item do Checklist (cuidando da chave de "pago" se o nome mudar)
+function pagosEditItem(idx){
+  var itens=pagosAllItens();
+  var item=itens[idx];
+  if(!item)return;
+  var old=document.getElementById('mo-pagos-edit');
+  if(old)old.remove();
+  var mo=document.createElement('div');
+  mo.id='mo-pagos-edit';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.onclick=function(e){if(e.target===mo)mo.remove();};
+  var bx=document.createElement('div');
+  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:340px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.innerHTML=
+    '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">✏️ Editar item</div>'
+    +'<label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase">Nome</label>'
+    +'<input type="text" id="pe-nome" value="'+item.nome.replace(/"/g,'&quot;')+'" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);font-size:14px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px">'
+    +'<label style="display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase">Valor (R$)</label>'
+    +'<input type="number" id="pe-valor" value="'+(item.valor||0)+'" style="width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);font-size:14px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:16px">'
+    +'<div style="display:flex;gap:8px;justify-content:space-between">'
+    +'<button class="btn btn-r btn-sm" onclick="pagosDelItem('+idx+')">🗑 Excluir</button>'
+    +'<div style="display:flex;gap:8px">'
+    +'<button class="btn btn-gh btn-sm" onclick="document.getElementById(\'mo-pagos-edit\').remove()">Cancelar</button>'
+    +'<button class="btn btn-g btn-sm" onclick="pagosSalvarEdit('+idx+')">Salvar</button>'
+    +'</div></div>';
+  mo.appendChild(bx);
+  document.body.appendChild(mo);
+  setTimeout(function(){var i=document.getElementById('pe-nome');if(i){i.focus();i.select();}},50);
+}
+window.pagosEditItem=pagosEditItem;
+function pagosSalvarEdit(idx){
+  var itens=pagosAllItens();
+  var item=itens[idx];
+  if(!item)return;
+  var novoNome=(document.getElementById('pe-nome').value||'').trim();
+  var novoValor=parseFloat(document.getElementById('pe-valor').value)||0;
+  if(!novoNome){showToast('⚠️ Nome não pode ficar vazio.');return;}
+  var nomeAntigo=item.nome;
+  // Se o nome mudou, migra a chave de "pago" pro novo nome
+  if(nomeAntigo!==novoNome && S.pagosMarcados && S.pagosMarcados[nomeAntigo]!==undefined){
+    S.pagosMarcados[novoNome]=S.pagosMarcados[nomeAntigo];
+    delete S.pagosMarcados[nomeAntigo];
+  }
+  item.nome=novoNome;
+  item.valor=novoValor;
+  save();
+  var mo=document.getElementById('mo-pagos-edit');if(mo)mo.remove();
+  renderAll();
+  showToast('✅ Item atualizado!');
+}
+window.pagosSalvarEdit=pagosSalvarEdit;
+function pagosDelItem(idx){
+  var itens=pagosAllItens();
+  var item=itens[idx];
+  if(!item)return;
+  if(S.pagosMarcados)delete S.pagosMarcados[item.nome];
+  itens.splice(idx,1);
+  save();
+  var mo=document.getElementById('mo-pagos-edit');if(mo)mo.remove();
+  renderAll();
+  showToast('🗑 Item removido.');
+}
+window.pagosDelItem=pagosDelItem;
+
 function pagosMarca(nome){
   if(!S.pagosMarcados)S.pagosMarcados={};
   S.pagosMarcados[nome]=!S.pagosMarcados[nome];

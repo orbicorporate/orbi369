@@ -1173,7 +1173,6 @@ let S = {
     op:[
       {id:'cli',title:'Clientes recorrentes',icon:'👥',color:'ph-green',type:'clientes',items:[]},
       {id:'col',title:'Colaboradores PJ',icon:'🤝',color:'ph-blue',type:'colaboradores',items:[]},
-      {id:'imp',title:'Imposto mensal',icon:'🧾',color:'ph-amber',type:'imposto',items:[]},
     ],
     pes:[
       {id:'jul',title:'Pagamentos por PIX (extras)',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]},
@@ -1235,7 +1234,7 @@ const calcPagExtras=()=>{
   var lb = (S.listboxes && S.listboxes.op) ? S.listboxes.op.find(function(l){return l.id==='pag-extras';}) : null;
   return lb ? (lb.items||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0) : 0;
 };
-const calcL=()=>calcR()-calcF()-S.imposto-calcImpostoNF()-calcPagExtras();
+const calcL=()=>calcR()-calcF()-calcImpostoNF()-calcPagExtras();
 const calcM=()=>{const r=calcR();return r>0?(calcL()/r)*100:0};
 const calcT=()=>{const at=S.clientes.filter(c=>c.status==='ativo');return at.length>0?calcR()/at.length:0};
 
@@ -1371,6 +1370,10 @@ function load(){
     if(!S.historico)S.historico=[];
     if(!S.calEvents)S.calEvents={};if(!S.recebidos)S.recebidos={};if(!S.colPagos)S.colPagos={};if(!S.lbPagos)S.lbPagos={};if(!S.pagosMarcados)S.pagosMarcados={};if(!S.entradasPes)S.entradasPes=[];
     var OLD_NAMES=['Saídas Conta Juliana','Extrato Conta Juliana','Pagamentos feitos gerais','Pagamentos feitos'];
+    // Remove o painel manual "Imposto mensal" — agora só consideramos o imposto calculado sobre clientes "Com NF"
+    if(S.panels && S.panels.op){
+      S.panels.op = S.panels.op.filter(function(p){ return !(p.id==='imp' && p.type==='imposto'); });
+    }
     if(S.panels){['op','pes','ext'].forEach(function(tab){(S.panels[tab]||[]).forEach(function(p){
       if(OLD_NAMES.indexOf(p.title)>=0)p.title='Pagamentos por PIX (extras)';
       // Migração v6→v7: cartaoTypes passa de ["Amex","Santander"] para [{nome,cor}]
@@ -1600,7 +1603,7 @@ function renderProximosPassos(){
   var passos = [
     { feito: (S.clientes||[]).length>0, label: 'Cadastrar seu primeiro '+S.cfg.lblC.toLowerCase().replace(/s$/,''), tab:'op' },
     { feito: (S.colaboradores||[]).length>0, label: 'Cadastrar '+S.cfg.lblCol.toLowerCase(), tab:'op' },
-    { feito: (S.imposto||0)>0, label: 'Configurar o imposto mensal', tab:'op' },
+    { feito: (S.cfg.impostoNFPct||0)>0, label: 'Configurar a % de imposto sobre NF', tab:'op' },
     { feito: (S.custosFix||[]).length>0 || (S.pagosItens||[]).length>0, label: 'Lançar suas contas fixas pessoais', tab:'pes' },
     { feito: (S.assistHistory||[]).length>0, label: 'Perguntar algo pra Minha Orbi', tab:'orbi' }
   ];
@@ -1748,7 +1751,7 @@ function renderMets(){
   const r=calcR(),f=calcF(),l=calcL(),m=calcM(),t=calcT();
   const rRec=calcR_Rec(), rAvu=calcR_Avu();
   const impNF=calcImpostoNF();
-  const impostoTotal=(S.imposto||0)+impNF;
+  const impostoTotal=impNF;
   const ativos=S.clientes.filter(c=>c.status==='ativo');
   const at=ativos.length;
   const atRec=ativos.filter(c=>c.tipo==='recorrente'||!c.tipo).length;
@@ -1764,7 +1767,7 @@ function renderMets(){
   var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
   if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">Receita recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
   linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
-  linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto</div><div class="met-val num" style="color:var(--amber)">${fmt(impostoTotal)}</div><div class="met-sub">${pct(r>0?impostoTotal/r*100:0)} receita${impNF>0?' · inclui '+fmt(impNF)+' de NF':''}</div></div>`;
+  linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto (NF)</div><div class="met-val num" style="color:var(--amber)">${fmt(impostoTotal)}</div><div class="met-sub">${pct(r>0?impostoTotal/r*100:0)} da receita</div></div>`;
 
   var linha2 = '';
   if(mostraAvu) linha2 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">${modelo==='avulso'?'Receita de projetos':'Extras avulsos'}</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} ${modelo==='avulso'?'projeto':'avulso'}${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>`;
@@ -1777,7 +1780,7 @@ function renderMets(){
 
 function renderFlowOp(){
   const r=calcR(),f=calcF(),l=calcL(),ext=calcPagExtras(),impNF=calcImpostoNF();
-  const impostoTotal=(S.imposto||0)+impNF;
+  const impostoTotal=impNF;
   const el=document.getElementById('flow-op');if(!el)return;
   var extBlock = ext>0
     ? `<div class="f-arr">−</div><div class="fi"><div class="fi-lbl">Extras</div><div class="fi-val num" style="color:var(--red)">${fmt(ext)}</div></div>`
@@ -1787,7 +1790,7 @@ function renderFlowOp(){
     <div class="f-arr">−</div>
     <div class="fi"><div class="fi-lbl">${S.cfg.lblCol}</div><div class="fi-val num" style="color:var(--red)">${fmt(f)}</div></div>
     <div class="f-arr">−</div>
-    <div class="fi"><div class="fi-lbl">Imposto${impNF>0?' (+NF)':''}</div><div class="fi-val num" style="color:var(--red)">${fmt(impostoTotal)}</div></div>
+    <div class="fi"><div class="fi-lbl">Imposto (NF)</div><div class="fi-val num" style="color:var(--red)">${fmt(impostoTotal)}</div></div>
     ${extBlock}
     <div class="f-arr">=</div>
     <div class="fi"><div class="fi-lbl">Lucro</div><div class="fi-val num" style="color:var(--${l>=0?'green':'red'})">${fmt(l)}</div></div>`;
@@ -5073,7 +5076,6 @@ function renderSaldoGeral(){
 
   // CUSTOS FIXOS
   var colaboradores=calcF();     // folha PJ
-  var impostos=S.imposto||0;     // imposto mensal
   var impostosNF=calcImpostoNF(); // imposto automático sobre clientes com NF
 
   // CUSTOS VARIAVEIS - listboxes op (todas as listboxes da aba Negócio)
@@ -5091,7 +5093,7 @@ function renderSaldoGeral(){
   });
 
   // TOTAL CUSTOS
-  var totalCustos=colaboradores+impostos+impostosNF+listboxesCost+saidasOp;
+  var totalCustos=colaboradores+impostosNF+listboxesCost+saidasOp;
   var lucroLiquido=receitaTotal-totalCustos;
   var margem=receitaTotal>0?(lucroLiquido/receitaTotal)*100:0;
 
@@ -5123,8 +5125,13 @@ function renderSaldoGeral(){
     +'</div></div>'
     +'<div style="display:flex;flex-wrap:wrap">'
     +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)
-    +mkC('Total custos',totalCustos,'Folha + impostos + NF + fixos + extras','#dc2626',false)
     +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos',lucroLiquido>=0?'#059669':'#dc2626',true)
+    +'</div>'
+    +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
+    +mkC('Folha',colaboradores,'Colaboradores/PJ','#7c3aed',false)
+    +mkC('Imposto (NF)',impostosNF,'Sobre clientes com NF','#d97706',false)
+    +mkC('Fixos',listboxesCost,'Custos fixos do neg\u00f3cio','#0891b2',false)
+    +mkC('Extras',saidasOp,'Sa\u00eddas avulsas','#dc2626',true)
     +'</div>'
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
     +mkC('Total pago',totalPago,'Colaboradores j\u00e1 pagos','#2563eb',false)
@@ -5743,8 +5750,8 @@ function renderOpIA(){
   var clientesAtivos=cls.filter(function(c){return c.status==='ativo';});
   var receita=clientesAtivos.reduce(function(s,c){return s+(Number(c.valor)||0);},0);
   var folha=cols.reduce(function(s,c){return s+(Number(c.valor)||0);},0);
-  var imposto=Number(S.imposto)||0;
-  var lucro=receita-folha-imposto;
+  var imposto=calcImpostoNF();
+  var lucro=receita-folha-imposto-calcPagExtras();
   var margem=receita>0?(lucro/receita)*100:0;
   var folhaPct=receita>0?(folha/receita)*100:0;
   var ticketMedio=clientesAtivos.length>0?receita/clientesAtivos.length:0;

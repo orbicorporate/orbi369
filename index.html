@@ -160,8 +160,9 @@ td.gc{color:var(--green);font-weight:700}
 td.rc{color:var(--red);font-weight:700}
 td.ac{color:var(--amber);font-weight:700}
 td.mu{color:var(--text3)}
-td.inline-edit{cursor:pointer}
+td.inline-edit{cursor:pointer;border-bottom:1px dashed var(--border2,#ccc);transition:background .15s}
 td.inline-edit:hover{background:var(--blue-bg)}
+td.inline-edit:active{background:var(--blue-bg)}
 
 /* INLINE EDIT INPUT */
 .ie-inp{font-family:var(--font);font-size:12px;padding:2px 6px;border:1.5px solid var(--blue);border-radius:5px;outline:none;background:var(--bg2);color:var(--text);width:100%}
@@ -1735,9 +1736,9 @@ function buildPanel(p,tab,pi){
           : '<span class="badge ed" style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
         const diaReceb = extrairDia(c.dataReceb);
         return `<tr style="${rec?'background:var(--green-bg)':''}"><td class="mu">${i+1}</td>
-          <td class="inline-edit" ondblclick="inlineEdit(this,'cli','nome',${oi})">${c.nome}</td>
+          <td class="inline-edit" onclick="inlineEdit(this,'cli','nome',${oi})">${c.nome}</td>
           <td>${tipoBadge}</td>
-          <td class="num r inline-edit" ondblclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</td>
+          <td class="num r inline-edit" onclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</td>
           <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--green)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
           <td><span class="badge ${bs} ed" onclick="cycleStatus('cli',${oi})">${c.status}</span></td>
           <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" style="width:50px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()"></td>
@@ -1765,9 +1766,9 @@ function buildPanel(p,tab,pi){
         const pp=f>0?(c.valor/f)*100:0,oi=S.colaboradores.indexOf(c);
         const cpago=S.colPagos&&S.colPagos[c.nome];
         return `<tr style="${cpago?'background:var(--green-bg)':''}"><td class="mu">${i+1}</td>
-          <td class="inline-edit" ondblclick="inlineEdit(this,'col','nome',${oi})">${c.nome}</td>
-          <td class="inline-edit" ondblclick="inlineEdit(this,'col','cargo',${oi})">${c.cargo}</td>
-          <td class="num r inline-edit" ondblclick="inlineEdit(this,'col','valor',${oi})">${fmt(c.valor)}</td>
+          <td class="inline-edit" onclick="inlineEdit(this,'col','nome',${oi})">${c.nome}</td>
+          <td class="inline-edit" onclick="inlineEdit(this,'col','cargo',${oi})">${c.cargo}</td>
+          <td class="num r inline-edit" onclick="inlineEdit(this,'col','valor',${oi})">${fmt(c.valor)}</td>
           <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--blue)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
           <td>${cpago?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">&#10003; Pago</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">Pago</button>`}</td>
           <td><button class="btn btn-r btn-sm" onclick="removeCol(${oi})">&#10005;</button></td></tr>`;
@@ -1808,10 +1809,10 @@ function buildPanel(p,tab,pi){
         const tc=TC[it.cat]||'bg-gray';
         const rowStyle=isInt?'style="background:var(--amber-bg)"':'';
         return `<tr ${rowStyle}>
-          <td class="num mu inline-edit" ondblclick="inlineEditItem('${tab}',${pi},${ii},'data')">${it.data}</td>
-          <td class="inline-edit" ondblclick="inlineEditItem('${tab}',${pi},${ii},'desc')">${it.desc}</td>
+          <td class="num mu inline-edit" onclick="inlineEditItem('${tab}',${pi},${ii},'data')">${it.data}</td>
+          <td class="inline-edit" onclick="inlineEditItem('${tab}',${pi},${ii},'desc')">${it.desc}</td>
           <td><span class="badge ${tc} ed" onclick="openTagForItem(event,'${tab}',${pi},${ii})">${it.cat}</span></td>
-          <td class="num r ${col} inline-edit" ondblclick="inlineEditItem('${tab}',${pi},${ii},'valor')">${pre} ${fmtD(it.valor)}</td>
+          <td class="num r ${col} inline-edit" onclick="inlineEditItem('${tab}',${pi},${ii},'valor')">${pre} ${fmtD(it.valor)}</td>
           <td><button class="btn btn-r btn-sm" onclick="removeItem('${tab}',${pi},${ii})">✕</button></td></tr>`;
       }).join('')}
       <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r ${col}">${pre} ${fmtD(total)}</td><td></td></tr>
@@ -2036,7 +2037,7 @@ function renderCustomLists(){
       <div class="panel-hdr ${isE?'ph-green':list.tipo==='misto'?'ph-teal':'ph-red'}">
         <div class="panel-hdr-l"><div class="panel-hdr-icon">📋</div><div class="panel-hdr-info">
           <input class="panel-title-edit" value="${list.nome}" onchange="S.customLists[${li}].nome=this.value;save()">
-          <div class="panel-sub">${list.desc||list.tipo} · duplo clique para editar</div>
+          <div class="panel-sub">${list.desc||list.tipo} · toque para editar</div>
         </div></div>
         <div class="panel-hdr-r">
           <div class="panel-hdr-val num">${fmtD(total)}</div>
@@ -2044,7 +2045,7 @@ function renderCustomLists(){
         </div>
       </div>
       <div class="tw"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead><tbody>
-      ${list.items.map((it,ii)=>`<tr><td class="num mu inline-edit" ondblclick="clEditField(this,${li},${ii},'data')">${it.data}</td><td class="inline-edit" ondblclick="clEditField(this,${li},${ii},'desc')">${it.desc}</td><td><span class="badge ${TC[it.cat]||'bg-gray'} ed" onclick="openTagForListItem(event,${li},${ii})">${it.cat}</span></td><td class="num r ${isE?'gc':'rc'} inline-edit" ondblclick="clEditField(this,${li},${ii},'valor')">${isE?'+':'−'} ${fmtD(it.valor)}</td><td><button class="btn btn-r btn-sm" onclick="S.customLists[${li}].items.splice(${ii},1);save();renderCustomLists()">✕</button></td></tr>`).join('')}
+      ${list.items.map((it,ii)=>`<tr><td class="num mu inline-edit" onclick="clEditField(this,${li},${ii},'data')">${it.data}</td><td class="inline-edit" onclick="clEditField(this,${li},${ii},'desc')">${it.desc}</td><td><span class="badge ${TC[it.cat]||'bg-gray'} ed" onclick="openTagForListItem(event,${li},${ii})">${it.cat}</span></td><td class="num r ${isE?'gc':'rc'} inline-edit" onclick="clEditField(this,${li},${ii},'valor')">${isE?'+':'−'} ${fmtD(it.valor)}</td><td><button class="btn btn-r btn-sm" onclick="S.customLists[${li}].items.splice(${ii},1);save();renderCustomLists()">✕</button></td></tr>`).join('')}
       ${list.items.length?`<tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r ${isE?'gc':'rc'}">${isE?'+':'−'} ${fmtD(total)}</td><td></td></tr>`:''}
       </tbody></table></div>
       <div class="add-row">
@@ -2081,7 +2082,7 @@ function openTagForListItem(e,li,ii){
 }
 function applyTagList(li,ii,tag){S.customLists[li].items[ii].cat=tag;closeTagDD();save();renderCustomLists();}
 
-// Edição inline (duplo clique) pros campos data/desc/valor das listas personalizadas
+// Edição inline (toque) pros campos data/desc/valor das listas personalizadas
 function clEditField(td,li,ii,field){
   const item=S.customLists[li].items[ii];
   const orig=td.innerHTML;
@@ -3214,8 +3215,8 @@ function buildListBox(box,tab,li){
       : `<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleLbPago('${box.id}','${it.nome}')">Pago</button>`;
     const diaVenc = extrairDia(it.dataPrev);
     return `<tr style="${isPago?'background:var(--green-bg)':''}">
-      <td class="inline-edit" ondblclick="lbEditNome(this,'${tab}',${li},${ii})">${it.nome}</td>
-      <td class="num r inline-edit" ondblclick="lbEditValor(this,'${tab}',${li},${ii})">${fmtD(Number(it.valor)||0)}</td>
+      <td class="inline-edit" onclick="lbEditNome(this,'${tab}',${li},${ii})">${it.nome}</td>
+      <td class="num r inline-edit" onclick="lbEditValor(this,'${tab}',${li},${ii})">${fmtD(Number(it.valor)||0)}</td>
       <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaVenc||''}"
         style="width:48px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center"
         title="Só o dia. Mês atual: ${S.cfg.mes||'—'}"
@@ -3230,7 +3231,7 @@ function buildListBox(box,tab,li){
         <div class="panel-hdr-icon">${box.icon||'📋'}</div>
         <div class="panel-hdr-info">
           <input class="panel-title-edit" value="${box.title}" onchange="lbRename('${tab}',${li},this.value)">
-          <div class="panel-sub">${items.length} itens · duplo clique para editar</div>
+          <div class="panel-sub">${items.length} itens · toque para editar</div>
         </div>
       </div>
       <div class="panel-hdr-r">
@@ -4154,9 +4155,9 @@ function renderInvestimentos(){
         +'<span style="font-size:9px;color:var(--text3)">%'+(taxaCustom!==null?' 🔧':'')+'</span>';
 
       return `<tr>
-        <td class="inline-edit" ondblclick="editInvInline(this,'nome',${i})">${it.nome}</td>
+        <td class="inline-edit" onclick="editInvInline(this,'nome',${i})">${it.nome}</td>
         <td><span class="badge bg-blue">${it.tipo}</span></td>
-        <td class="num r inline-edit" ondblclick="editInvInline(this,'valor',${i})">${fmt(it.valor||0)}</td>
+        <td class="num r inline-edit" onclick="editInvInline(this,'valor',${i})">${fmt(it.valor||0)}</td>
         <td style="white-space:nowrap">${inpAnos}</td>
         <td style="white-space:nowrap">${inpTaxa}</td>
         <td class="num r" style="font-weight:600">${fmt(atual)}</td>
@@ -6042,9 +6043,9 @@ function renderCfTable(){
   items.forEach(function(it,ii){
     var venc=it.dataPrev?it.dataPrev:'—';
     rows+='<tr>'
-      +'<td class="inline-edit" style="font-size:12px" ondblclick="cfEditField(this,'+ii+',\'nome\')">'+it.nome+'</td>'
-      +'<td class="num r inline-edit" style="font-size:12px;color:#d97706;font-weight:700" ondblclick="cfEditField(this,'+ii+',\'valor\')">'+fmt(it.valor)+'</td>'
-      +'<td class="inline-edit" style="font-size:11px;color:var(--text3)" ondblclick="cfEditField(this,'+ii+',\'dataPrev\')">'+venc+'</td>'
+      +'<td class="inline-edit" style="font-size:12px" onclick="cfEditField(this,'+ii+',\'nome\')">'+it.nome+'</td>'
+      +'<td class="num r inline-edit" style="font-size:12px;color:#d97706;font-weight:700" onclick="cfEditField(this,'+ii+',\'valor\')">'+fmt(it.valor)+'</td>'
+      +'<td class="inline-edit" style="font-size:11px;color:var(--text3)" onclick="cfEditField(this,'+ii+',\'dataPrev\')">'+venc+'</td>'
       +'<td><button class="btn btn-r btn-sm" onclick="cfDel('+ii+')">&#10005;</button></td>'
       +'</tr>';
   });
@@ -6057,7 +6058,7 @@ function renderCfTable(){
     +'</table></div>'
     +'<div style="font-size:10px;color:var(--text3);padding:6px 4px 0">Duplo clique para editar</div>';
 }
-// Edição inline (duplo clique) pros itens de custos fixos
+// Edição inline (toque) pros itens de custos fixos
 function cfEditField(td,ii,field){
   if(!S.custosFix||!S.custosFix[ii])return;
   const item=S.custosFix[ii];
@@ -7051,7 +7052,7 @@ function buildNoteCard(note,ni){
       +'<button onclick="noteToggleItem('+ni+','+ii+')" style="width:20px;height:20px;border-radius:50%;border:2px solid '+(it.done?'#059669':'#ddddd8')+';background:'+(it.done?'#059669':'transparent')+';cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">'
       +(it.done?'<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>':'')
       +'</button>'
-      +'<span style="flex:1;font-size:13px;'+(it.done?'text-decoration:line-through;color:var(--text3)':'color:var(--text)')+'" ondblclick="noteEditItem('+ni+','+ii+',this)">'+it.texto+'</span>'
+      +'<span style="flex:1;font-size:13px;'+(it.done?'text-decoration:line-through;color:var(--text3)':'color:var(--text)')+'" onclick="noteEditItem('+ni+','+ii+',this)">'+it.texto+'</span>'
       +'<button onclick="noteDelItem('+ni+','+ii+')" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 4px">&#10005;</button>'
       +'</div>';
   }).join('');

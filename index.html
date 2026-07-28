@@ -7952,12 +7952,13 @@ function mostrarBannerHistorico(){
 
   var banner = document.createElement('div');
   banner.id = 'hist-banner';
-  banner.style.cssText = 'position:sticky;top:0;z-index:999;background:linear-gradient(135deg,#fef3c7,#fde68a);border-bottom:2px solid #d97706;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(217,119,6,.15);animation:slideDown .3s';
+  banner.style.cssText = 'position:fixed;top:60px;left:0;right:0;z-index:450;background:linear-gradient(135deg,#fef3c7,#fde68a);border-bottom:2px solid #d97706;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 8px rgba(217,119,6,.25);animation:slideDown .3s';
   atualizarBannerHistorico(banner);
 
-  var app = document.getElementById('app');
-  if(app && app.firstChild) app.insertBefore(banner, app.firstChild);
-  else if(app) app.appendChild(banner);
+  document.body.appendChild(banner);
+  // Empurra o conteúdo pra baixo pra não ficar coberto pelo banner fixo
+  var appEl = document.getElementById('app');
+  if(appEl) appEl.style.paddingTop = '54px';
 
   aplicarReadOnlyHistorico(!_historicoEditable);
 }
@@ -7991,6 +7992,8 @@ function atualizarBannerHistorico(bannerEl){
 function removerBannerHistorico(){
   var b = document.getElementById('hist-banner');
   if(b) b.remove();
+  var appEl = document.getElementById('app');
+  if(appEl) appEl.style.paddingTop = '';
 }
 
 // Quando em modo read-only, desabilita inputs, selects, textareas e botões de ação principais

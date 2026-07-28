@@ -304,38 +304,40 @@ td.inline-edit:active{background:var(--blue-bg)}
 #chat-bubble:hover{transform:scale(1.06);transition:transform .2s}
 .bubble-word{font-size:13px;font-weight:300;color:#fff;letter-spacing:1.5px;position:relative;z-index:1}
 
-#chat-panel{position:fixed;bottom:84px;right:18px;width:310px;max-height:490px;background:var(--card);border:1px solid var(--border);border-radius:15px;box-shadow:0 8px 32px rgba(0,0,0,.13);z-index:400;display:none;flex-direction:column;overflow:hidden;animation:su .2s ease}
+#chat-backdrop{position:fixed;inset:0;background:rgba(10,14,23,.55);z-index:399;display:none;backdrop-filter:blur(2px)}
+#chat-backdrop.on{display:block}
+#chat-panel{position:fixed;bottom:50%;right:50%;transform:translate(50%,50%);width:min(480px,92vw);height:min(680px,86vh);max-height:86vh;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);z-index:400;display:none;flex-direction:column;overflow:hidden;animation:su .25s ease}
 #chat-panel.on{display:flex}
-@keyframes su{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.ch-hdr{background:#0a0e17;padding:11px 13px;display:flex;align-items:center;justify-content:space-between}
-.ch-hdr-l{display:flex;align-items:center;gap:8px}
-.ch-av{width:28px;height:28px;background:rgba(255,255,255,.06);border-radius:50%;display:flex;align-items:center;justify-content:center}
-.ch-av-word{font-size:11px;font-weight:300;color:#fff;letter-spacing:1px}
-.ch-name{font-weight:700;color:#fff;font-size:12px}
-.ch-status{font-size:9px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:3px}
-.ch-dot{width:5px;height:5px;background:#22d3a0;border-radius:50%;animation:blink 1.5s infinite}
+@keyframes su{from{opacity:0;transform:translate(50%,50%) scale(.95)}to{opacity:1;transform:translate(50%,50%) scale(1)}}
+.ch-hdr{background:#0a0e17;padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
+.ch-hdr-l{display:flex;align-items:center;gap:11px}
+.ch-av{width:38px;height:38px;background:rgba(255,255,255,.08);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ch-av-word{font-size:14px;font-weight:300;color:#fff;letter-spacing:1px}
+.ch-name{font-weight:700;color:#fff;font-size:15px}
+.ch-status{font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:4px;margin-top:1px}
+.ch-dot{width:6px;height:6px;background:#22d3a0;border-radius:50%;animation:blink 1.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.ch-cls{background:rgba(255,255,255,.08);border:none;color:#fff;width:22px;height:22px;border-radius:5px;cursor:pointer;font-size:11px}
-.ch-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px;background:var(--bg)}
-.ch-msg{display:flex;flex-direction:column;gap:2px}
+.ch-cls{background:rgba(255,255,255,.1);border:none;color:#fff;width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:14px}
+.ch-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--bg)}
+.ch-msg{display:flex;flex-direction:column;gap:3px}
 .ch-msg.u{align-items:flex-end}.ch-msg.b{align-items:flex-start}
-.msg-bbl{font-size:11px;line-height:1.5;padding:7px 10px;border-radius:10px;max-width:94%}
+.msg-bbl{font-size:13.5px;line-height:1.55;padding:11px 14px;border-radius:14px;max-width:88%}
 .ch-msg.b .msg-bbl{background:var(--card);border:1px solid var(--border);color:var(--text)}
 .ch-msg.u .msg-bbl{background:#0a0e17;color:#fff}
-.msg-ts{font-size:9px;color:var(--text3);padding:0 3px}
-.ch-sugs{display:flex;flex-wrap:wrap;gap:3px;margin-top:3px}
-.sug-chip{font-family:var(--font);font-size:10px;padding:3px 8px;border-radius:20px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer;font-weight:700}
+.msg-ts{font-size:10px;color:var(--text3);padding:0 4px}
+.ch-sugs{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.sug-chip{font-family:var(--font);font-size:11.5px;padding:6px 12px;border-radius:20px;border:1px solid var(--green-border);background:var(--green-bg);color:var(--green);cursor:pointer;font-weight:700}
 .sug-chip:hover{background:var(--green);color:#fff}
-.typing{display:flex;gap:3px;align-items:center;padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:10px;width:fit-content}
-.typing span{width:4px;height:4px;background:var(--text3);border-radius:50%;animation:ty .8s infinite}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:14px;width:fit-content}
+.typing span{width:5px;height:5px;background:var(--text3);border-radius:50%;animation:ty .8s infinite}
 .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
 @keyframes ty{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
-.ch-inp-row{display:flex;gap:5px;padding:9px 10px;border-top:1px solid var(--border);background:var(--bg2)}
-#chat-inp{flex:1;font-family:var(--font);font-size:11px;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);outline:none}
+.ch-inp-row{display:flex;gap:8px;padding:14px 16px;border-top:1px solid var(--border);background:var(--bg2)}
+#chat-inp{flex:1;font-family:var(--font);font-size:14px;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);outline:none}
 #chat-inp:focus{border-color:rgba(13,148,136,.4)}
-.ch-send{background:#0a0e17;color:#22d3a0;border:none;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ch-send{background:#0a0e17;color:#22d3a0;border:none;width:42px;height:42px;border-radius:10px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ch-send:hover{transform:scale(1.07);transition:transform .15s}
-.ch-hint{font-size:9px;color:var(--text3);text-align:center;padding:5px 10px;border-top:1px solid var(--border);background:var(--bg3);line-height:1.4}
+.ch-hint{font-size:10.5px;color:var(--text3);text-align:center;padding:8px 14px;border-top:1px solid var(--border);background:var(--bg3);line-height:1.45}
 
 /* IMPORT EXTRACT AREA */
 .extract-area{width:100%;font-family:var(--font);font-size:12px;padding:9px 11px;border:1.5px dashed var(--border2);border-radius:8px;background:var(--bg);color:var(--text);outline:none;resize:vertical;min-height:80px;transition:border-color .2s}
@@ -349,7 +351,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   .flow-items{flex-direction:column}
   .f-arr{transform:rotate(90deg)}
   th,td{padding:6px 8px;font-size:11px}
-  #chat-panel{width:calc(100vw - 20px);right:10px;bottom:78px}
+  #chat-panel{width:94vw;height:88vh;max-height:88vh}
   #chat-bubble{right:10px;bottom:10px}
 }
 ::-webkit-scrollbar{width:3px;height:3px}
@@ -1060,6 +1062,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 </div>
 
 <!-- CHAT -->
+<div id="chat-backdrop" onclick="toggleChat()"></div>
 <button id="chat-bubble" onclick="toggleChat()">
   <span class="bubble-word">orbi</span>
 </button>
@@ -1077,10 +1080,13 @@ td.inline-edit:active{background:var(--blue-bg)}
       <div class="msg-bbl">Olá! Sou o <strong>Analista Orbi</strong>.<br><br>Posso <strong>adicionar/remover clientes e colaboradores</strong>, responder sobre finanças, e também <strong>interpretar extratos</strong> que você colar aqui.<br><br>Exemplos:<br>• <em>"Adiciona cliente ABC 5000"</em><br>• <em>"Remove colaborador Adrian"</em><br>• <em>"Pausa cliente Buz"</em><br>• Cole linhas de extrato direto aqui</div>
       <div class="msg-ts">agora</div>
     </div>
-    <div class="ch-sugs">
+    <div class="ch-sugs" id="ch-sugs-inicial">
       <button onclick="sendSug(this)" class="sug-chip">Minha margem?</button>
       <button onclick="sendSug(this)" class="sug-chip">Pontos de atenção?</button>
       <button onclick="sendSug(this)" class="sug-chip">Como crescer?</button>
+      <button onclick="sendSug(this)" class="sug-chip">Risco de cliente?</button>
+      <button onclick="sendSug(this)" class="sug-chip">Vale contratar?</button>
+      <button onclick="sendSug(this)" class="sug-chip">Pró-labore dos sócios?</button>
     </div>
   </div>
   <div class="ch-inp-row">
@@ -2719,13 +2725,29 @@ document.addEventListener('click',e=>{if(!e.target.closest('#pmenu')&&!e.target.
 function showToast(msg){const t=document.getElementById('toast');if(t){t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600);}}
 
 // ===================== CHAT =====================
-function toggleChat(){const p=document.getElementById('chat-panel');p.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('chat-inp').focus();}
-function sendSug(btn){document.getElementById('chat-inp').value=btn.textContent;btn.closest('.ch-sugs')?.remove();sendChat();}
+function toggleChat(){const p=document.getElementById('chat-panel');const bd=document.getElementById('chat-backdrop');p.classList.toggle('on');if(bd)bd.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('chat-inp').focus();}
+function sendSug(btn){document.getElementById('chat-inp').value=btn.textContent;sendChat();}
 function sendChat(){
   const inp=document.getElementById('chat-inp');const msg=inp.value.trim();if(!msg)return;
   addMsg(msg,'u');inp.value='';
   const typing=addTyping();
-  setTimeout(()=>{typing.remove();addMsg(processCmd(msg),'b');},450+Math.random()*350);
+  setTimeout(()=>{
+    typing.remove();
+    addMsg(processCmd(msg),'b');
+    addFollowUpSugs();
+  },450+Math.random()*350);
+}
+// Sugestões contextuais que reaparecem depois de cada resposta, pra manter a conversa fluindo
+function addFollowUpSugs(){
+  const msgs=document.getElementById('chat-msgs');
+  const pool=['Minha margem?','Pontos de atenção?','Como crescer?','Risco de cliente?','Vale contratar?','Pró-labore dos sócios?','Vale reajustar?','Quanto devo no cartão?'];
+  const escolhidas=pool.sort(()=>Math.random()-0.5).slice(0,3);
+  const d=document.createElement('div');
+  d.className='ch-sugs';
+  d.style.marginLeft='4px';
+  d.innerHTML=escolhidas.map(function(p){return '<button onclick="sendSug(this)" class="sug-chip">'+p+'</button>';}).join('');
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
 }
 function addMsg(txt,role){
   const msgs=document.getElementById('chat-msgs');
@@ -2741,10 +2763,24 @@ function addTyping(){
   msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return d;
 }
 
+// Escolhe aleatoriamente entre frases equivalentes — deixa a conversa menos repetitiva/robótica
+function variar(opcoes){ return opcoes[Math.floor(Math.random()*opcoes.length)]; }
+
 function processCmd(msg){
   const m=msg.toLowerCase().trim();
   const r=calcR(),f=calcF(),l=calcL(),mg=calcM(),t=calcT();
   const at=S.clientes.filter(c=>c.status==='ativo').length;
+
+  // Saudação
+  if(/^(oi|ol[áa]|bom dia|boa tarde|boa noite|e a[íi]|opa)\b/.test(m)){
+    var hora=new Date().getHours();
+    var sauda=hora<12?'Bom dia':hora<18?'Boa tarde':'Boa noite';
+    return variar([
+      sauda+'! Como posso te ajudar a pensar sobre o negócio hoje? Posso falar de margem, crescimento, risco de clientes, contratação... o que quiser.',
+      sauda+', tudo certo? Me conta o que tá passando pela cabeça em relação às finanças que eu te ajudo a enxergar os números.',
+      'Oi! '+sauda.toLowerCase()+'. Bora dar uma olhada em como o negócio está esse mês?'
+    ]);
+  }
 
   // Detect extract paste (multiple lines with values)
   const lines=msg.split('\n').filter(l=>l.trim());
@@ -2771,7 +2807,7 @@ function processCmd(msg){
     if(nome.length>1&&valor>0){
       S.clientes.push({nome,tipo:'recorrente',valor,status:'ativo'});
       save();renderAll();
-      return `✅ ${S.cfg.lblC} <strong>"${nome}"</strong> adicionado com ${fmt(valor)}/mês!<br>Nova receita: <strong>${fmt(calcR())}</strong> · Lucro: <strong>${fmt(calcL())}</strong>`;
+      return `✅ Prontinho, <strong>"${nome}"</strong> já está na carteira com ${fmt(valor)}/mês. Isso deixa sua receita em <strong>${fmt(calcR())}</strong> e o lucro em <strong>${fmt(calcL())}</strong>.`;
     }
   }
 
@@ -2779,20 +2815,20 @@ function processCmd(msg){
   if(m.includes('remove')&&(m.includes('cliente')||m.includes('contrato'))){
     const nome=m.replace(/remove[r]?\s+(?:o\s+)?(?:cliente|contrato)\s+/i,'').trim();
     const idx=S.clientes.findIndex(c=>c.nome.toLowerCase().includes(nome));
-    if(idx>=0){const n=S.clientes[idx].nome;S.clientes.splice(idx,1);save();renderAll();return `🗑️ <strong>"${n}"</strong> removido.<br>Nova receita: <strong>${fmt(calcR())}</strong>`;}
-    return `❌ ${S.cfg.lblC} contendo "${nome}" não encontrado.`;
+    if(idx>=0){const n=S.clientes[idx].nome;S.clientes.splice(idx,1);save();renderAll();return `🗑️ Tirei <strong>"${n}"</strong> da lista. Sua receita agora é <strong>${fmt(calcR())}</strong>.`;}
+    return `Não achei nenhum cliente com "${nome}" no nome. Confere a grafia?`;
   }
 
   // PAUSA/ATIVA CLIENTE
   if(m.includes('pausa')){
     const nome=m.replace(/pausa[r]?\s+(?:o\s+)?(?:cliente\s+)?/i,'').trim();
     const c=S.clientes.find(cc=>cc.nome.toLowerCase().includes(nome));
-    if(c){c.status='pausado';save();renderAll();return `⏸️ <strong>"${c.nome}"</strong> pausado.<br>Nova receita: <strong>${fmt(calcR())}</strong>`;}
+    if(c){c.status='pausado';save();renderAll();return `⏸️ Marquei <strong>"${c.nome}"</strong> como pausado. Receita atualizada: <strong>${fmt(calcR())}</strong>.`;}
   }
   if(m.includes('ativa')){
     const nome=m.replace(/(?:re)?ativa[r]?\s+(?:o\s+)?(?:cliente\s+)?/i,'').trim();
     const c=S.clientes.find(cc=>cc.nome.toLowerCase().includes(nome));
-    if(c){c.status='ativo';save();renderAll();return `✅ <strong>"${c.nome}"</strong> ativado!<br>Nova receita: <strong>${fmt(calcR())}</strong>`;}
+    if(c){c.status='ativo';save();renderAll();return `✅ <strong>"${c.nome}"</strong> está ativo de novo. Receita: <strong>${fmt(calcR())}</strong>.`;}
   }
 
   // ADD COLABORADOR
@@ -2803,34 +2839,99 @@ function processCmd(msg){
       const nome=aCol[1].trim();const valor=parseFloat(aCol[2].replace(/\./g,'').replace(',','.'));
       if(nome&&valor>0){
         S.colaboradores.push({nome,cargo:S.cfg.lblCargo,valor,tipo:'PJ'});
-        save();renderAll();return `✅ Colaborador <strong>"${nome}"</strong> adicionado (${fmt(valor)}/mês).<br>Nova folha: <strong>${fmt(calcF())}</strong>`;
+        save();renderAll();return `✅ <strong>"${nome}"</strong> entrou pra equipe com ${fmt(valor)}/mês. Sua folha agora é <strong>${fmt(calcF())}</strong>.`;
       }
     }
     if(m.includes('remove')){
       const nome=m.replace(/remove[r]?\s+(?:o\s+)?(?:colaborador|funcionário)\s+/i,'').trim();
       const idx=S.colaboradores.findIndex(c=>c.nome.toLowerCase().includes(nome));
-      if(idx>=0){const n=S.colaboradores[idx].nome;S.colaboradores.splice(idx,1);save();renderAll();return `🗑️ Colaborador <strong>"${n}"</strong> removido.<br>Nova folha: <strong>${fmt(calcF())}</strong>`;}
+      if(idx>=0){const n=S.colaboradores[idx].nome;S.colaboradores.splice(idx,1);save();renderAll();return `🗑️ Removi <strong>"${n}"</strong>. Folha atualizada: <strong>${fmt(calcF())}</strong>.`;}
     }
   }
 
   // IMPOSTO
   const impM=m.match(/(?:imposto|custo\s+fixo|taxa)\s+(?:para\s+|de\s+)?(?:r\$\s*)?(\d[\d.,]*)/i);
-  if(impM){const v=parseFloat(impM[1].replace(/\./g,'').replace(',','.'));if(v>=0){S.imposto=v;save();renderAll();return `✅ Imposto: <strong>${fmt(v)}/mês</strong>.<br>Novo lucro: <strong>${fmt(calcL())}</strong>`;}}
+  if(impM){const v=parseFloat(impM[1].replace(/\./g,'').replace(',','.'));if(v>=0){S.imposto=v;save();renderAll();return `Beleza, atualizei o imposto pra <strong>${fmt(v)}/mês</strong>. Isso deixa seu lucro em <strong>${fmt(calcL())}</strong>.`;}}
 
-  // PERGUNTAS
-  if(m.includes('margem')||m.includes('lucro'))
-    return `Margem: <strong>${mg.toFixed(1)}%</strong> · Lucro: <strong>${fmt(l)}/mês</strong><br>${mg>=40?'🏆 Excelente!':mg>=20?'📈 Saudável.':'⚠️ Abaixo do ideal.'}`;
-  if(m.includes('risco'))
-    return `Maior risco: concentração de receita. Verifique se algum cliente representa mais de 25% do faturamento e diversifique.`;
-  if(m.includes('crescer')||m.includes('aumentar'))
-    return `3 caminhos:<br>1️⃣ +2 ${S.cfg.lblC.toLowerCase()} no ticket médio = <strong>+${fmt(Math.round(t*2))}/mês</strong><br>2️⃣ Reajuste 10% = <strong>+${fmt(Math.round(r*0.1))}/mês</strong><br>3️⃣ Reduzir custo fixo com contador`;
-  if(m.includes('invest')||m.includes('patrimônio'))
-    return `Sobra estimada de <strong>${fmt(Math.max(l-32268,0))}/mês</strong>.<br>Investindo 50%: <strong>${fmt(Math.round(Math.max(l-32268,0)*0.5*12))}</strong> em 12 meses.`;
+  // MARGEM / LUCRO — resposta narrativa
+  if(m.includes('margem')||m.includes('lucro')){
+    var nivel = mg>=30?'excelente':mg>=20?'saudável':mg>=10?'meio apertada':mg>=0?'crítica':'negativa';
+    var comentario = mg>=30 ? 'Isso é ótimo — você tem espaço pra reinvestir ou tirar mais pró-labore sem sufoco.'
+      : mg>=20 ? 'É uma margem saudável pra maioria dos negócios de serviço. Dá pra melhorar, mas não é motivo de alarme.'
+      : mg>=10 ? 'Tá funcionando, mas com pouca gordura. Um imprevisto grande pode apertar o mês.'
+      : mg>=0 ? 'Aqui eu ficaria de olho — a margem tá crítica, vale revisar custos fixos ou repensar precificação.'
+      : 'O negócio está no vermelho esse mês. Prioridade número um é entender de onde vem o rombo antes de qualquer outra decisão.';
+    return `Sua margem está em <strong>${mg.toFixed(1)}%</strong>, o que eu classificaria como <strong>${nivel}</strong>. Em números, isso é <strong>${fmt(l)}</strong> de lucro sobrando no mês. ${comentario}`;
+  }
+
+  // RISCO / dependência de cliente
+  if(m.includes('risco')||m.includes('depend')){
+    var ativosR=S.clientes.filter(function(c){return c.status==='ativo';});
+    if(ativosR.length===0) return 'Você ainda não tem clientes ativos cadastrados, então não dá pra analisar risco de concentração ainda.';
+    var maiorR=ativosR.slice().sort(function(a,b){return b.valor-a.valor;})[0];
+    var pctMaiorR=r>0?(maiorR.valor/r*100):0;
+    if(pctMaiorR>=40) return `Olha, seu maior risco agora é concentração: <strong>"${maiorR.nome}"</strong> sozinho representa <strong>${pctMaiorR.toFixed(0)}%</strong> da sua receita. Se ele sair, o impacto é sério. Eu priorizaria trazer 1 ou 2 clientes novos nos próximos meses pra diluir isso.`;
+    if(pctMaiorR>=25) return `Seu maior cliente ("${maiorR.nome}") é <strong>${pctMaiorR.toFixed(0)}%</strong> da receita — não é crítico, mas é uma faixa de atenção. Vale ir diversificando aos poucos.`;
+    return `Sua carteira está bem distribuída — nenhum cliente sozinho passa de ${pctMaiorR.toFixed(0)}% da receita. Baixo risco de concentração por aqui.`;
+  }
+
+  // CRESCER
+  if(m.includes('crescer')||m.includes('aumentar')){
+    return `Vejo 3 caminhos realistas pra crescer a partir de onde você está:<br>`
+      +`1️⃣ Trazer <strong>2 ${S.cfg.lblC.toLowerCase()}</strong> no ticket médio atual → <strong>+${fmt(Math.round(t*2))}/mês</strong><br>`
+      +`2️⃣ Reajustar preços em <strong>10%</strong> pros clientes atuais → <strong>+${fmt(Math.round(r*0.1))}/mês</strong><br>`
+      +`3️⃣ Revisar custos fixos — mesmo uma economia de 5% já libera caixa pra reinvestir<br>`
+      +`Qual desses faz mais sentido pro seu momento?`;
+  }
+
+  // INVESTIR / PATRIMÔNIO
+  if(m.includes('invest')||m.includes('patrimônio')){
+    var sobra = Math.max(l - 32268, 0);
+    if(sobra<=0) return 'Com o lucro atual, não sobra uma folga clara pra investir sem apertar o caixa. Bora primeiro estabilizar o operacional antes de pensar em aporte.';
+    return `Estimando seus custos pessoais, sobra algo em torno de <strong>${fmt(sobra)}/mês</strong> livre. Se você investir metade disso todo mês, em 12 meses já teria acumulado perto de <strong>${fmt(Math.round(sobra*0.5*12))}</strong> — e olha que isso é sem contar rendimento.`;
+  }
+
+  // PRÓ-LABORE / SÓCIOS
+  if(m.includes('sócio')||m.includes('socio')||m.includes('pró-labore')||m.includes('prolabore')){
+    var sociosC=(S.colaboradores||[]).filter(function(c){return c.tipo==='Sócio';});
+    var totalPLc=sociosC.reduce(function(s,c){return s+(Number(c.valor)||0);},0);
+    if(sociosC.length===0) return 'Você ainda não tem nenhum sócio cadastrado. Se quiser registrar pró-labore, vai em Colaboradores e marca o Tipo como "Sócio".';
+    return `Você tem <strong>${sociosC.length}</strong> sócio(s) recebendo pró-labore, somando <strong>${fmt(totalPLc)}/mês</strong> (${pct(r>0?totalPLc/r*100:0)} da receita). Isso já está descontado no lucro operacional que te mostro.`;
+  }
+
+  // CARTÃO
+  if(m.includes('cartão')||m.includes('cartao')||m.includes('fatura')){
+    var totalCartaoC=0;
+    (S.panels&&S.panels.pes||[]).forEach(function(p){
+      if(p.type==='fatura'){
+        var itemsSum=(p.fatItems||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
+        totalCartaoC+=itemsSum>0?itemsSum:(Number(p.fatTotal)||0);
+      }
+    });
+    return totalCartaoC>0
+      ? `Suas faturas de cartão somam <strong>${fmt(totalCartaoC)}</strong> esse mês. Dá uma olhada na aba Pessoal pra ver a distribuição por categoria.`
+      : 'Não vejo nenhuma fatura de cartão lançada ainda esse mês.';
+  }
+
+  // VALE CONTRATAR
+  if(m.includes('contrat')){
+    const nCol=(S.colaboradores||[]).length;
+    const pctFolha = r>0?(f/r*100):0;
+    if(pctFolha>50) return `Sua folha já está em <strong>${pctFolha.toFixed(0)}%</strong> da receita — isso é alto. Eu seguraria contratação até a receita crescer ou a margem melhorar.`;
+    if(pctFolha>35) return `Folha em <strong>${pctFolha.toFixed(0)}%</strong> — é uma faixa saudável. Dá pra contratar se a nova pessoa trouxer receita nova que compense o custo.`;
+    return `Sua folha está em <strong>${pctFolha.toFixed(0)}%</strong> da receita, bem confortável. Se você tem trabalho suficiente pra ocupar uma nova contratação, o momento é bom.`;
+  }
+
   if(m.includes('cliente')&&m.includes('list'))
-    return `${S.clientes.length} ${S.cfg.lblC.toLowerCase()} · ${at} ativos · Receita: <strong>${fmt(r)}</strong>`;
+    return `Você tem ${S.clientes.length} ${S.cfg.lblC.toLowerCase()} cadastrados, sendo ${at} ativos. Receita total: <strong>${fmt(r)}</strong>.`;
   if(m.includes('ajuda')||m.includes('help')||m.includes('comando'))
-    return `Comandos disponíveis:<br>• <em>"Adiciona cliente [nome] [valor]"</em><br>• <em>"Remove cliente [nome]"</em><br>• <em>"Pausa/ativa cliente [nome]"</em><br>• <em>"Adiciona colaborador [nome] [valor]"</em><br>• <em>"Imposto para [valor]"</em><br>• Cole linhas de extrato direto aqui!`;
-  return `<strong>${S.cfg.nome}</strong>: Receita <strong>${fmt(r)}</strong> · Lucro <strong>${fmt(l)}</strong> (${mg.toFixed(1)}%) · ${at} ${S.cfg.lblC.toLowerCase()} ativos.<br>Diga "ajuda" para ver comandos.`;
+    return `Posso conversar sobre margem, crescimento, risco de clientes, contratação, sócios, cartão... e também fazer coisas por você:<br>• <em>"Adiciona cliente [nome] [valor]"</em><br>• <em>"Remove cliente [nome]"</em><br>• <em>"Pausa/ativa cliente [nome]"</em><br>• <em>"Adiciona colaborador [nome] [valor]"</em><br>• <em>"Imposto para [valor]"</em><br>• Ou cola um extrato bancário direto aqui que eu importo!`;
+
+  return variar([
+    `Seu negócio hoje: receita de <strong>${fmt(r)}</strong>, lucro de <strong>${fmt(l)}</strong> (margem ${mg.toFixed(1)}%), ${at} ${S.cfg.lblC.toLowerCase()} ativos. Me pergunta algo mais específico que eu aprofundo.`,
+    `Resumo rápido: <strong>${fmt(r)}</strong> de receita e <strong>${fmt(l)}</strong> de lucro esse mês. Quer que eu analise algo em particular — margem, crescimento, risco?`,
+    `Não peguei bem sua pergunta, mas seus números atuais são: receita ${fmt(r)}, lucro ${fmt(l)}. Tenta reformular ou pergunta "ajuda" pra ver o que eu sei fazer.`
+  ]);
 }
 
 // ADD ITEM MODAL

@@ -128,16 +128,29 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .panel-body{padding:14px 16px}
 
 /* PANEL COLOR THEMES */
-.ph-green{background:linear-gradient(135deg,#059669,#0d9488)}
-.ph-blue{background:linear-gradient(135deg,#2563eb,#7c3aed)}
-.ph-amber{background:linear-gradient(135deg,#d97706,#dc2626)}
-.ph-teal{background:linear-gradient(135deg,#0d9488,#2563eb)}
-.ph-red{background:linear-gradient(135deg,#dc2626,#d97706)}
-.ph-dark{background:linear-gradient(135deg,#1a2235,#0d9488)}
-.ph-indigo{background:linear-gradient(135deg,#4f46e5,#7c3aed)}
-.ph-pink{background:linear-gradient(135deg,#db2777,#7c3aed)}
-.ph-slate{background:linear-gradient(135deg,#475569,#1a2235)}
-.ph-purple{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+.ph-green{background:linear-gradient(135deg,#047857,#0f766e)}
+.ph-blue{background:linear-gradient(135deg,#1d4ed8,#6d28d9)}
+.ph-amber{background:linear-gradient(135deg,#b45309,#b91c1c)}
+.ph-teal{background:linear-gradient(135deg,#0f766e,#1d4ed8)}
+.ph-red{background:linear-gradient(135deg,#b91c1c,#b45309)}
+.ph-dark{background:linear-gradient(135deg,#0d1220,#0a5c50)}
+.ph-indigo{background:linear-gradient(135deg,#4338ca,#6d28d9)}
+.ph-pink{background:linear-gradient(135deg,#be185d,#6d28d9)}
+.ph-slate{background:linear-gradient(135deg,#334155,#0d1220)}
+.ph-purple{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+
+/* Efeito de luz passando — aplicado nos cabeçalhos mais importantes de cada aba */
+.hdr-glow{position:relative;overflow:hidden}
+.hdr-glow::after{
+  content:'';position:absolute;top:0;bottom:0;left:0;width:55%;
+  background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.22) 45%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.22) 55%,transparent 100%);
+  animation:hdrSweep 3.2s ease-in-out infinite;pointer-events:none
+}
+@keyframes hdrSweep{
+  0%{transform:translateX(-120%)}
+  55%{transform:translateX(220%)}
+  100%{transform:translateX(220%)}
+}
 
 /* COLOR PICKER */
 .color-picker-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
@@ -741,7 +754,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 <!-- ===== TAB: MINHA ORBI (assistente conversacional) ===== -->
 <div id="tab-orbi" class="tab-pane">
   <div class="panel" style="margin-bottom:14px">
-    <div class="panel-hdr ph-purple" data-fpk="note-assistente">
+    <div class="panel-hdr ph-purple hdr-glow" data-fpk="note-assistente">
       <div class="panel-hdr-l">
         <div class="panel-hdr-icon">🤖</div>
         <div class="panel-hdr-info">
@@ -891,7 +904,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 
   <!-- Investments table panel -->
   <div class="panel">
-    <div class="panel-hdr ph-green" data-fpk="inv-carteira">
+    <div class="panel-hdr ph-green hdr-glow" data-fpk="inv-carteira">
       <div class="panel-hdr-l">
         <div class="panel-hdr-info">
           <div class="panel-title-edit" style="color:#fff;font-weight:700" data-fpk-title>Carteira de investimentos</div>
@@ -2022,7 +2035,7 @@ function buildPanel(p,tab,pi){
   }
 
   return `
-    <div class="panel-hdr ${colorClass}">
+    <div class="panel-hdr ${colorClass}${(p.type==='clientes'||p.type==='colaboradores')?' hdr-glow':''}">
       <div class="panel-hdr-l">
         ${/pagamento|saldo/i.test(p.title||'') ? `<div class="panel-hdr-icon" onclick="openMo('mo-color');activePanelRef={tab:'${tab}',pi:${pi}}">${p.icon||'💰'}</div>` : ''}
         <div class="panel-hdr-info">
@@ -5164,7 +5177,7 @@ function renderColSaldo(){
       +'</div>';
   }
   el.innerHTML='<div class="panel" style="margin-bottom:16px">'
-    +'<div class="panel-hdr ph-blue"><div class="panel-hdr-l">'
+    +'<div class="panel-hdr ph-blue hdr-glow"><div class="panel-hdr-l">'
     +'<div class="panel-hdr-icon">&#128176;</div>'
     +'<div class="panel-hdr-info">'
     +'<div style="font-size:13px;font-weight:700;color:#fff">Pagamentos Colaboradores</div>'
@@ -5231,7 +5244,7 @@ function renderSaldoGeral(){
   }
 
   el.innerHTML='<div class="panel">'
-    +'<div class="panel-hdr ph-dark">'
+    +'<div class="panel-hdr ph-dark hdr-glow">'
     +'<div class="panel-hdr-l">'
     +'<div class="panel-hdr-icon">&#9889;</div>'
     +'<div class="panel-hdr-info">'
@@ -5462,7 +5475,7 @@ function renderPesSaldo(fatTotalOverride){
   }
 
   el.innerHTML='<div class="panel" style="margin-top:4px">'
-    +'<div class="panel-hdr ph-teal">'
+    +'<div class="panel-hdr ph-teal hdr-glow">'
     +'<div class="panel-hdr-l">'
     +'<div class="panel-hdr-icon">💰</div>'
     +'<div class="panel-hdr-info">'

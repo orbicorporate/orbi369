@@ -1366,26 +1366,31 @@ async function saveRemote(){
 
 function load(){
   // Carrega do cache local primeiro (pintura instantânea)
-  try{const d=localStorage.getItem(window._storageKey||'orbi6');if(d){Object.assign(S,JSON.parse(d));if(!S.listboxes)S.listboxes={op:[],pes:[],ext:[]};ensureOpListboxes();if(!S.investimentos)S.investimentos=[];
-    if(!S.historico)S.historico=[];
-    if(!S.calEvents)S.calEvents={};if(!S.recebidos)S.recebidos={};if(!S.colPagos)S.colPagos={};if(!S.lbPagos)S.lbPagos={};if(!S.pagosMarcados)S.pagosMarcados={};if(!S.entradasPes)S.entradasPes=[];
-    var OLD_NAMES=['Saídas Conta Juliana','Extrato Conta Juliana','Pagamentos feitos gerais','Pagamentos feitos'];
-    // Remove o painel manual "Imposto mensal" — agora só consideramos o imposto calculado sobre clientes "Com NF"
-    if(S.panels && S.panels.op){
-      S.panels.op = S.panels.op.filter(function(p){ return !(p.id==='imp' && p.type==='imposto'); });
-    }
-    if(S.panels){['op','pes','ext'].forEach(function(tab){(S.panels[tab]||[]).forEach(function(p){
-      if(OLD_NAMES.indexOf(p.title)>=0)p.title='Pagamentos por PIX (extras)';
-      // Migração v6→v7: cartaoTypes passa de ["Amex","Santander"] para [{nome,cor}]
-      if(p.type==='fatura'&&Array.isArray(p.cartaoTypes)){
-        p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
-      }
-      if(false&&p.type==='fatura'&&(!p.fatTotal||p.fatTotal===0)){
-        if(p.id==='amex')p.fatTotal=12685;
-        if(p.id==='sant')p.fatTotal=36611;
-      }
-    });});}
+  try{const d=localStorage.getItem(window._storageKey||'orbi6');if(d){Object.assign(S,JSON.parse(d));
+    runMigracoes();
     return true;}}catch(e){}return false;}
+
+// Migrações de estrutura de dados — roda sempre que S é carregado ou sobrescrito
+// (tanto do cache local quanto da nuvem, pra nunca "voltar" dado antigo migrado)
+function runMigracoes(){
+  if(!S.listboxes)S.listboxes={op:[],pes:[],ext:[]};
+  if(!S.investimentos)S.investimentos=[];
+  if(!S.historico)S.historico=[];
+  if(!S.calEvents)S.calEvents={};if(!S.recebidos)S.recebidos={};if(!S.colPagos)S.colPagos={};if(!S.lbPagos)S.lbPagos={};if(!S.pagosMarcados)S.pagosMarcados={};if(!S.entradasPes)S.entradasPes=[];
+  ensureOpListboxes();
+  var OLD_NAMES=['Saídas Conta Juliana','Extrato Conta Juliana','Pagamentos feitos gerais','Pagamentos feitos'];
+  // Remove o painel manual "Imposto mensal" — agora só consideramos o imposto calculado sobre clientes "Com NF"
+  if(S.panels && S.panels.op){
+    S.panels.op = S.panels.op.filter(function(p){ return !(p.id==='imp' && p.type==='imposto'); });
+  }
+  if(S.panels){['op','pes','ext'].forEach(function(tab){(S.panels[tab]||[]).forEach(function(p){
+    if(OLD_NAMES.indexOf(p.title)>=0)p.title='Pagamentos por PIX (extras)';
+    // Migração v6→v7: cartaoTypes passa de ["Amex","Santander"] para [{nome,cor}]
+    if(p.type==='fatura'&&Array.isArray(p.cartaoTypes)){
+      p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
+    }
+  });});}
+}
 
 // Busca a versão mais recente do Supabase e sobrescreve o estado local
 async function loadRemote(){
@@ -1399,6 +1404,7 @@ async function loadRemote(){
     if(error){ console.error('Erro ao buscar dados da nuvem:', error); return false; }
     if(data && data.data && Object.keys(data.data).length > 0){
       Object.assign(S, data.data);
+      runMigracoes();
       try{ localStorage.setItem(window._storageKey, JSON.stringify(S)); }catch(e){}
       return true;
     }
@@ -5141,7 +5147,7 @@ function renderSaldoGeral(){
     +'<div style="padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap">'
     +'<span style="font-size:11px;color:var(--text3)">Receita: <strong style="color:var(--text)">'+fmt(receitaTotal)+'</strong></span>'
     +'<span style="font-size:11px;color:var(--text3)">Folha PJ: <strong style="color:var(--text)">'+fmt(colaboradores)+'</strong></span>'
-    +'<span style="font-size:11px;color:var(--text3)">Impostos: <strong style="color:var(--text)">'+fmt(impostos)+'</strong></span>'
+    +'<span style="font-size:11px;color:var(--text3)">Impostos (NF): <strong style="color:var(--text)">'+fmt(impostosNF)+'</strong></span>'
     +'<span style="font-size:11px;color:var(--text3)">Fixos/outros: <strong style="color:var(--text)">'+fmt(listboxesCost+saidasOp)+'</strong></span>'
     +'<span style="font-size:11px;color:var(--text3)">Margem: <strong style="color:'+(margem>=40?'#059669':margem>=20?'#d97706':'#dc2626')+'">'+pct(margem)+'</strong></span>'
     +'</div>'

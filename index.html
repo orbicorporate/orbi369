@@ -5116,6 +5116,9 @@ function renderSaldoGeral(){
       +'<div style="font-size:11px;color:var(--text3);margin-top:3px">'+sub+'</div>'
       +'</div>';
   }
+  function secLbl(txt){
+    return '<div style="padding:9px 18px 0;font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;background:var(--bg3)">'+txt+'</div>';
+  }
 
   el.innerHTML='<div class="panel">'
     +'<div class="panel-hdr ph-dark">'
@@ -5129,27 +5132,30 @@ function renderSaldoGeral(){
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
     +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">?</button>'
     +'</div></div>'
+
+    +secLbl('1. Receita')
     +'<div style="display:flex;flex-wrap:wrap">'
-    +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',false)
-    +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos',lucroLiquido>=0?'#059669':'#dc2626',true)
+    +mkC('Receita prevista',receitaTotal,'Todos os clientes ativos','#059669',true)
     +'</div>'
+
+    +secLbl('2. Custos do m\u00eas')
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
     +mkC('Folha',colaboradores,'Colaboradores/PJ','#7c3aed',false)
     +mkC('Imposto (NF)',impostosNF,'Sobre clientes com NF','#d97706',false)
     +mkC('Fixos',listboxesCost,'Custos fixos do neg\u00f3cio','#0891b2',false)
     +mkC('Extras',saidasOp,'Sa\u00eddas avulsas','#dc2626',true)
     +'</div>'
+
+    +secLbl('3. Resultado')
+    +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
+    +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos acima',lucroLiquido>=0?'#059669':'#dc2626',true)
+    +'</div>'
+
+    +secLbl('4. Status de pagamento')
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
     +mkC('Total pago',totalPago,'Colaboradores j\u00e1 pagos','#2563eb',false)
     +mkC('Caixa atual',saldoDisp,'Receita \u2212 pagamentos','#059669',false)
     +mkC('A pagar ainda',totalCustos-totalPago,'Custos n\u00e3o liquidados',totalCustos-totalPago>0?'#d97706':'#059669',true)
-    +'</div>'
-    +'<div style="padding:10px 16px;background:var(--bg3);border-top:1px solid var(--border);display:flex;gap:20px;flex-wrap:wrap">'
-    +'<span style="font-size:11px;color:var(--text3)">Receita: <strong style="color:var(--text)">'+fmt(receitaTotal)+'</strong></span>'
-    +'<span style="font-size:11px;color:var(--text3)">Folha PJ: <strong style="color:var(--text)">'+fmt(colaboradores)+'</strong></span>'
-    +'<span style="font-size:11px;color:var(--text3)">Impostos (NF): <strong style="color:var(--text)">'+fmt(impostosNF)+'</strong></span>'
-    +'<span style="font-size:11px;color:var(--text3)">Fixos/outros: <strong style="color:var(--text)">'+fmt(listboxesCost+saidasOp)+'</strong></span>'
-    +'<span style="font-size:11px;color:var(--text3)">Margem: <strong style="color:'+(margem>=40?'#059669':margem>=20?'#d97706':'#dc2626')+'">'+pct(margem)+'</strong></span>'
     +'</div>'
     +'</div>';
 }

@@ -1235,6 +1235,15 @@ const calcPagExtras=()=>{
   return lb ? (lb.items||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0) : 0;
 };
 const calcL=()=>calcR()-calcF()-calcImpostoNF()-calcPagExtras();
+// Lucro que "vaza" pra aba Pessoal como entrada automática.
+// Se o sócio principal tiver um valor de distribuição definido, usa ele.
+// Senão, cai no lucro operacional total da empresa (comportamento padrão).
+const calcLucroParaPessoal=()=>{
+  var socios = S.distribSocios || [];
+  var principal = socios.find(function(s){ return s.principal; });
+  if(principal && Number(principal.valor) > 0) return Number(principal.valor);
+  return calcL();
+};
 const calcM=()=>{const r=calcR();return r>0?(calcL()/r)*100:0};
 const calcT=()=>{const at=S.clientes.filter(c=>c.status==='ativo');return at.length>0?calcR()/at.length:0};
 
@@ -4969,7 +4978,7 @@ function renderEntPes(){
   var totalManual=items.reduce(function(s,it){return s+(Number(it.valor)||0);},0);
 
   // 💼 LINHA AUTOMÁTICA: Lucro do negócio (vem da aba Negócio, atualiza em tempo real)
-  var lucroNeg = (typeof calcL==='function') ? calcL() : 0;
+  var lucroNeg = (typeof calcLucroParaPessoal==='function') ? calcLucroParaPessoal() : 0;
   var mostraLucro = lucroNeg > 0;  // só mostra se positivo
 
   var total = totalManual + (mostraLucro ? lucroNeg : 0);
@@ -5035,6 +5044,101 @@ function toggleColPago(nome){
   S.colPagos[nome]=!S.colPagos[nome];
   save();renderAll();
 }
+// ===================== DISTRIBUIÇÃO DE SÓCIOS =====================
+// S.distribSocios = [{nome, valor, principal:bool}]
+// O sócio marcado "principal" tem seu valor replicado como "Lucro do negócio" na aba Pessoal.
+// Se ninguém tiver valor de distribuição definido, a aba Pessoal usa o lucro total automaticamente.
+function renderDistribSocios(lucroLiquido){
+  var el = document.getElementById('distrib-socios-box');
+  if(!el) return;
+  var socios = S.distribSocios || [];
+  var totalDistribuido = socios.reduce(function(s,x){return s+(Number(x.valor)||0);},0);
+  var restante = lucroLiquido - totalDistribuido;
+  var principal = socios.find(function(s){return s.principal;});
+
+  var rows = socios.map(function(s,i){
+    return '<tr>'
+      +'<td class="inline-edit nome-cell" onclick="editDistribSocio('+i+',\'nome\')">'+s.nome+'</td>'
+      +'<td class="num r inline-edit" onclick="editDistribSocio('+i+',\'valor\')">'+fmt(Number(s.valor)||0)+'</td>'
+      +'<td style="text-align:center"><button onclick="setSocioPrincipal('+i+')" title="Marcar como sócio principal — o valor dele vira o \'Lucro do negócio\' na aba Pessoal" style="background:'+(s.principal?'#f59e0b':'transparent')+';border:1.5px solid '+(s.principal?'#f59e0b':'var(--border)')+';color:'+(s.principal?'#fff':'var(--text3)')+';border-radius:20px;padding:3px 10px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:var(--font)">'+(s.principal?'👑 Principal':'Tornar principal')+'</button></td>'
+      +'<td><button class="btn btn-r btn-sm" onclick="removeDistribSocio('+i+')">✕</button></td>'
+      +'</tr>';
+  }).join('');
+
+  var html = '';
+  if(socios.length > 0){
+    html += '<div class="tw"><table><thead><tr><th>S\u00f3cio</th><th>Valor distribu\u00eddo</th><th>Principal</th><th></th></tr></thead><tbody>'+rows+'</tbody>'
+      +'<tr class="tr-tot"><td>TOTAL DISTRIBU\u00cdDO</td><td class="num r gc">'+fmt(totalDistribuido)+'</td><td colspan="2"></td></tr>'
+      +'</table></div>';
+    html += '<div style="padding:10px 18px;font-size:11.5px;color:'+(restante<0?'var(--red)':'var(--text3)')+'">'
+      +(restante<0
+        ? '⚠️ A distribuição total ultrapassa o lucro líquido em '+fmt(Math.abs(restante))+'.'
+        : '💰 Ainda não distribuído: <strong style="color:var(--text)">'+fmt(restante)+'</strong>')
+      +'</div>';
+  }
+  html += '<div style="padding:12px 18px;background:var(--bg2);display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">'
+    +'<div style="flex:1;min-width:140px"><label style="font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;display:block;margin-bottom:4px">Nome do s\u00f3cio</label>'
+    +'<input type="text" id="ds-nome" placeholder="Ex: Pedro" style="width:100%;font-family:var(--font);font-size:13px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);outline:none"></div>'
+    +'<div style="width:130px"><label style="font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;display:block;margin-bottom:4px">Valor (R$)</label>'
+    +'<input type="number" id="ds-valor" placeholder="0" style="width:100%;font-family:var(--font);font-size:13px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);outline:none"></div>'
+    +'<button class="btn btn-g" onclick="addDistribSocio()" style="height:36px">+ Adicionar</button>'
+    +'</div>'
+    +'<div style="padding:0 18px 12px;font-size:10.5px;color:var(--text3);line-height:1.5">'
+    +(principal
+      ? '👑 <strong>'+principal.nome+'</strong> é o s\u00f3cio principal — o valor dele ('+fmt(Number(principal.valor)||0)+') entra como "Lucro do neg\u00f3cio" na aba Pessoal.'
+      : 'ℹ️ Nenhum s\u00f3cio principal definido ainda \u2014 a aba Pessoal vai puxar o <strong>lucro total da empresa</strong> ('+fmt(lucroLiquido)+') automaticamente.')
+    +'</div>';
+
+  el.innerHTML = html;
+}
+function addDistribSocio(){
+  var nomeEl = document.getElementById('ds-nome');
+  var valEl = document.getElementById('ds-valor');
+  var nome = (nomeEl.value||'').trim();
+  var valor = parseFloat(valEl.value)||0;
+  if(!nome){ showToast('⚠️ Digite o nome do sócio.'); return; }
+  if(!S.distribSocios) S.distribSocios = [];
+  var isPrimeiro = S.distribSocios.length === 0;
+  S.distribSocios.push({nome:nome, valor:valor, principal:isPrimeiro});
+  save(); renderAll();
+  showToast('✅ "'+nome+'" adicionado à distribuição.');
+}
+window.addDistribSocio = addDistribSocio;
+function removeDistribSocio(i){
+  if(!S.distribSocios || !S.distribSocios[i]) return;
+  var nome = S.distribSocios[i].nome;
+  var eraPrincipal = S.distribSocios[i].principal;
+  S.distribSocios.splice(i,1);
+  // Se removeu o principal e ainda sobrou alguém, promove o primeiro da lista
+  if(eraPrincipal && S.distribSocios.length>0) S.distribSocios[0].principal = true;
+  save(); renderAll();
+  showToast('🗑 "'+nome+'" removido.');
+}
+window.removeDistribSocio = removeDistribSocio;
+function setSocioPrincipal(i){
+  if(!S.distribSocios || !S.distribSocios[i]) return;
+  S.distribSocios.forEach(function(s,idx){ s.principal = (idx===i); });
+  save(); renderAll();
+  showToast('👑 "'+S.distribSocios[i].nome+'" agora é o sócio principal.');
+}
+window.setSocioPrincipal = setSocioPrincipal;
+function editDistribSocio(i,field){
+  var item = S.distribSocios && S.distribSocios[i];
+  if(!item) return;
+  var novo = prompt(field==='nome' ? 'Nome do sócio:' : 'Valor distribuído (R$):', field==='nome'?item.nome:item.valor);
+  if(novo===null) return;
+  if(field==='nome'){
+    if(!novo.trim()) return;
+    item.nome = novo.trim();
+  } else {
+    var v = parseFloat(novo);
+    if(isNaN(v)||v<0){ showToast('⚠️ Valor inválido.'); return; }
+    item.valor = v;
+  }
+  save(); renderAll();
+}
+window.editDistribSocio = editDistribSocio;
+
 function renderColSaldo(){
   var el=document.getElementById('col-saldo-box');
   if(!el)return;
@@ -5151,6 +5255,9 @@ function renderSaldoGeral(){
     +mkC('Lucro l\u00edquido',lucroLiquido,'Receita \u2212 todos os custos acima',lucroLiquido>=0?'#059669':'#dc2626',true)
     +'</div>'
 
+    +secLbl('3.1 Distribui\u00e7\u00e3o de s\u00f3cios')
+    +'<div id="distrib-socios-box" style="border-top:1px solid var(--border)"></div>'
+
     +secLbl('4. Status de pagamento')
     +'<div style="display:flex;flex-wrap:wrap;border-top:1px solid var(--border)">'
     +mkC('Total pago',totalPago,'Colaboradores j\u00e1 pagos','#2563eb',false)
@@ -5158,6 +5265,7 @@ function renderSaldoGeral(){
     +mkC('A pagar ainda',totalCustos-totalPago,'Custos n\u00e3o liquidados',totalCustos-totalPago>0?'#d97706':'#059669',true)
     +'</div>'
     +'</div>';
+  renderDistribSocios(lucroLiquido);
 }
 
 
@@ -5294,7 +5402,7 @@ function renderPesSaldo(fatTotalOverride){
   // 1. Entradas previstas (Entradas previstas da aba Pessoal + Lucro do negócio automático)
   var entTotal=(S.entradasPes||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
   // Inclui o lucro do negócio como entrada automática se positivo
-  var lucroNegAuto = (typeof calcL==='function') ? calcL() : 0;
+  var lucroNegAuto = (typeof calcLucroParaPessoal==='function') ? calcLucroParaPessoal() : 0;
   if(lucroNegAuto > 0) entTotal += lucroNegAuto;
 
   // 2. Cartões — soma faturas (usa fatItems se houver, senão fatTotal manual)
@@ -5398,7 +5506,7 @@ function renderPesRecomendacoes(){
 
   // ----- 1. Coletando números -----
   var entTotal=(S.entradasPes||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
-  var lucroNegAuto = (typeof calcL==='function') ? calcL() : 0;
+  var lucroNegAuto = (typeof calcLucroParaPessoal==='function') ? calcLucroParaPessoal() : 0;
   if(lucroNegAuto>0) entTotal += lucroNegAuto;
 
   var totalCartao=0;

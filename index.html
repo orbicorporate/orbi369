@@ -6080,9 +6080,13 @@ function renderOpIA(){
     _opMetaLucro=Math.max(Math.round(receita*0.3/1000)*1000, 5000);
   }
   var metaLucro=_opMetaLucro;
-  // Pra atingir metaLucro: lucro = receitaNova - folha - imposto
-  // → receitaNova = metaLucro + folha + imposto
-  var receitaNecessaria=metaLucro+folha+imposto;
+  // Pra atingir metaLucro de forma realista, usamos a MARGEM % atual como referência —
+  // isso já embute proporcionalmente o imposto sobre NF, folha e demais custos que
+  // crescem junto com a receita, em vez de assumir custos fixos travados no valor de hoje.
+  var margemAtualPct = (typeof calcM==='function') ? calcM() : (receita>0 ? (lucro/receita)*100 : 0);
+  var receitaNecessaria = margemAtualPct > 1
+    ? metaLucro / (margemAtualPct/100)
+    : metaLucro + folha + imposto; // fallback se a margem atual for muito baixa/negativa
   var receitaExtra=Math.max(0,receitaNecessaria-receita);
   var clientesExtras=ticketMedio>0?Math.ceil(receitaExtra/ticketMedio):0;
   var metaMargem=receitaNecessaria>0?(metaLucro/receitaNecessaria)*100:0;
@@ -6191,7 +6195,7 @@ function renderOpIA(){
   // Card de simulação: quanto faturar pra atingir X de lucro
   var simCard=mkCard('Planejamento: meta de lucro','🎯','#7c3aed',
     '<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:12px">'
-    +'Quanto você quer lucrar por mês? O sistema calcula quanto precisa faturar e quantos clientes novos faltam pra chegar lá (mantendo a folha atual).'
+    +'Quanto você quer lucrar por mês? O sistema calcula quanto precisa faturar com base na sua <strong>margem de lucro atual ('+margemAtualPct.toFixed(1)+'%)</strong> — assim o imposto e os custos que crescem junto com a receita já entram na conta.'
     +'</div>'
     // Input de meta com slider
     +'<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:12px">'
@@ -6200,7 +6204,7 @@ function renderOpIA(){
     +'<input type="number" id="op-meta-input" value="'+metaLucro+'" min="0" step="1000" style="flex:1;min-width:100px;font-family:var(--font);font-size:13px;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);outline:none" onchange="ajustarMetaLucro(this.value)">'
     +'<span style="font-size:11px;color:var(--text3)">/mês</span>'
     +'</div>'
-    +'<input type="range" id="op-meta-range" min="0" max="'+Math.max(50000,metaLucro*2)+'" step="500" value="'+metaLucro+'" oninput="document.getElementById(\'op-meta-input\').value=this.value" onchange="ajustarMetaLucro(this.value)" style="width:100%;accent-color:var(--purple)">'
+    +'<input type="range" id="op-meta-range" min="0" max="'+Math.max(receita*2.5,metaLucro*1.4,60000)+'" step="500" value="'+metaLucro+'" oninput="document.getElementById(\'op-meta-input\').value=this.value" onchange="ajustarMetaLucro(this.value)" style="width:100%;accent-color:var(--purple)">'
     +'</div>'
     // Resultado
     +'<div style="background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:10px;padding:14px 16px">'

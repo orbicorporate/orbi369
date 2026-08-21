@@ -172,6 +172,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* METRICS */
 .mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .met{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;border-top:none;box-shadow:var(--shadow)}
+.met.g,.met.p{border:none !important;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.met.g{background:linear-gradient(150deg,#052e1f 0%,#0a4a30 55%,#0d6b45 100%)}
+.met.p{background:linear-gradient(150deg,#1a1030 0%,#2d1a52 55%,#432a78 100%)}
+.met.g::before,.met.p::before{content:'';position:absolute;top:-24px;right:-24px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);pointer-events:none}
+.met.g::after,.met.p::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.08),transparent 40%);pointer-events:none;backdrop-filter:blur(.5px)}
+.met.g .met-lbl,.met.p .met-lbl{color:rgba(255,255,255,.6) !important;position:relative}
+.met.g .met-val,.met.p .met-val{color:#fff !important;position:relative}
+.met.g .met-sub,.met.p .met-sub{color:rgba(255,255,255,.72) !important;position:relative}
 .met.g{border-top-color:var(--green)}.met.b{border-top-color:var(--blue)}
 .met.a{border-top-color:var(--amber)}.met.r{border-top-color:var(--red)}
 .met.p{border-top-color:var(--purple)}.met.t{border-top-color:var(--teal)}

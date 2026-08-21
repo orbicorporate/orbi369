@@ -1745,32 +1745,55 @@ function renderFocoDoMes(){
     +'<div style="font-size:10.5px;color:var(--text3);margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);line-height:1.5">ℹ️ Baseado no lucro líquido atual, já considerando o pró-labore dos sócios. Assume receita e custos estáveis, sem novos contratos.</div>'
     +'</div>';
 }
+var _modeloNegocioExpandido = false;
 function renderModeloNegocio(){
   var el = document.getElementById('modelo-negocio-box');
   if(!el) return;
   var modelo = (S.cfg && S.cfg.modeloNegocio) || 'ambos';
   var opcoes = [
-    {id:'recorrente', icon:'🔄', label:'Recorrência', desc:'Fee mensal fixo'},
-    {id:'avulso', icon:'🎯', label:'Projetos avulsos', desc:'Serviço único'},
-    {id:'ambos', icon:'🔀', label:'Ambos', desc:'Recorrente + avulso'}
+    {id:'recorrente', label:'Recorrência', desc:'Fee mensal fixo'},
+    {id:'avulso', label:'Projetos avulsos', desc:'Serviço único'},
+    {id:'ambos', label:'Ambos', desc:'Recorrente + avulso'}
   ];
-  el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px">'
-    +'<div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:11px">💼 Como sua empresa fatura?</div>'
-    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+  var atual = opcoes.find(function(o){return o.id===modelo;}) || opcoes[2];
+
+  if(!_modeloNegocioExpandido){
+    // Estado recolhido — só mostra a seleção atual, compacto
+    el.innerHTML = '<div onclick="toggleModeloNegocioExpandido()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;cursor:pointer;width:fit-content">'
+      +'<span style="font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.3px">Modelo:</span>'
+      +'<span style="font-size:11.5px;font-weight:700;color:var(--text)">'+atual.label+'</span>'
+      +'<span style="font-size:10px;color:var(--text3)">✎ mudar</span>'
+      +'</div>';
+    return;
+  }
+
+  // Estado expandido — mostra as 3 opções
+  el.innerHTML = '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+    +'<div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Como sua empresa fatura?</div>'
+    +'<span onclick="toggleModeloNegocioExpandido()" style="font-size:10.5px;color:var(--text3);cursor:pointer">✕ fechar</span>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
     +opcoes.map(function(o){
       var ativo = o.id === modelo;
-      return '<button onclick="setModeloNegocio(\''+o.id+'\')" style="flex:1;min-width:120px;padding:13px 10px;border:1.5px solid '+(ativo?'var(--indigo,#4f46e5)':'var(--border)')+';background:'+(ativo?'var(--indigo,#4f46e5)':'var(--bg)')+';color:'+(ativo?'#fff':'var(--text)')+';border-radius:11px;cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)">'
-        +'<div style="font-size:13.5px;font-weight:700">'+o.label+'</div>'
-        +'<div style="font-size:10.5px;opacity:.85;margin-top:3px">'+o.desc+'</div>'
+      return '<button onclick="setModeloNegocio(\''+o.id+'\')" style="flex:1;min-width:110px;padding:10px 8px;border:1.5px solid '+(ativo?'var(--indigo,#4f46e5)':'var(--border)')+';background:'+(ativo?'var(--indigo,#4f46e5)':'var(--bg)')+';color:'+(ativo?'#fff':'var(--text)')+';border-radius:10px;cursor:pointer;text-align:center;transition:all .15s;font-family:var(--font)">'
+        +'<div style="font-size:12px;font-weight:700">'+o.label+'</div>'
+        +'<div style="font-size:9.5px;opacity:.85;margin-top:2px">'+o.desc+'</div>'
         +'</button>';
     }).join('')
     +'</div>'
     +'</div>';
 }
+function toggleModeloNegocioExpandido(){
+  _modeloNegocioExpandido = !_modeloNegocioExpandido;
+  renderModeloNegocio();
+}
+window.toggleModeloNegocioExpandido = toggleModeloNegocioExpandido;
 function setModeloNegocio(modelo){
   if(!S.cfg) S.cfg = {};
   S.cfg.modeloNegocio = modelo;
   save();
+  _modeloNegocioExpandido = false;
   renderModeloNegocio();
   renderMets();
 }

@@ -23,9 +23,11 @@
   --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;
   --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;
   --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
+  --lime:#d7f52c;--lime-dk:#a8c400;--ink:#0a0a0a;
   --font:'Open Sans',Arial,sans-serif;
   --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
   --shadow-lg:0 4px 16px rgba(0,0,0,.1),0 12px 32px rgba(0,0,0,.06);
+  --r-lg:24px;--r-md:18px;--r-sm:13px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -78,9 +80,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* TABS */
 .tabs{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;padding:10px 16px;gap:8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:60px;z-index:190;box-shadow:0 2px 5px rgba(0,0,0,.04)}
 .tabs::-webkit-scrollbar{display:none}
-.tb{font-family:var(--font);font-size:12.5px;font-weight:400;color:#fff;padding:11px 16px;border:none;background:linear-gradient(135deg,#0a0e17,#12233d);border-radius:10px;cursor:pointer;white-space:nowrap;transition:all .2s;box-shadow:0 2px 6px rgba(10,14,23,.2);display:inline-flex;align-items:center;justify-content:center;gap:7px;text-align:center}
+.tb{font-family:var(--font);font-size:12.5px;font-weight:400;color:#fff;padding:11px 16px;border:none;background:linear-gradient(135deg,#0a0e17,#12233d);border-radius:var(--r-md);cursor:pointer;white-space:nowrap;transition:all .2s;box-shadow:0 2px 6px rgba(10,14,23,.2);display:inline-flex;align-items:center;justify-content:center;gap:7px;text-align:center}
 .tb:hover{background:linear-gradient(135deg,#12233d,#1e3a5f);transform:translateY(-1px)}
-.tb.on{background:linear-gradient(135deg,#12233d,#1e3a5f);box-shadow:0 3px 10px rgba(30,58,95,.45)}
+.tb.on{background:var(--lime);color:var(--ink);font-weight:700;box-shadow:0 3px 12px rgba(215,245,44,.4)}
+.tb.on .tb-ic{stroke:var(--ink)}
 .tb-ic{width:15px;height:15px;flex-shrink:0;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tab-pane{display:none;padding:22px 16px;max-width:1100px;margin:0 auto;animation:fi .2s ease}
 .tab-pane.on{display:block}
@@ -88,7 +91,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes histExp{from{opacity:0;transform:scaleY(.95);transform-origin:top}to{opacity:1;transform:scaleY(1);transform-origin:top}}
 
 /* PANEL — fully editable */
-.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;position:relative}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;position:relative}
 .panel-hdr{padding:18px 20px;display:flex;align-items:center;justify-content:space-between;color:#fff;position:relative;overflow:hidden}
 .panel-hdr::after{content:'';position:absolute;right:-12px;top:-12px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.07)}
 .panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;flex:1}
@@ -104,8 +107,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .hdr-mes-chip{display:inline-block;margin-left:8px;padding:2px 8px;font-size:9px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;letter-spacing:.4px;text-transform:lowercase;vertical-align:middle;font-family:'Open Sans',Arial,sans-serif}
 /* Animação pra destacar botão de perguntas decisivas quando "Pense mais" */
 /* Botão de adicionar com degradê animado (verde escuro ↔ verde claro) */
-.btn-add-animated{font-family:var(--font);font-size:13.5px;font-weight:700;padding:11px 22px;border:none;border-radius:13px;background:linear-gradient(115deg,#065f46,#059669,#34d399,#059669,#065f46);background-size:300% 100%;animation:addGradientMove 3.5s ease-in-out infinite;color:#fff;cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 3px 12px rgba(5,150,105,.35)}
-.btn-add-animated .plus-ic{font-size:17px;font-weight:800;color:#fff;line-height:1}
+.btn-add-animated{font-family:var(--font);font-size:13.5px;font-weight:800;padding:12px 22px;border:none;border-radius:16px;background:linear-gradient(115deg,#a8c400,#d7f52c,#eaff6b,#d7f52c,#a8c400);background-size:300% 100%;animation:addGradientMove 3.5s ease-in-out infinite;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 14px rgba(168,196,0,.4)}
+.btn-add-animated .plus-ic{font-size:17px;font-weight:800;color:var(--ink);line-height:1}
 @keyframes addGradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
 @keyframes pulse {
@@ -166,7 +169,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 
 /* METRICS */
 .mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.met{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:16px;border-top:3px solid transparent}
+.met{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;border-top:none;box-shadow:var(--shadow)}
 .met.g{border-top-color:var(--green)}.met.b{border-top-color:var(--blue)}
 .met.a{border-top-color:var(--amber)}.met.r{border-top-color:var(--red)}
 .met.p{border-top-color:var(--purple)}.met.t{border-top-color:var(--teal)}
@@ -1700,32 +1703,33 @@ function renderFocoDoMes(){
   var proj90 = lucroMensal * 3;
 
   el.innerHTML =
-    '<div style="background:'+bgMap[foco.cor]+';border-left:4px solid '+borderMap[foco.cor]+';border-radius:14px;padding:18px 20px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start">'
-    +'<span style="font-size:26px;flex-shrink:0">'+foco.icone+'</span>'
+    '<div style="background:linear-gradient(135deg,#0a0a0a,#161616);border-radius:var(--r-lg);padding:26px 24px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.25)">'
+    +'<div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(215,245,44,.25),transparent 70%);pointer-events:none"></div>'
+    +'<div style="position:absolute;bottom:-60px;left:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(215,245,44,.10),transparent 70%);pointer-events:none"></div>'
+    +'<div style="position:relative;display:flex;gap:14px;align-items:flex-start">'
+    +'<span style="font-size:28px;flex-shrink:0">'+foco.icone+'</span>'
     +'<div style="flex:1;min-width:0">'
-    +'<div style="font-size:10.5px;font-weight:700;color:'+txtMap[foco.cor]+';text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px">🎯 Foco do mês</div>'
-    +'<div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px">'+foco.titulo+'</div>'
-    +'<div style="font-size:13.5px;color:var(--text2);line-height:1.55">'+foco.texto+'</div>'
+    +'<div style="font-size:10px;font-weight:800;color:var(--lime);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Foco do mês</div>'
+    +'<div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.25;letter-spacing:-.2px">'+foco.titulo+'</div>'
+    +'<div style="font-size:13.5px;color:rgba(255,255,255,.62);line-height:1.55">'+foco.texto+'</div>'
     +'</div>'
     +'</div>'
-    +'<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 18px">'
-    +'<div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:11px">📈 Projeção de fluxo de caixa (mantendo o ritmo atual)</div>'
-    +'<div style="display:flex;gap:12px;flex-wrap:wrap">'
-    +'<div style="flex:1;min-width:100px;text-align:center;padding:12px;background:var(--bg);border-radius:10px">'
-    +'<div style="font-size:11px;color:var(--text3);margin-bottom:5px">30 dias</div>'
-    +'<div class="num" style="font-size:16px;font-weight:700;color:'+(proj30>=0?'var(--green)':'var(--red)')+'">'+fmt(proj30)+'</div>'
     +'</div>'
-    +'<div style="flex:1;min-width:100px;text-align:center;padding:12px;background:var(--bg);border-radius:10px">'
-    +'<div style="font-size:11px;color:var(--text3);margin-bottom:5px">60 dias</div>'
-    +'<div class="num" style="font-size:16px;font-weight:700;color:'+(proj60>=0?'var(--green)':'var(--red)')+'">'+fmt(proj60)+'</div>'
+    +'<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">'
+    +'<div style="flex:1;min-width:110px;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:16px;box-shadow:var(--shadow)">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">30 dias</div>'
+    +'<div class="num" style="font-size:19px;font-weight:800;color:'+(proj30>=0?'var(--text)':'var(--red)')+'">'+fmt(proj30)+'</div>'
     +'</div>'
-    +'<div style="flex:1;min-width:100px;text-align:center;padding:12px;background:var(--bg);border-radius:10px">'
-    +'<div style="font-size:11px;color:var(--text3);margin-bottom:5px">90 dias</div>'
-    +'<div class="num" style="font-size:16px;font-weight:700;color:'+(proj90>=0?'var(--green)':'var(--red)')+'">'+fmt(proj90)+'</div>'
+    +'<div style="flex:1;min-width:110px;background:linear-gradient(135deg,#0a0a0a,#1a1a1a);border-radius:var(--r-md);padding:16px;box-shadow:var(--shadow)">'
+    +'<div style="font-size:10px;font-weight:700;color:var(--lime);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">60 dias</div>'
+    +'<div class="num" style="font-size:19px;font-weight:800;color:#fff">'+fmt(proj60)+'</div>'
+    +'</div>'
+    +'<div style="flex:1;min-width:110px;background:var(--lime);border-radius:var(--r-md);padding:16px;box-shadow:0 4px 14px rgba(215,245,44,.3)">'
+    +'<div style="font-size:10px;font-weight:800;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;opacity:.7">90 dias</div>'
+    +'<div class="num" style="font-size:19px;font-weight:800;color:var(--ink)">'+fmt(proj90)+'</div>'
     +'</div>'
     +'</div>'
-    +'<div style="font-size:10.5px;color:var(--text3);margin-top:11px;line-height:1.5">ℹ️ Projeção baseada no <strong>lucro líquido total</strong> do mês, considerando que os sócios já tenham recebido seu pró-labore (se cadastrado em Colaboradores). Assume receita e custos estáveis — não considera sazonalidade nem novos contratos.</div>'
-    +'</div>';
+    +'<div style="font-size:10.5px;color:var(--text3);margin:-6px 4px 14px;line-height:1.5">ℹ️ Projeção de fluxo de caixa baseada no lucro líquido total, considerando que os sócios já tenham recebido seu pró-labore. Assume receita e custos estáveis.</div>';
 }
 function renderModeloNegocio(){
   var el = document.getElementById('modelo-negocio-box');

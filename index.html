@@ -205,6 +205,51 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .met-vivid-purple .met-val{color:#fff !important;position:relative}
 .met-vivid-purple .met-sub{color:rgba(255,255,255,.85) !important;position:relative}
 
+/* ===================== INÍCIO (dashboard bento) ===================== */
+.ini-num{font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.ini-headline{font-size:26px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin-bottom:14px}
+.ini-headline small{display:block;font-size:12px;font-weight:600;color:var(--text3);margin-top:2px;letter-spacing:0}
+
+.ini-hero{background:#141414;border-radius:28px;padding:20px 18px 18px;margin-bottom:14px;color:#fff}
+.ini-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.ini-hero-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
+.ini-hero-pill{font-size:10px;font-weight:800;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:100px;color:#fff}
+.ini-hero-num{font-size:30px;font-weight:800;line-height:1;margin-bottom:12px}
+.ini-hero-delta-row{display:flex;align-items:flex-end;justify-content:space-between}
+.ini-hero-delta{font-size:21px;font-weight:800;color:#c7ea3a}
+.ini-hero-delta.neg{color:#f87171}
+.ini-hero-delta-sub{font-size:10.5px;font-weight:600;color:rgba(255,255,255,.5);margin-top:2px;display:flex;align-items:center;gap:4px}
+.ini-bars{display:flex;align-items:flex-end;gap:5px;height:52px}
+.ini-bars i{width:14px;border-radius:6px 6px 2px 2px;display:block}
+
+.ini-bento{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:10px;margin-bottom:12px;position:relative}
+.ini-b-receita{grid-column:1;grid-row:1/3;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:18px 16px;display:flex;flex-direction:column;justify-content:space-between}
+.ini-b-folha{grid-column:2;grid-row:1;background:var(--bg3);border-radius:20px;padding:14px}
+.ini-b-imposto{grid-column:2;grid-row:2;background:var(--bg3);border-radius:20px;padding:14px;position:relative}
+
+.ini-bk-lbl{font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px}
+.ini-bk-val{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px}
+.ini-bk-val.big{font-size:22px}
+.ini-bk-delta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:800;color:#65911f;background:#eef7d6;padding:3px 8px;border-radius:100px}
+.ini-bk-delta.neg{color:#b91c1c;background:#fef2f2}
+
+.ini-fab{position:absolute;right:-6px;bottom:44px;width:46px;height:46px;border-radius:50%;background:#141414;
+  border:3px solid #c7ea3a;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,.22);z-index:2;cursor:pointer}
+
+.ini-op-chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+.ini-meta{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px 16px 18px;margin-bottom:16px}
+.ini-meta-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.ini-meta-title{font-size:13.5px;font-weight:700;color:var(--text)}
+.ini-meta-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.ini-meta-pct{font-size:18px;font-weight:800;color:var(--text)}
+.ini-bar{height:8px;border-radius:100px;background:var(--bg3);overflow:hidden}
+.ini-bar i{display:block;height:100%;border-radius:100px;background:#c7ea3a}
+@media (max-width:380px){
+  .ini-hero-num{font-size:26px}
+  .ini-headline{font-size:22px}
+}
+
 /* TABLE */
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:280px}
@@ -575,7 +620,8 @@ td.inline-edit:active{background:var(--blue-bg)}
 </div>
 
 <div class="tabs">
-  <button class="tb on" data-tabid="op" data-fixed="1" onclick="showTab('op',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span>Negócio</span></button>
+  <button class="tb on" data-tabid="inicio" data-fixed="1" onclick="showTab('inicio',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Início</span></button>
+  <button class="tb" data-tabid="op" data-fixed="1" onclick="showTab('op',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span>Negócio</span></button>
   <button class="tb" data-tabid="pes" data-fixed="1" onclick="showTab('pes',this)"><svg class="tb-ic" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-4 3.2-6.5 7-6.5s7 2.5 7 6.5"/></svg><span>Pessoal</span></button>
   <button class="tb" data-tabid="invest" data-fixed="1" onclick="showTab('invest',this)"><svg class="tb-ic" viewBox="0 0 24 24"><path d="M4 16l5-5 4 4 7-8M16 6h4v4"/></svg><span>Investimentos</span></button>
   <button class="tb" data-tabid="hist" data-fixed="1" onclick="showTab('hist',this)"><svg class="tb-ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8 3v3M16 3v3"/></svg><span>Histórico</span></button>
@@ -586,8 +632,13 @@ td.inline-edit:active{background:var(--blue-bg)}
 
 <div class="toast" id="toast"></div>
 
+<!-- ===== TAB: INÍCIO (dashboard) ===== -->
+<div id="tab-inicio" class="tab-pane on">
+  <div id="inicio-content"></div>
+</div>
+
 <!-- ===== TAB: NEGOCIO ===== -->
-<div id="tab-op" class="tab-pane on">
+<div id="tab-op" class="tab-pane">
   <div id="modelo-negocio-box" style="margin-bottom:14px"></div>
   <div id="proximos-passos-box" style="margin-bottom:14px"></div>
   <div id="foco-mes-box" style="margin-bottom:14px"></div>
@@ -1560,6 +1611,7 @@ function catMap(items){const m={};items.forEach(it=>{m[it.cat]=(m[it.cat]||0)+it
 // ===================== RENDER ALL =====================
 function renderAll(){
   applyLabels();
+  renderInicio();
   renderModeloNegocio();
   renderProximosPassos();
   renderFocoDoMes();
@@ -1818,6 +1870,118 @@ window.setModeloNegocio = setModeloNegocio;
 
 function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function setVal(id,v){const e=document.getElementById(id);if(e&&!e.matches(':focus'))e.value=v||'';}
+
+// ===================== INÍCIO (dashboard bento) =====================
+function renderInicio(){
+  var el=document.getElementById('inicio-content');
+  if(!el)return;
+
+  var receita=calcR(), folha=calcF(), impostoNF=calcImpostoNF(), lucro=calcL();
+
+  // Mês anterior fechado no Histórico, pra calcular a variação %
+  var hist=(S.historico||[]).slice().sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
+  var mesAnterior=hist[0]||null;
+  function deltaPct(atual,anterior){
+    if(!anterior || !anterior>0) return null;
+    if(anterior===0) return null;
+    return ((atual-anterior)/Math.abs(anterior))*100;
+  }
+  var dLucro=mesAnterior?deltaPct(lucro,mesAnterior.lucro):null;
+  var dReceita=mesAnterior?deltaPct(receita,mesAnterior.receita):null;
+  var dFolha=mesAnterior?deltaPct(folha,mesAnterior.folha):null;
+  var dImposto=mesAnterior?deltaPct(impostoNF,mesAnterior.imposto):null;
+
+  function deltaHtml(d,cls){
+    cls=cls||'';
+    if(d===null||d===undefined||!isFinite(d)) return '<span class="'+cls+'">—</span>';
+    var neg=d<0;
+    return '<span class="'+cls+(neg?' neg':'')+'">'+(neg?'':'+')+pct(d)+'</span>';
+  }
+
+  // Últimos até 5 meses (mais antigo → mais recente) pra montar as barrinhas do gráfico, incluindo o mês atual
+  var ultimosMeses=hist.slice(0,4).reverse();
+  var serieReceita=ultimosMeses.map(function(h){return h.receita||0;});
+  serieReceita.push(receita); // mês atual (em aberto) sempre é a última barra
+  var maxSerie=Math.max.apply(null,serieReceita.concat([1]));
+  var coresBarras=['#3d5a1f','#4d7a26','#5e8f2c','#69a331','#8fbf2c','#c7ea3a'];
+  var nBars=serieReceita.length;
+  var barsHtml=serieReceita.map(function(v,i){
+    var h=Math.max(10,Math.round((v/maxSerie)*100));
+    var corIdx=Math.max(0,coresBarras.length-(nBars-i));
+    var cor=coresBarras[corIdx]||coresBarras[coresBarras.length-1];
+    return '<i style="height:'+h+'%;background:'+cor+'"></i>';
+  }).join('');
+
+  // Meta mensal de lucro (mesma referência usada no painel "Pra lucrar X/mês" da aba Negócio)
+  var meta=_opMetaLucro;
+  if(meta===null||meta===undefined||!meta){
+    meta=Math.max(Math.round(receita*0.3/1000)*1000,5000);
+  }
+  var metaPct=meta>0?Math.min(100,Math.max(0,Math.round((lucro/meta)*100))):0;
+
+  var html=''
+    +'<div class="ini-headline">Lucro líquido<small>'+(S.cfg.mes||'—')+'</small></div>'
+
+    +'<div class="ini-hero">'
+      +'<div class="ini-hero-top">'
+        +'<div class="ini-hero-tag">Este mês</div>'
+        +'<div class="ini-hero-pill">'+M()+'</div>'
+      +'</div>'
+      +'<div class="ini-hero-num ini-num">'+fmt(lucro)+'</div>'
+      +'<div class="ini-hero-delta-row">'
+        +'<div>'
+          +'<div class="ini-hero-delta ini-num">'+deltaHtml(dLucro)+'</div>'
+          +'<div class="ini-hero-delta-sub">'+(mesAnterior?('vs '+mesAnterior.mes):'sem mês anterior fechado')+'</div>'
+        +'</div>'
+        +'<div class="ini-bars">'+barsHtml+'</div>'
+      +'</div>'
+    +'</div>'
+
+    +'<div class="ini-bento">'
+      +'<div class="ini-b-receita">'
+        +'<div>'
+          +'<div class="ini-bk-lbl">Receita</div>'
+          +'<div class="ini-bk-val big ini-num">'+fmt(receita)+'</div>'
+        +'</div>'
+        +'<div class="ini-bk-delta'+((dReceita!==null&&dReceita<0)?' neg':'')+'">'+deltaHtml(dReceita)+'</div>'
+      +'</div>'
+      +'<div class="ini-b-folha">'
+        +'<div class="ini-bk-lbl">Folha</div>'
+        +'<div class="ini-bk-val ini-num">'+fmt(folha)+'</div>'
+        +'<div class="ini-bk-delta'+((dFolha!==null&&dFolha<0)?' neg':'')+'">'+deltaHtml(dFolha)+'</div>'
+      +'</div>'
+      +'<div class="ini-b-imposto">'
+        +'<div class="ini-bk-lbl">Imposto (NF)</div>'
+        +'<div class="ini-bk-val ini-num">'+fmt(impostoNF)+'</div>'
+        +'<div class="ini-bk-delta'+((dImposto!==null&&dImposto<0)?' neg':'')+'">'+deltaHtml(dImposto)+'</div>'
+        +'<div class="ini-fab" title="Ver Negócio" onclick="showTab(\'op\',document.querySelector(\'[data-tabid=op]\'))">'
+          +'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c7ea3a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+
+    +'<div class="ini-op-chip">'
+      +'<div>'
+        +'<div class="ini-bk-lbl" style="margin-bottom:4px">Lucro operacional</div>'
+        +'<div class="ini-bk-val ini-num" style="margin-bottom:0">'+fmt(lucro)+'</div>'
+      +'</div>'
+      +'<div class="ini-bk-delta'+((dLucro!==null&&dLucro<0)?' neg':'')+'">'+deltaHtml(dLucro)+'</div>'
+    +'</div>'
+
+    +'<div class="ini-meta">'
+      +'<div class="ini-meta-top">'
+        +'<div>'
+          +'<div class="ini-meta-title">Meta mensal de lucro</div>'
+          +'<div class="ini-meta-sub">'+fmt(lucro)+' de '+fmt(meta)+'</div>'
+        +'</div>'
+        +'<div class="ini-meta-pct ini-num">'+metaPct+'%</div>'
+      +'</div>'
+      +'<div class="ini-bar"><i style="width:'+metaPct+'%"></i></div>'
+    +'</div>';
+
+  el.innerHTML=html;
+}
+window.renderInicio = renderInicio;
 
 function renderMets(){
   const r=calcR(),f=calcF(),l=calcL(),m=calcM(),t=calcT();
@@ -2931,6 +3095,7 @@ function showTab(id,btn){
   if(btn instanceof Element)btn.classList.add('on');
   window.scrollTo({top:0,behavior:'smooth'});
   // Build add panel modals when switching
+  if(id==='inicio')renderInicio();
   if(id==='op')buildAddPanelModal('op');
   if(id==='pes')buildAddPanelModal('pes');
   if(id==='ext')buildAddPanelModal('ext');
@@ -9199,7 +9364,7 @@ function deleteCustomTab(id){
     save();renderCfgTabs();
     mo.remove();
     showToast('🗑️ Aba "'+tab.nome+'" excluída.');
-    showTab('op',document.querySelector('.tb'));
+    showTab('inicio',document.querySelector('.tb'));
   };
 }
 

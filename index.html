@@ -3619,8 +3619,13 @@ function buildListBox(box,tab,li){
       ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleLbPago('${box.id}','${it.nome}')">&#10003; Pago</button>`
       : `<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleLbPago('${box.id}','${it.nome}')">Pago</button>`;
     const diaVenc = extrairDia(it.dataPrev);
+    const tipo = it.tipo || 'variavel';
+    const tipoTag = tipo==='fixo'
+      ? `<span class="badge ed" style="background:var(--lime);color:var(--ink);border:1px solid var(--lime-dk);font-size:9px;font-weight:800" onclick="lbToggleTipo('${tab}',${li},${ii})" title="Custo fixo — clique pra mudar pra variável">🔒 Fixo</span>`
+      : `<span class="badge ed" style="background:var(--bg3);color:var(--text2);border:1px solid var(--border);font-size:9px;font-weight:700" onclick="lbToggleTipo('${tab}',${li},${ii})" title="Custo variável — clique pra mudar pra fixo">🔀 Variável</span>`;
     return `<tr style="${isPago?'background:var(--green-bg)':''}">
       <td class="inline-edit nome-cell" onclick="lbEditNome(this,'${tab}',${li},${ii})">${it.nome}</td>
+      <td>${tipoTag}</td>
       <td class="num r inline-edit" onclick="lbEditValor(this,'${tab}',${li},${ii})">${fmtD(Number(it.valor)||0)}</td>
       <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaVenc||''}"
         style="width:48px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center"
@@ -3630,17 +3635,20 @@ function buildListBox(box,tab,li){
       <td><button class="btn btn-r btn-sm" onclick="lbDelItem('${tab}',${li},${ii})">✕</button></td>
     </tr>`;
   }).join('');
+  const totalFixo=items.filter(it=>(it.tipo||'variavel')==='fixo').reduce((s,it)=>s+(Number(it.valor)||0),0);
+  const totalVar=items.filter(it=>(it.tipo||'variavel')==='variavel').reduce((s,it)=>s+(Number(it.valor)||0),0);
   return `<div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ${color}">
       <div class="panel-hdr-l">
         ${/pagamento|saldo/i.test(box.title||'') ? `<div class="panel-hdr-icon">${box.icon||'💰'}</div>` : ''}
         <div class="panel-hdr-info">
           <input class="panel-title-edit" value="${box.title}" onchange="lbRename('${tab}',${li},this.value)">
-          <div class="panel-sub">${items.length} itens · toque para editar</div>
+          <div class="panel-sub">${items.length} itens · 🔒 ${fmtD(totalFixo)} fixo · 🔀 ${fmtD(totalVar)} variável</div>
         </div>
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(total)}<small>total mensal</small></div>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb">✎</button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir esta lista" data-etab="${tab}" data-eli="${li}" data-action="del-lb" style="margin-left:4px">✕</button>
       </div>
@@ -3655,18 +3663,25 @@ function buildListBox(box,tab,li){
         <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Valor (R$)</label>
         <input type="number" id="lbval-${tab}-${li}" placeholder="0" min="0" style="font-family:var(--font);font-size:12px;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;width:100%">
       </div>
+      <div style="display:flex;flex-direction:column;gap:3px;min-width:90px">
+        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Tipo</label>
+        <select id="lbtipo-${tab}-${li}" style="font-family:var(--font);font-size:12px;padding:6px 9px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none">
+          <option value="fixo">🔒 Fixo</option>
+          <option value="variavel">🔀 Variável</option>
+        </select>
+      </div>
       <button class="btn btn-g btn-sm" style="height:32px" onclick="lbAddInline('${tab}',${li})">+ Add</button>
     </div>
     <div class="tw"><table>
-      <thead><tr><th>Item</th><th>Valor</th><th title="Dia do vencimento no mês atual">Venc. (dia)</th><th>Pago</th><th></th></tr></thead>
+      <thead><tr><th>Item</th><th>Tipo</th><th>Valor</th><th title="Dia do vencimento no mês atual">Venc. (dia)</th><th>Pago</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
-      <tr class="tr-tot"><td><strong>TOTAL</strong></td><td class="num r rc"><strong>${fmtD(total)}</strong></td>
+      <tr class="tr-tot"><td><strong>TOTAL</strong></td><td></td><td class="num r rc"><strong>${fmtD(total)}</strong></td>
         <td class="num gc" style="font-size:11px;font-weight:700">${fmtD(items.filter(it=>lbItemPago(box.id,it.nome)).reduce((s,it)=>s+(Number(it.valor)||0),0))} pago</td>
         <td></td></tr>
     </table></div>
     <div id="lb-saldo-${box.id}" style="border-top:1px solid var(--border)"></div>
     <div class="add-row">
-      <span style="font-size:11px;color:var(--text3)">Toque para editar · clique Pago para marcar</span>
+      <span style="font-size:11px;color:var(--text3)">Toque para editar · clique na tag pra mudar Fixo/Variável</span>
       <button class="btn btn-g btn-sm" onclick="lbAddInline('${tab}',${li})">+ Adicionar linha</button>
     </div>
   </div>`;
@@ -3675,14 +3690,23 @@ function buildListBox(box,tab,li){
 function lbAddInline(tab,li){
   const nomeEl=document.getElementById('lbnome-'+tab+'-'+li);
   const valEl=document.getElementById('lbval-'+tab+'-'+li);
+  const tipoEl=document.getElementById('lbtipo-'+tab+'-'+li);
   if(!nomeEl||!valEl)return;
   const nome=nomeEl.value.trim();
   const valor=parseFloat(valEl.value)||0;
+  const tipo=tipoEl?tipoEl.value:'variavel';
   if(!nome||valor<=0){showToast('⚠️ Preencha nome e valor.');return;}
-  S.listboxes[tab][li].items.push({nome,valor});
+  S.listboxes[tab][li].items.push({nome,valor,tipo});
   nomeEl.value='';valEl.value='';
   save();renderAll();showToast('✅ "'+nome+'" adicionado!');
 }
+function lbToggleTipo(tab,li,ii){
+  var item=S.listboxes[tab]&&S.listboxes[tab][li]&&S.listboxes[tab][li].items[ii];
+  if(!item)return;
+  item.tipo=(item.tipo||'variavel')==='fixo'?'variavel':'fixo';
+  save();renderAll();
+}
+window.lbToggleTipo=lbToggleTipo;
 
 function lbRename(tab,li,v){if(v&&S.listboxes[tab]&&S.listboxes[tab][li]){S.listboxes[tab][li].title=v;save();}}
 function lbDelete(tab,li){if(confirm('Excluir este box "'+S.listboxes[tab][li].title+'"?')){S.listboxes[tab].splice(li,1);save();renderAll();showToast('🗑️ Box excluído.');}}
@@ -5335,11 +5359,38 @@ function renderSaldoGeral(){
 
 function ensureOpListboxes(){
   if(!S.listboxes.op)S.listboxes.op=[];
-  // Remove desp-esc if it exists (retired panel)
-  S.listboxes.op=S.listboxes.op.filter(function(b){return b.id!=='desp-esc';});
   var ids=S.listboxes.op.map(function(b){return b.id;});
+
+  // Cria a lista unificada "Custos Operacionais" se ainda não existir
   if(ids.indexOf('pag-extras')===-1)
-    S.listboxes.op.unshift({id:'pag-extras',title:'Pagamentos Extras',icon:'💸',color:'ph-amber',items:[]});
+    S.listboxes.op.unshift({id:'pag-extras',title:'Custos Operacionais',icon:'💸',color:'ph-amber',items:[]});
+
+  var principal = S.listboxes.op.find(function(b){return b.id==='pag-extras';});
+  if(principal){
+    // Migração de título antigo
+    if(principal.title==='Pagamentos Extras') principal.title='Custos Operacionais';
+    // Garante que todo item tenha um tipo definido
+    (principal.items||[]).forEach(function(it){ if(!it.tipo) it.tipo='variavel'; });
+
+    // Funde qualquer outra lista de "despesas fixas" dentro da principal,
+    // marcando os itens migrados como Fixo — evita duas listas parecidas.
+    var nomesExistentes = (principal.items||[]).map(function(it){return it.nome.toLowerCase();});
+    S.listboxes.op = S.listboxes.op.filter(function(b){
+      if(b.id==='pag-extras') return true;
+      var pareceFixo = /despesa|custo fixo|escrit[oó]rio|fixa/i.test(b.title||'');
+      if(pareceFixo){
+        (b.items||[]).forEach(function(it){
+          if(!it.nome) return;
+          if(nomesExistentes.indexOf(it.nome.toLowerCase())===-1){
+            principal.items.push({nome:it.nome, valor:Number(it.valor)||0, tipo:'fixo', dataPrev:it.dataPrev||''});
+            nomesExistentes.push(it.nome.toLowerCase());
+          }
+        });
+        return false; // remove a lista antiga, já foi fundida
+      }
+      return true;
+    });
+  }
 }
 
 

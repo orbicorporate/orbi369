@@ -172,14 +172,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 /* METRICS */
 .mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
 .met{background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;border-top:none;box-shadow:var(--shadow)}
-.met.g,.met.p{border:none !important;position:relative;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.18)}
-.met.g{background:linear-gradient(150deg,#052e1f 0%,#0a4a30 55%,#0d6b45 100%)}
-.met.p{background:linear-gradient(150deg,#1a1030 0%,#2d1a52 55%,#432a78 100%)}
-.met.g::before,.met.p::before{content:'';position:absolute;top:-24px;right:-24px;width:100px;height:100px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);pointer-events:none}
-.met.g::after,.met.p::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,255,255,.08),transparent 40%);pointer-events:none;backdrop-filter:blur(.5px)}
-.met.g .met-lbl,.met.p .met-lbl{color:rgba(255,255,255,.6) !important;position:relative}
-.met.g .met-val,.met.p .met-val{color:#fff !important;position:relative}
-.met.g .met-sub,.met.p .met-sub{color:rgba(255,255,255,.72) !important;position:relative}
 .met.g{border-top-color:var(--green)}.met.b{border-top-color:var(--blue)}
 .met.a{border-top-color:var(--amber)}.met.r{border-top-color:var(--red)}
 .met.p{border-top-color:var(--purple)}.met.t{border-top-color:var(--teal)}
@@ -188,6 +180,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .met-val.g{color:var(--green)}.met-val.r{color:var(--red)}.met-val.a{color:var(--amber)}.met-val.b{color:var(--blue)}
 .met-sub{font-size:11px;color:var(--text3);margin-top:5px}
 .met-sub.p{color:var(--green)}.met-sub.n{color:var(--red)}.met-sub.w{color:var(--amber)}
+/* Card único e vívido — Receita Recorrente (estilo cartão de destaque, tipo Funnio) */
+.met-vivid-green{background:linear-gradient(135deg,#0d9f6f,#059669 45%,#047857 100%) !important;border:none !important;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(5,150,105,.35)}
+.met-vivid-green::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
+.met-vivid-green::after{content:'';position:absolute;bottom:-40px;left:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.met-vivid-green .met-lbl{color:rgba(255,255,255,.75) !important;position:relative}
+.met-vivid-green .met-val{color:#fff !important;position:relative}
+.met-vivid-green .met-sub{color:rgba(255,255,255,.85) !important;position:relative}
 
 /* TABLE */
 .tw{overflow-x:auto}
@@ -1793,7 +1792,7 @@ function renderMets(){
   const mostraAvu = modelo==='avulso' || modelo==='ambos';
 
   var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
-  if(mostraRec) linha1 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">Receita recorrente</div><div class="met-val g num">${fmt(rRec)}</div><div class="met-sub p">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
+  if(mostraRec) linha1 += `<div class="met met-vivid-green"><div class="met-lbl">Receita recorrente</div><div class="met-val num">${fmt(rRec)}</div><div class="met-sub">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
   linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
   linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto (NF)</div><div class="met-val num" style="color:var(--amber)">${fmt(impostoTotal)}</div><div class="met-sub">${pct(r>0?impostoTotal/r*100:0)} da receita</div></div>`;
 

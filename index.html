@@ -1909,7 +1909,7 @@ function buildPanel(p,tab,pi){
         const tipo=c.tipo||'recorrente';
         const tipoBadge = tipo==='avulso'
           ? '<span class="badge ed" style="background:#fef3c7;color:#854f0b;border:1px solid #fde68a;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Avulso — não aparece no próximo mês após receber">🎯 Avulso</span>'
-          : '<span class="badge ed" style="background:var(--lime);color:var(--ink);border:1px solid var(--lime-dk);font-size:9px;font-weight:800" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
+          : '<span class="badge ed" style="background:transparent;color:var(--lime-dk);border:1.5px solid var(--lime-dk);font-size:9px;font-weight:700" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
         const diaReceb = extrairDia(c.dataReceb);
         const comNF = !!c.comNF;
         const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;

@@ -1844,12 +1844,10 @@ function renderMets(){
   var linha2 = '';
   if(mostraAvu) linha2 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">${modelo==='avulso'?'Receita de projetos':'Extras avulsos'}</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} ${modelo==='avulso'?'projeto':'avulso'}${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>`;
   linha2 += l>=0
-    ? `<div class="met met-vivid-strong-green"><div class="met-lbl">Lucro operacional</div><div class="met-val num">${fmt(l)}</div><div class="met-sub">${pct(m)} margem</div></div>`
+    ? `<div class="met met-vivid-green"><div class="met-lbl">Lucro operacional</div><div class="met-val num">${fmt(l)}</div><div class="met-sub">${pct(m)} margem</div></div>`
     : `<div class="met r"><div class="met-lbl">Lucro operacional</div><div class="met-val r num">${fmt(l)}</div><div class="met-sub n">${pct(m)} margem</div></div>`;
   linha2 += `<div class="met t"><div class="met-lbl">Ticket médio</div><div class="met-val num">${fmt(t)}</div><div class="met-sub">por ${S.cfg.lblC.toLowerCase()}</div></div>`;
-  linha2 += mCor==='g'
-    ? `<div class="met met-vivid-strong-green"><div class="met-lbl">% de lucro</div><div class="met-val num">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`
-    : `<div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
+  linha2 += `<div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
 
   el.innerHTML = linha1 + linha2;
 }

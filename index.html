@@ -180,13 +180,27 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .met-val.g{color:var(--green)}.met-val.r{color:var(--red)}.met-val.a{color:var(--amber)}.met-val.b{color:var(--blue)}
 .met-sub{font-size:11px;color:var(--text3);margin-top:5px}
 .met-sub.p{color:var(--green)}.met-sub.n{color:var(--red)}.met-sub.w{color:var(--amber)}
-/* Card único e vívido — Receita Recorrente (estilo cartão de destaque, tipo Funnio) */
-.met-vivid-green{background:linear-gradient(135deg,#0d9f6f,#059669 45%,#047857 100%) !important;border:none !important;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(5,150,105,.35)}
-.met-vivid-green::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
-.met-vivid-green::after{content:'';position:absolute;bottom:-40px;left:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
-.met-vivid-green .met-lbl{color:rgba(255,255,255,.75) !important;position:relative}
+/* Card único e vívido — Receita Recorrente (verde-amarelado, tipo lima) */
+.met-vivid-green{background:linear-gradient(135deg,#84cc16,#65a30d 55%,#4d7c0f 100%) !important;border:none !important;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(101,163,13,.35)}
+.met-vivid-green::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.16);pointer-events:none}
+.met-vivid-green::after{content:'';position:absolute;bottom:-40px;left:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+.met-vivid-green .met-lbl{color:rgba(255,255,255,.8) !important;position:relative}
 .met-vivid-green .met-val{color:#fff !important;position:relative}
-.met-vivid-green .met-sub{color:rgba(255,255,255,.85) !important;position:relative}
+.met-vivid-green .met-sub{color:rgba(255,255,255,.88) !important;position:relative}
+/* Verde forte — Lucro */
+.met-vivid-strong-green{background:linear-gradient(135deg,#10b981,#059669 45%,#065f46 100%) !important;border:none !important;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(6,95,70,.4)}
+.met-vivid-strong-green::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.14);pointer-events:none}
+.met-vivid-strong-green::after{content:'';position:absolute;bottom:-40px;left:-20px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.met-vivid-strong-green .met-lbl{color:rgba(255,255,255,.75) !important;position:relative}
+.met-vivid-strong-green .met-val{color:#fff !important;position:relative}
+.met-vivid-strong-green .met-sub{color:rgba(255,255,255,.85) !important;position:relative}
+/* Roxo — Colaboradores */
+.met-vivid-purple{background:linear-gradient(135deg,#6d28d9,#5b21b6 55%,#4c1d95 100%) !important;border:none !important;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(91,33,182,.4)}
+.met-vivid-purple::before{content:'';position:absolute;top:-30px;right:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none}
+.met-vivid-purple::after{content:'';position:absolute;bottom:-45px;left:-25px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}
+.met-vivid-purple .met-lbl{color:rgba(255,255,255,.75) !important;position:relative}
+.met-vivid-purple .met-val{color:#fff !important;position:relative}
+.met-vivid-purple .met-sub{color:rgba(255,255,255,.85) !important;position:relative}
 
 /* TABLE */
 .tw{overflow-x:auto}
@@ -1821,14 +1835,18 @@ function renderMets(){
 
   var linha1 = `<div class="met g"><div class="met-lbl">Receita/mês</div><div class="met-val g num">${fmt(r)}</div><div class="met-sub p">${at} ${S.cfg.lblC.toLowerCase()} ativos</div></div>`;
   if(mostraRec) linha1 += `<div class="met met-vivid-green"><div class="met-lbl">Receita recorrente</div><div class="met-val num">${fmt(rRec)}</div><div class="met-sub">${atRec} recorrente${atRec!==1?'s':''}</div></div>`;
-  linha1 += `<div class="met p" style="border-left:3px solid var(--purple)"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num" style="color:var(--purple)">${fmt(f)}</div><div class="met-sub" style="color:var(--purple)">${pct(r>0?f/r*100:0)} da receita</div></div>`;
+  linha1 += `<div class="met met-vivid-purple"><div class="met-lbl">${S.cfg.lblCol}</div><div class="met-val num">${fmt(f)}</div><div class="met-sub">${pct(r>0?f/r*100:0)} da receita</div></div>`;
   linha1 += `<div class="met a" style="border-left:3px solid var(--amber)"><div class="met-lbl">Imposto (NF)</div><div class="met-val num" style="color:var(--amber)">${fmt(impostoTotal)}</div><div class="met-sub">${pct(r>0?impostoTotal/r*100:0)} da receita</div></div>`;
 
   var linha2 = '';
   if(mostraAvu) linha2 += `<div class="met g" style="border-left:3px solid var(--green)"><div class="met-lbl">${modelo==='avulso'?'Receita de projetos':'Extras avulsos'}</div><div class="met-val g num">${fmt(rAvu)}</div><div class="met-sub p">${atAvu} ${modelo==='avulso'?'projeto':'avulso'}${atAvu!==1?'s':''} ${atAvu>0?'pendente'+(atAvu>1?'s':''):''}</div></div>`;
-  linha2 += `<div class="met ${l>=0?'g':'r'}"><div class="met-lbl">Lucro operacional</div><div class="met-val ${l>=0?'g':'r'} num">${fmt(l)}</div><div class="met-sub ${l>=0?'p':'n'}">${pct(m)} margem</div></div>`;
+  linha2 += l>=0
+    ? `<div class="met met-vivid-strong-green"><div class="met-lbl">Lucro operacional</div><div class="met-val num">${fmt(l)}</div><div class="met-sub">${pct(m)} margem</div></div>`
+    : `<div class="met r"><div class="met-lbl">Lucro operacional</div><div class="met-val r num">${fmt(l)}</div><div class="met-sub n">${pct(m)} margem</div></div>`;
   linha2 += `<div class="met t"><div class="met-lbl">Ticket médio</div><div class="met-val num">${fmt(t)}</div><div class="met-sub">por ${S.cfg.lblC.toLowerCase()}</div></div>`;
-  linha2 += `<div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='g'?'green':mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
+  linha2 += mCor==='g'
+    ? `<div class="met met-vivid-strong-green"><div class="met-lbl">% de lucro</div><div class="met-val num">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`
+    : `<div class="met ${mCor}" style="border-left:3px solid var(--${mCor==='a'?'amber':'red'})"><div class="met-lbl">% de lucro</div><div class="met-val num" style="color:var(--${mCor==='a'?'amber':'red'})">${m.toFixed(1)}%</div><div class="met-sub">${mNivel}</div></div>`;
 
   el.innerHTML = linha1 + linha2;
 }

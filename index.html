@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Orbi369</title>
 <link rel="icon" type="image/jpeg" href="/icon.jpeg">
 <link rel="apple-touch-icon" href="/icon.jpeg">
@@ -30,6 +30,9 @@
   --r-lg:24px;--r-md:18px;--r-sm:13px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+/* iOS dá zoom automático em campos com fonte menor que 16px ao focar — trava isso globalmente */
+input,select,textarea{font-size:16px !important}
+@media(min-width:480px){input,select,textarea{font-size:inherit !important}}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:14px}
 .num{font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums}
@@ -149,7 +152,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .hdr-glow::after{
   content:'';position:absolute;top:0;bottom:0;left:0;width:55%;
   background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,.22) 45%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.22) 55%,transparent 100%);
-  animation:hdrSweep 3.2s ease-in-out infinite;pointer-events:none
+  animation:hdrSweep 3.2s ease-in-out 2;animation-fill-mode:forwards;pointer-events:none;will-change:transform
 }
 @keyframes hdrSweep{
   0%{transform:translateX(-120%)}

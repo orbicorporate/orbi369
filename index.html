@@ -131,16 +131,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .panel-body{padding:14px 16px}
 
 /* PANEL COLOR THEMES */
-.ph-green{background:linear-gradient(135deg,#047857,#0f766e)}
-.ph-blue{background:linear-gradient(135deg,#1d4ed8,#6d28d9)}
-.ph-amber{background:linear-gradient(135deg,#b45309,#b91c1c)}
-.ph-teal{background:linear-gradient(135deg,#0f766e,#1d4ed8)}
-.ph-red{background:linear-gradient(135deg,#b91c1c,#b45309)}
-.ph-dark{background:linear-gradient(135deg,#0d1220,#0a5c50)}
-.ph-indigo{background:linear-gradient(135deg,#4338ca,#6d28d9)}
-.ph-pink{background:linear-gradient(135deg,#be185d,#6d28d9)}
-.ph-slate{background:linear-gradient(135deg,#334155,#0d1220)}
+.ph-green{background:linear-gradient(150deg,#0a0a0a,#12331f)}
+.ph-blue{background:linear-gradient(150deg,#0a0a0a,#0f1e33)}
+.ph-amber{background:linear-gradient(150deg,#0a0a0a,#332312)}
+.ph-teal{background:linear-gradient(150deg,#0a0a0a,#0f2926)}
+.ph-red{background:linear-gradient(150deg,#0a0a0a,#331414)}
+.ph-dark{background:linear-gradient(150deg,#0a0a0a,#141414)}
+.ph-indigo{background:linear-gradient(150deg,#0a0a0a,#1a1233)}
+.ph-pink{background:linear-gradient(150deg,#0a0a0a,#2b1030)}
+.ph-slate{background:linear-gradient(150deg,#0a0a0a,#1c1c1c)}
 .ph-purple{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+.panel-hdr::before{content:'';position:absolute;top:-30px;right:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(215,245,44,.16),transparent 70%);pointer-events:none}
+.panel-hdr[class*="ph-purple"]::before{background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)}
 
 /* Efeito de luz passando — aplicado nos cabeçalhos mais importantes de cada aba */
 .hdr-glow{position:relative;overflow:hidden}
@@ -1899,7 +1901,7 @@ function buildPanel(p,tab,pi){
         const tipo=c.tipo||'recorrente';
         const tipoBadge = tipo==='avulso'
           ? '<span class="badge ed" style="background:#fef3c7;color:#854f0b;border:1px solid #fde68a;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Avulso — não aparece no próximo mês após receber">🎯 Avulso</span>'
-          : '<span class="badge ed" style="background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
+          : '<span class="badge ed" style="background:var(--lime);color:var(--ink);border:1px solid var(--lime-dk);font-size:9px;font-weight:800" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
         const diaReceb = extrairDia(c.dataReceb);
         const comNF = !!c.comNF;
         const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;
@@ -1907,7 +1909,7 @@ function buildPanel(p,tab,pi){
           <td class="inline-edit nome-cell" onclick="inlineEdit(this,'cli','nome',${oi})">${c.nome}</td>
           <td>${tipoBadge}</td>
           <td class="num r inline-edit" onclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</td>
-          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--green)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
+          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
           <td><span class="badge ${bs} ed" onclick="cycleStatus('cli',${oi})">${c.status}</span></td>
           <td><label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:16px;height:16px;cursor:pointer">${comNF&&pctNF>0?`<span style="font-size:9.5px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}</label></td>
           <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" style="width:50px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()"></td>
@@ -1958,7 +1960,7 @@ function buildPanel(p,tab,pi){
           <td>${tipoBadge(c.tipo)}</td>
           <td class="inline-edit" onclick="inlineEdit(this,'col','cargo',${oi})">${c.cargo}</td>
           <td class="num r inline-edit" onclick="inlineEdit(this,'col','valor',${oi})">${fmt(c.valor)}</td>
-          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--blue)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
+          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
           <td>${cpago?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">&#10003; Pago</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">Pago</button>`}</td>
           <td><button class="btn btn-r btn-sm" onclick="removeCol(${oi})">&#10005;</button></td></tr>`;
       }).join('')}

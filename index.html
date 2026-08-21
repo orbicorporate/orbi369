@@ -627,7 +627,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="pagos-total-hdr">R$&nbsp;0,00<small>total pago</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz...) conforme forem sendo pagas. Toque no texto do item pra marcar como pago, ou no ✎ pra editar nome e valor.')">?</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz, cartão...) conforme forem sendo pagas. É o único lugar pra contas recorrentes — evita lançar a mesma conta duas vezes. Toque no texto do item pra marcar como pago, ou no ✎ pra editar nome e valor.')">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')">✎</button>
       </div>
     </div>
@@ -648,39 +648,6 @@ td.inline-edit:active{background:var(--blue-bg)}
     </div>
     <div id="pagos-table"></div>
     <div id="pagos-saldo" style="border-top:1px solid var(--border)"></div>
-  </div>
-
-  <!-- CUSTOS FIXOS -->
-  <div class="panel" style="margin-bottom:14px">
-    <div class="panel-hdr ph-amber" data-fpk="pes-cf">
-      <div class="panel-hdr-l">
-        <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Previsão de custos fixos</div>
-          <div class="panel-sub" id="cf-sub">0 itens</div>
-        </div>
-      </div>
-      <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <div class="panel-hdr-val num" id="cf-total-hdr">R$ 0,00<small>total mensal</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Previsão de custos fixos','Cadastre aqui seus custos pessoais fixos que se repetem todo mês (assinaturas, mensalidades, etc). Isso ajuda a projetar quanto vai sobrar antes mesmo do mês fechar.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-cf','Previsão de custos fixos','ph-amber')">✎</button>
-      </div>
-    </div>
-    <div style="padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:120px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Descri&#231;&#227;o</label>
-        <input type="text" id="cf-nome" placeholder="Ex: Aluguel, CELESC..." style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')cfAdd()">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:3px;min-width:80px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Valor (R$)</label>
-        <input type="number" id="cf-valor" placeholder="0" min="0" style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;width:100%" onkeydown="if(event.key==='Enter')cfAdd()">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:3px;min-width:90px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Vencimento (dia)</label>
-        <input type="number" id="cf-data" placeholder="Dia" min="1" max="31" title="Só o dia. O mês é o atual" style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;width:100%;text-align:center">
-      </div>
-      <button class="btn btn-g btn-sm" style="height:33px;padding:0 13px" onclick="cfAdd()">+ Add</button>
-    </div>
-    <div id="cf-table"></div>
   </div>
 
   <div id="pes-saldo-box" style="margin-top:4px"></div>
@@ -1418,6 +1385,20 @@ function runMigracoes(){
       p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
     }
   });});}
+  // Migração: funde "Previsão de custos fixos" (S.custosFix) dentro do Checklist (S.pagosItens)
+  // pra evitar a mesma conta (água, luz...) ser lançada em dois lugares diferentes.
+  if(S.custosFix && S.custosFix.length>0){
+    if(!S.pagosItens)S.pagosItens=JSON.parse(JSON.stringify(PAGOS_DEFAULT));
+    var nomesExistentes = S.pagosItens.map(function(it){return it.nome.toLowerCase();});
+    S.custosFix.forEach(function(cf){
+      if(!cf.nome) return;
+      if(nomesExistentes.indexOf(cf.nome.toLowerCase())===-1){
+        S.pagosItens.push({nome:cf.nome, valor:Number(cf.valor)||0});
+        nomesExistentes.push(cf.nome.toLowerCase());
+      }
+    });
+    S.custosFix = []; // esvazia — o painel separado não existe mais na interface
+  }
 }
 
 // Busca a versão mais recente do Supabase e sobrescreve o estado local
@@ -1580,7 +1561,6 @@ function renderAll(){
   setTimeout(renderEntPes,60);
   setTimeout(renderPagos,65);
   setTimeout(renderPesSaldo,70);
-  setTimeout(renderCfTable,75);
   setTimeout(renderPesRecomendacoes,78);
   setTimeout(renderPesCatsChart,85);
   setTimeout(renderHistorico,90);
@@ -3103,7 +3083,66 @@ async function bootApp(){
   applyCustomTabLabels();
   // Onboarding — só aparece pra quem nunca configurou nada ainda
   checkShowOnboarding();
+  // Entrada rápida — abre automaticamente se o link tiver ?rapido=1
+  // (usado pelo atalho de "Toque Atrás" do iPhone)
+  checkEntradaRapida();
 }
+
+// ===================== ENTRADA RÁPIDA (atalho "Toque Atrás") =====================
+function checkEntradaRapida(){
+  try{
+    var params = new URLSearchParams(window.location.search);
+    if(params.get('rapido')==='1'){
+      setTimeout(abrirEntradaRapida, 300);
+      // Limpa o parâmetro da URL pra não reabrir de novo se a pessoa recarregar a página
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }catch(e){}
+}
+function abrirEntradaRapida(){
+  var old = document.getElementById('mo-entrada-rapida');
+  if(old) old.remove();
+  var mo = document.createElement('div');
+  mo.id = 'mo-entrada-rapida';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10600;display:flex;align-items:center;justify-content:center;padding:20px';
+  var bx = document.createElement('div');
+  bx.style.cssText = 'background:var(--bg);border-radius:18px;padding:26px 22px;width:340px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)';
+  bx.innerHTML =
+    '<div style="text-align:center;margin-bottom:18px">'
+    +'<div style="font-size:32px;margin-bottom:6px">⚡</div>'
+    +'<div style="font-size:16px;font-weight:700;color:var(--text)">Registrar gasto rápido</div>'
+    +'<div style="font-size:11.5px;color:var(--text3);margin-top:2px">Vai direto pra "Pagamentos por PIX (extras)"</div>'
+    +'</div>'
+    +'<label style="display:block;font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase">Valor (R$)</label>'
+    +'<input type="number" id="er-valor" inputmode="decimal" autofocus style="width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg2);color:var(--text);font-size:20px;font-weight:700;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:12px;text-align:center">'
+    +'<label style="display:block;font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase">Descrição</label>'
+    +'<input type="text" id="er-desc" placeholder="Ex: Uber, mercado, farmácia..." style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--bg2);color:var(--text);font-size:14px;font-family:var(--font);outline:none;box-sizing:border-box;margin-bottom:18px">'
+    +'<div style="display:flex;gap:8px">'
+    +'<button class="btn btn-gh" style="flex:1" onclick="document.getElementById(\'mo-entrada-rapida\').remove()">Cancelar</button>'
+    +'<button class="btn btn-g" style="flex:2" onclick="salvarEntradaRapida()">✅ Salvar gasto</button>'
+    +'</div>';
+  mo.appendChild(bx);
+  document.body.appendChild(mo);
+  setTimeout(function(){var i=document.getElementById('er-valor');if(i)i.focus();},80);
+}
+window.abrirEntradaRapida = abrirEntradaRapida;
+function salvarEntradaRapida(){
+  var valor = parseFloat(document.getElementById('er-valor').value);
+  var desc = (document.getElementById('er-desc').value||'').trim() || 'Gasto rápido';
+  if(isNaN(valor)||valor<=0){ showToast('⚠️ Digite um valor válido.'); return; }
+  // Acha o primeiro painel de lançamentos da aba Pessoal (Pagamentos por PIX)
+  var painel = (S.panels && S.panels.pes || []).find(function(p){ return p.type==='lancamentos'; });
+  if(!painel){ showToast('⚠️ Nenhum painel de pagamentos encontrado.'); return; }
+  var hoje = new Date();
+  var dataStr = String(hoje.getDate()).padStart(2,'0')+'/'+String(hoje.getMonth()+1).padStart(2,'0');
+  if(!painel.items) painel.items=[];
+  painel.items.push({data:dataStr, desc:desc, cat:'Rápido', valor:valor, tag:'red'});
+  save(); renderAll();
+  var mo = document.getElementById('mo-entrada-rapida');
+  if(mo) mo.remove();
+  showToast('✅ Gasto de '+fmt(valor)+' registrado!');
+}
+window.salvarEntradaRapida = salvarEntradaRapida;
 
 // ===================== ONBOARDING =====================
 // Permite reabrir o onboarding manualmente a qualquer momento (aba Config → "Rever introdução")
@@ -3112,7 +3151,7 @@ function helpTextoPainel(tipo, tab){
   var textos = {
     clientes: 'Cada '+S.cfg.lblC.toLowerCase().replace(/s$/,'')+' cadastrado aqui entra na conta da sua receita mensal. Marque "Com NF" se ele emite nota fiscal, pra calcular o imposto automaticamente. Toque em qualquer célula pra editar.',
     colaboradores: 'Todos os seus custos de equipe entram aqui — PJ, CLT ou Sócio. Marcar alguém como "Sócio" destaca o pró-labore dele separadamente nos relatórios. O total soma na sua Folha de custos.',
-    lancamentos: tab==='pes' ? 'Lance aqui seus pagamentos do mês (contas, PIX, boletos). Esse total conta como "Falta pagar" e entra no cálculo do Saldo Pessoal.' : 'Lançamentos avulsos de entrada ou saída que não se encaixam nos painéis fixos.'
+    lancamentos: tab==='pes' ? 'Lance aqui gastos avulsos que não são contas fixas recorrentes (ex: um PIX pontual, uma compra única). Contas que se repetem todo mês — água, luz, aluguel — vão no Checklist, pra não contar a mesma conta duas vezes.' : 'Lançamentos avulsos de entrada ou saída que não se encaixam nos painéis fixos.'
   };
   return textos[tipo] || 'Painel de dados do seu negócio ou finanças pessoais.';
 }
@@ -5507,7 +5546,6 @@ function renderPesSaldo(fatTotalOverride){
     +(pctSaidas>100?'<div style="padding:8px 16px;background:var(--red-bg);border-top:1px solid var(--red-border);font-size:11px;color:var(--red)">🚨 Saídas superam entradas em '+(pctSaidas-100)+'% — necessário ajustar.</div>':'')
     +'</div>';
 
-  renderCfTable();
 }
 
 // ================ RECOMENDAÇÕES IA — FIM DA ABA PESSOAL =================
@@ -5873,7 +5911,6 @@ function renderPesCompleto(){
   renderPagos();
   renderPesSaldo();
   renderPesRecomendacoes();
-  renderCfTable();
 }
 
 // ================ INTELIGÊNCIA DO NEGÓCIO — FIM DA ABA NEGÓCIO =================

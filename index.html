@@ -400,11 +400,14 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .lb-formwrap{padding:16px 16px 18px;background:var(--bg3);border-bottom:1px solid var(--border)}
 .lb-flbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px}
 .lb-form-row1{margin-bottom:10px}
-.lb-form-row1 input{width:100%;font-family:var(--font);font-size:14px;padding:11px 14px;border:1.5px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
+.lb-form-row1 input{width:100%;font-family:var(--font);font-size:14.5px;padding:13px 16px;border:1.5px solid var(--border);border-radius:18px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box;transition:all .25s cubic-bezier(.34,1.4,.64,1)}
+.lb-form-row1 input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.14);transform:translateY(-1px)}
 .lb-form-row2{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap}
 .lb-form-row2>div{flex:1;min-width:110px}
-.lb-form-row2 input,.lb-form-row2 select{width:100%;font-family:var(--font);font-size:14px;padding:11px 14px;border:1.5px solid var(--border);border-radius:14px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
-.lb-form-row2 button{height:42px;padding:0 20px;white-space:nowrap;flex:0 0 auto;border-radius:14px}
+.lb-form-row2 input,.lb-form-row2 select{width:100%;font-family:var(--font);font-size:14.5px;padding:13px 16px;border:1.5px solid var(--border);border-radius:18px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box;transition:all .25s cubic-bezier(.34,1.4,.64,1)}
+.lb-form-row2 input:focus,.lb-form-row2 select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.14);transform:translateY(-1px)}
+.lb-form-row2 button{height:46px;padding:0 22px;white-space:nowrap;flex:0 0 auto;border-radius:100px;font-weight:800;transition:transform .15s}
+.lb-form-row2 button:active{transform:scale(.96)}
 .lb-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:8px}
 .lb-row{padding:11px 14px;border-radius:13px;background:var(--card);
   border:1.5px solid rgba(0,0,0,.08);border-bottom-color:rgba(0,0,0,.18)}

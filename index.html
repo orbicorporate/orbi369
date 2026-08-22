@@ -291,7 +291,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 @keyframes d2WaveDraw{to{stroke-dashoffset:0}}
 .d2-wave-dot{fill:#c7ea3a}
 .d2-wave-dot-glow{fill:#c7ea3a;opacity:0;animation:d2DotPulse 1.8s ease-out infinite;animation-delay:1.7s}
-.d2-wave-travel{fill:#e9ff8f;filter:drop-shadow(0 0 4px rgba(199,234,58,.95)) drop-shadow(0 0 8px rgba(199,234,58,.5))}
+.d2-wave-travel{fill:#f2ffb0;filter:drop-shadow(0 0 5px rgba(199,234,58,1)) drop-shadow(0 0 11px rgba(199,234,58,.65))}
 @keyframes d2DotPulse{0%{r:3;opacity:.55}75%{r:10;opacity:0}100%{r:10;opacity:0}}
 @media (prefers-reduced-motion: reduce){
   .d2-hero{animation:none}
@@ -2214,9 +2214,9 @@ function renderInicio(){
   serieLucro.push(lucroTotal);
   var maxSerie=Math.max.apply(null,serieLucro.map(function(v){return Math.abs(v);}).concat([1]));
   var nPts=serieLucro.length;
-  var chartW=100, chartH=40, padY=4;
+  var chartW=100, chartH=40, padY=4, padX=3;
   var ptsArr=serieLucro.map(function(v,i){
-    var x = nPts>1 ? (i/(nPts-1))*chartW : chartW/2;
+    var x = padX + (nPts>1 ? (i/(nPts-1))*(chartW-2*padX) : (chartW-2*padX)/2);
     var yNorm = Math.max(0,Math.min(1, Math.abs(v)/maxSerie));
     var y = (chartH-padY) - yNorm*(chartH-2*padY);
     return {x:x,y:y};
@@ -2233,7 +2233,7 @@ function renderInicio(){
   var areaPath = wavePath+' L'+lastPt.x.toFixed(1)+','+chartH+' L'+ptsArr[0].x.toFixed(1)+','+chartH+' Z';
   var reduceMotion = (typeof window!=='undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var travelDotHtml = reduceMotion ? '' : ''
-    +'<circle r="1.8" class="d2-wave-travel">'
+    +'<circle r="2.5" class="d2-wave-travel">'
       +'<animateMotion dur="2.4s" repeatCount="indefinite" rotate="auto" path="'+wavePath+'"/>'
     +'</circle>';
 

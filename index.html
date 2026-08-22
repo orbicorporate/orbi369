@@ -8346,16 +8346,56 @@ function renderTempo(){
 // Chat local (sem IA externa) que interpreta perguntas e responde com dados reais.
 // Estado: S.assistHistory = [{q, a, ts}]
 
-function assistAsk(){
+// Resumo compacto dos dados financeiros reais, enviado como contexto pra IA
+// externa só quando ela é chamada (evita mandar dados à toa em toda pergunta).
+function assistBuildContext(){
+  try{
+    var r=(typeof calcR==='function')?calcR():0;
+    var f=(typeof calcF==='function')?calcF():0;
+    var l=(typeof calcL==='function')?calcL():0;
+    var m=(typeof calcM==='function')?calcM():0;
+    var ativos=(S.clientes||[]).filter(function(c){return c.status==='ativo';}).length;
+    var investTotal=(typeof calcInvestTotalAtual==='function')?calcInvestTotalAtual():0;
+    return 'Negócio "'+((S.cfg&&S.cfg.nome)||'—')+'" — '+((S.cfg&&S.cfg.mes)||'—')+': Receita '+fmt(r)+', Folha '+fmt(f)+', Lucro operacional '+fmt(l)+', Margem '+m.toFixed(1)+'%, '+ativos+' clientes ativos. Investimentos (previsão atual): '+fmt(investTotal)+'.';
+  }catch(e){ return ''; }
+}
+
+var ASSIST_FALLBACK = '🤔 Ainda não entendi direito. Tenta reformular ou digite <em>"ajuda"</em> pra ver exemplos do que eu sei responder.';
+
+async function assistAsk(){
   var el = document.getElementById('assist-input');
   if(!el) return;
   var q = el.value.trim();
   if(!q) return;
-  var resposta = assistResponder(q);
-  if(!S.assistHistory) S.assistHistory = [];
-  S.assistHistory.unshift({q:q, a:resposta, ts:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
-  if(S.assistHistory.length>20) S.assistHistory = S.assistHistory.slice(0,20);
   el.value='';
+  if(!S.assistHistory) S.assistHistory = [];
+
+  // 1) Tenta os padrões locais primeiro — grátis e instantâneo
+  var respostaLocal = assistResponder(q);
+  if(respostaLocal !== ASSIST_FALLBACK){
+    S.assistHistory.unshift({q:q, a:respostaLocal, ts:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})});
+    if(S.assistHistory.length>20) S.assistHistory = S.assistHistory.slice(0,20);
+    save(); renderAssistente();
+    return;
+  }
+
+  // 2) Local não reconheceu -> chama a IA externa (só nesse caso)
+  var entry = {q:q, a:'🤔 Pensando...', ts:new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})};
+  S.assistHistory.unshift(entry);
+  if(S.assistHistory.length>20) S.assistHistory = S.assistHistory.slice(0,20);
+  renderAssistente(); // mostra o "pensando" sem persistir ainda
+
+  try{
+    var resp = await fetch('/api/ask', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({question:q, context:assistBuildContext()})
+    });
+    var data = await resp.json();
+    entry.a = resp.ok ? (data.answer||ASSIST_FALLBACK) : ('⚠️ '+(data.error||'Não consegui buscar uma resposta agora.'));
+  }catch(err){
+    entry.a = '⚠️ Não consegui me conectar à IA agora. Tenta de novo em instantes.';
+  }
   save(); renderAssistente();
 }
 
@@ -8574,7 +8614,7 @@ function assistResponder(pergunta){
   }
 
   // Default
-  return '🤔 Ainda não entendi direito. Tenta reformular ou digite <em>"ajuda"</em> pra ver exemplos do que eu sei responder.';
+  return ASSIST_FALLBACK;
 }
 
 function assistLimpar(){

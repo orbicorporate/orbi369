@@ -341,7 +341,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .d2-lime::before{background:linear-gradient(90deg,transparent 0%,rgba(26,36,0,.55) 50%,transparent 100%);background-size:55% 100%;background-repeat:no-repeat}
 .d2-roxo{background:linear-gradient(160deg,#8b5cf6 0%,#6d28d9 60%,#5b21b6 100%);color:#fff}
 .d2-roxo .d2-lbl{opacity:.8}
-.d2-gray{background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);color:var(--text)}
+.d2-gray{background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);color:var(--text)}
 
 @media (prefers-reduced-motion: reduce){
   .d2-strip .dot, .d2-big::before{animation:none}
@@ -366,13 +366,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .d3-blue{background:linear-gradient(160deg,#3b76f6 0%,#1d4ed8 55%,#152f7a 100%);color:#fff}
 .d3-lime{background:linear-gradient(160deg,#e4fa7c 0%,#c7ea3a 60%,#b9de2e 100%);color:#1a2400}
 .d3-lime .d3-lbl{opacity:.6}
-.d3-gray{background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);color:var(--text)}
+.d3-gray{background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);color:var(--text)}
 
 .d3-mosaic{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:auto auto;gap:10px;margin-bottom:6px}
 .d3-m-wide{grid-column:1;grid-row:1;border-radius:20px;padding:14px}
 .d3-m-tall{grid-column:2;grid-row:1/3;border-radius:20px;padding:14px;display:flex;flex-direction:column;justify-content:space-between}
 .d3-m-sm{grid-column:1;grid-row:2;border-radius:20px;padding:14px}
-.d3-white{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.d3-white{background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);color:var(--text)}
 .d3-amber{background:var(--amber-bg);color:#7c4a05;border:1px solid var(--amber-border)}
 .d3-note{font-size:11px;font-weight:600;color:var(--text3)}
 
@@ -5460,7 +5460,7 @@ function renderRecebidosSummary(){
       +'<div style="font-family:\'Open Sans\',Arial,sans-serif;font-size:19px;font-weight:800;letter-spacing:-.02em;margin-top:5px">'+fmt(totalRecebido)+'</div>'
       +'<div style="font-size:10px;opacity:.65;margin-top:3px">'+nRec+' de '+ativos.length+' '+S.cfg.lblC.toLowerCase()+'</div>'
       +'</div>'
-      +'<div style="background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);border-radius:16px;padding:13px 14px">'
+      +'<div style="background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);border-radius:16px;padding:13px 14px">'
       +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">&#8987; Falta receber</div>'
       +'<div style="font-family:\'Open Sans\',Arial,sans-serif;font-size:19px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-top:5px">'+fmt(faltaReceber)+'</div>'
       +'<div style="font-size:10px;color:var(--text3);margin-top:3px">'+nFalta+' pendentes</div>'
@@ -5843,12 +5843,10 @@ function renderSaldoGeral(){
     else if(variant==='lime'){ bg='linear-gradient(160deg,#e4fa7c 0%,#c7ea3a 60%,#b9de2e 100%)'; txt='#1a2400'; txtSub='rgba(26,36,0,.6)'; }
     else if(variant==='roxo'){ bg='linear-gradient(160deg,#8b5cf6 0%,#6d28d9 60%,#5b21b6 100%)'; txt='#fff'; txtSub='rgba(255,255,255,.75)'; }
     else if(variant==='black'){ bg='#141414'; txt='#fff'; txtSub='rgba(255,255,255,.55)'; }
-    else if(variant==='white'){ bg='#fff'; txt='var(--text)'; txtSub='var(--text3)'; }
-    else { bg='linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%)'; txt='var(--text)'; txtSub='var(--text3)'; }
-    var border = variant==='white' ? 'border:1px solid var(--border);' : '';
+    else { bg='linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%)'; txt='var(--text)'; txtSub='var(--text3)'; }
     var padBig = size==='big' ? '20px 18px' : '15px 16px';
     var valSize = size==='big' ? '25px' : '19px';
-    return '<div style="background:'+bg+';'+border+'border-radius:'+(size==='big'?'20px':'16px')+';padding:'+padBig+'">'
+    return '<div style="background:'+bg+';border-radius:'+(size==='big'?'20px':'16px')+';padding:'+padBig+'">'
       +'<div style="font-size:10px;font-weight:700;color:'+txt+';text-transform:uppercase;letter-spacing:.3px;opacity:.75">'+lbl+'</div>'
       +'<div class="num" style="font-size:'+valSize+';font-weight:800;font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;color:'+txt+';margin-top:6px">'+fmt(val)+'</div>'
       +'<div style="font-size:10px;color:'+txtSub+';margin-top:4px">'+sub+'</div>'
@@ -6737,7 +6735,7 @@ function renderOpIA(){
     +'<div class="num" style="font-size:19px;font-weight:800;font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;margin-top:6px">'+fmt(lucro)+'</div>'
     +'<div style="font-size:10px;opacity:.65;margin-top:4px">'+saudeEstado+'</div>'
     +'</div>'
-    +'<div style="grid-column:1/3;background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);border-radius:16px;padding:15px 16px">'
+    +'<div style="grid-column:1/3;background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);border-radius:16px;padding:15px 16px">'
     +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px">Ticket médio</div>'
     +'<div class="num" style="font-size:19px;font-weight:800;color:var(--text);font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;margin-top:6px">'+fmt(ticketMedio)+'</div>'
     +'<div style="font-size:10px;color:var(--text3);margin-top:4px">por cliente/mês</div>'
@@ -6773,7 +6771,7 @@ function renderOpIA(){
       +'<div class="num" style="font-size:19px;font-weight:800;font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;margin-top:4px;color:'+(receitaExtra>0?'#92600a':'#065f46')+'">'+(receitaExtra>0?'+'+fmt(receitaExtra):'já atinge ✓')+'</div>'
     +'</div>'
     +(ticketMedio>0 && receitaExtra>0?(
-    '<div style="background:linear-gradient(160deg,#f2f2f5,#e4e4e9);border-radius:16px;padding:13px 14px">'
+    '<div style="background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%);border-radius:16px;padding:13px 14px">'
       +'<div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px">Clientes novos</div>'
       +'<div class="num" style="font-size:21px;font-weight:800;color:var(--text);font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;margin-top:4px">'+clientesExtras+'<span style="font-size:11px;color:var(--text3);font-weight:600"> no ticket médio</span></div>'
     +'</div>'

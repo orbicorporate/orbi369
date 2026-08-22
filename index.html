@@ -710,6 +710,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 
 <!-- ===== TAB: NEGOCIO ===== -->
 <div id="tab-op" class="tab-pane">
+  <div id="negocio-headline-box" style="margin-bottom:10px"></div>
   <div id="negocio-switcher-box" style="margin-bottom:14px"></div>
   <div id="modelo-negocio-box" style="margin-bottom:14px"></div>
   <div id="proximos-passos-box" style="margin-bottom:14px"></div>
@@ -1660,6 +1661,14 @@ function excluirNegocioAtivo(){
 }
 window.excluirNegocioAtivo = excluirNegocioAtivo;
 
+function renderNegocioHeadline(){
+  var el=document.getElementById('negocio-headline-box');
+  if(!el)return;
+  var nomeNeg=(S.cfg && S.cfg.nome) || 'Negócio';
+  el.innerHTML='<div class="d3-headline">'+nomeNeg+'</div><div class="d3-sub">'+(S.cfg.mes||'—')+'</div>';
+}
+window.renderNegocioHeadline = renderNegocioHeadline;
+
 function renderNegocioSwitcher(){
   var el=document.getElementById('negocio-switcher-box');
   if(!el)return;
@@ -1867,6 +1876,7 @@ function catMap(items){const m={};items.forEach(it=>{m[it.cat]=(m[it.cat]||0)+it
 // ===================== RENDER ALL =====================
 function renderAll(){
   applyLabels();
+  renderNegocioHeadline();
   renderNegocioSwitcher();
   renderInicio();
   renderModeloNegocio();
@@ -2217,7 +2227,6 @@ function renderMets(){
   const modelo = (S.cfg && S.cfg.modeloNegocio) || 'ambos';
   const mostraRec = modelo==='recorrente' || modelo==='ambos';
   const mostraAvu = modelo==='avulso' || modelo==='ambos';
-  const nomeNeg = (S.cfg && S.cfg.nome) || 'Negócio';
 
   var mosaicoHtml = '';
   if(mostraRec){
@@ -2233,9 +2242,6 @@ function renderMets(){
   }
 
   el.innerHTML=''
-    +'<div class="d3-headline">'+nomeNeg+'</div>'
-    +'<div class="d3-sub">'+(S.cfg.mes||'—')+'</div>'
-
     +'<div class="d3-hero">'
       +'<div class="d3-hero-tag">Lucro operacional</div>'
       +'<div class="d3-hero-num">'+fmt(l)+'</div>'

@@ -291,12 +291,6 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
   0%,100%{box-shadow:0 0 0 0 rgba(199,234,58,0)}
   50%{box-shadow:0 0 26px 3px rgba(199,234,58,.16)}
 }
-.d2-hero::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;z-index:3;pointer-events:none;
-  background:conic-gradient(from 0deg,transparent 0%,#c7ea3a 6%,#eaff9a 9%,#c7ea3a 12%,transparent 24%,transparent 100%);
-  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-  -webkit-mask-composite:xor;mask-composite:exclude;
-  animation:d2BorderSpin 3.4s linear infinite}
-@keyframes d2BorderSpin{to{transform:rotate(360deg)}}
 .d2-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:relative;z-index:2}
 .d2-hero-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
 .d2-hero-pill{font-size:10px;font-weight:800;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:100px}
@@ -314,7 +308,6 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 @keyframes d2DotPulseHtml{0%{width:9px;height:9px;opacity:.55}75%{width:34px;height:34px;opacity:0}100%{width:34px;height:34px;opacity:0}}
 @media (prefers-reduced-motion: reduce){
   .d2-hero{animation:none}
-  .d2-hero::before{animation:none;opacity:0}
   .d2-wave-path{animation:none;stroke-dashoffset:0}
   .d2-wave-endpoint .glow{animation:none;opacity:0}
 }

@@ -303,15 +303,18 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .d2-wave-path{fill:none;stroke:#c7ea3a;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:340;stroke-dashoffset:340;animation:d2WaveDraw 1.7s cubic-bezier(.22,.9,.3,1) forwards}
 @keyframes d2WaveDraw{to{stroke-dashoffset:0}}
-.d2-wave-dot{fill:#c7ea3a}
-.d2-wave-dot-glow{fill:#c7ea3a;opacity:0;animation:d2DotPulse 1.8s ease-out infinite;animation-delay:1.7s}
-.d2-wave-travel{fill:#f2ffb0;filter:drop-shadow(0 0 5px rgba(199,234,58,1)) drop-shadow(0 0 11px rgba(199,234,58,.65))}
-@keyframes d2DotPulse{0%{r:3;opacity:.55}75%{r:10;opacity:0}100%{r:10;opacity:0}}
+.d2-wave-travel{fill:#f2ffb0;filter:drop-shadow(0 0 4px rgba(199,234,58,1)) drop-shadow(0 0 9px rgba(199,234,58,.6))}
+/* Ponto final — fica FORA do SVG (que é esticado por preserveAspectRatio="none"),
+   por isso usa pixels reais e nunca vira uma bolha oval */
+.d2-wave-endpoint{position:absolute;width:0;height:0;z-index:3}
+.d2-wave-endpoint .dot{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#c7ea3a;box-shadow:0 0 6px rgba(199,234,58,.85)}
+.d2-wave-endpoint .glow{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#c7ea3a;opacity:0;animation:d2DotPulseHtml 1.8s ease-out infinite;animation-delay:1.7s}
+@keyframes d2DotPulseHtml{0%{width:9px;height:9px;opacity:.55}75%{width:34px;height:34px;opacity:0}100%{width:34px;height:34px;opacity:0}}
 @media (prefers-reduced-motion: reduce){
   .d2-hero{animation:none}
   .d2-hero::before{animation:none;opacity:0}
   .d2-wave-path{animation:none;stroke-dashoffset:0}
-  .d2-wave-dot-glow{animation:none;opacity:0}
+  .d2-wave-endpoint .glow{animation:none;opacity:0}
 }
 
 .d2-strip{background:#fff;border:1px solid var(--border);border-radius:100px;padding:10px 16px;margin:16px 0 8px;
@@ -2312,9 +2315,17 @@ function renderInicio(){
   var areaPath = wavePath+' L'+lastPt.x.toFixed(1)+','+chartH+' L'+ptsArr[0].x.toFixed(1)+','+chartH+' Z';
   var reduceMotion = (typeof window!=='undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var travelDotHtml = reduceMotion ? '' : ''
-    +'<circle r="2.5" class="d2-wave-travel">'
+    +'<circle r="1.6" class="d2-wave-travel">'
       +'<animateMotion dur="2.4s" repeatCount="indefinite" rotate="auto" path="'+wavePath+'"/>'
     +'</circle>';
+
+  // Ponto final: desenhado FORA do SVG (preserveAspectRatio="none" estica tudo dentro
+  // do SVG, o que transformava o círculo pulsante numa "bolha oval" — fora do SVG ele
+  // usa pixels reais e fica sempre redondo)
+  var lastXPct=lastPt.x.toFixed(2), lastYPct=((lastPt.y/chartH)*100).toFixed(2);
+  var endpointHtml='<div class="d2-wave-endpoint" style="left:'+lastXPct+'%;top:'+lastYPct+'%">'
+    +'<span class="glow"></span><span class="dot"></span>'
+  +'</div>';
 
   var lineChartHtml = ''
     +'<svg class="d2-wave-path-svg" viewBox="0 0 100 40" preserveAspectRatio="none" style="width:100%;height:100%">'
@@ -2325,9 +2336,8 @@ function renderInicio(){
       +'<path d="'+areaPath+'" fill="url(#d2WaveFill)"/>'
       +'<path d="'+wavePath+'" class="d2-wave-path"/>'
       +travelDotHtml
-      +'<circle cx="'+lastPt.x.toFixed(1)+'" cy="'+lastPt.y.toFixed(1)+'" r="4" class="d2-wave-dot-glow"/>'
-      +'<circle cx="'+lastPt.x.toFixed(1)+'" cy="'+lastPt.y.toFixed(1)+'" r="2.3" class="d2-wave-dot"/>'
-    +'</svg>';
+    +'</svg>'
+    +endpointHtml;
 
   // Label do bloco de negócio: nome(s) real(is) da(s) página(s) de negócio
   var negLabel=negocios.map(function(n){return n.nome||'Negócio';}).join(' · ');

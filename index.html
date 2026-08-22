@@ -408,16 +408,16 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .lb-row-name{font-size:14px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .lb-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:16.5px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
 .lb-row-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.lb-dia-inp{width:38px;font-size:13.5px;font-weight:700;padding:6px 4px;border:1.5px solid var(--border);border-radius:10px;background:#fff;color:var(--text);font-family:var(--font);text-align:center;-moz-appearance:textfield}
+.lb-dia-inp{width:32px;font-size:12.5px;font-weight:700;padding:3px 3px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font-family:var(--font);text-align:center;-moz-appearance:textfield}
 .lb-dia-inp::-webkit-outer-spin-button,.lb-dia-inp::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 
 /* Toggle moderno (substitui o checkbox nativo do navegador) */
-.nf-toggle{position:relative;display:inline-flex;align-items:center;width:36px;height:21px;flex-shrink:0;cursor:pointer}
+.nf-toggle{position:relative;display:inline-flex;align-items:center;width:30px;height:18px;flex-shrink:0;cursor:pointer}
 .nf-toggle input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:2;width:100%;height:100%}
 .nf-toggle .track{position:absolute;inset:0;background:#d3d3cd;border-radius:100px;transition:background .2s}
 .nf-toggle input:checked + .track{background:#2563eb}
-.nf-toggle .thumb{position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
-.nf-toggle input:checked + .track .thumb{transform:translateX(15px)}
+.nf-toggle .thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.nf-toggle input:checked + .track .thumb{transform:translateX(12px)}
 .lb-total-row{padding:15px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-top:2px solid var(--border2)}
 .lb-total-lbl{font-size:12px;font-weight:800;color:var(--text)}
 .lb-total-val{font-family:'Open Sans',Arial,sans-serif;font-size:19px;font-weight:800;color:var(--text)}
@@ -437,7 +437,7 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .tr-row-bar{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .tr-row-bar .pb{flex:1}
 .tr-row-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-.tr-row-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:6px 12px}
+.tr-row-info{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:#fff;border:1px solid var(--border);border-radius:100px;padding:4px 9px}
 .tr-row-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .tr-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px}
 .tr-summary-c{border-radius:16px;padding:13px 14px;background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%)}
@@ -2520,13 +2520,13 @@ function buildPanel(p,tab,pi){
         </div>
         <div class="tr-row-bottom">
           <div class="tr-row-info">
-            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;font-size:11px;color:var(--text2)">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;font-size:10.5px;color:var(--text2)">
               <span class="nf-toggle"><input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})"><span class="track"><span class="thumb"></span></span></span>
               <span>NF</span>
-              ${comNF&&pctNF>0?`<span style="font-size:10px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}
+              ${comNF&&pctNF>0?`<span style="font-size:9.5px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}
             </label>
-            <span style="width:1px;height:14px;background:var(--border2)"></span>
-            <span style="font-size:10.5px;color:var(--text3)">Dia</span>
+            <span style="width:1px;height:12px;background:var(--border2)"></span>
+            <span style="font-size:10px;color:var(--text3)">Dia</span>
             <input type="number" placeholder="—" min="1" max="31" value="${diaReceb||''}" class="lb-dia-inp" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()">
           </div>
           <div class="tr-row-actions">
@@ -4359,8 +4359,8 @@ function buildListBox(box,tab,li){
       <div class="lb-row-bottom">
         <div class="tr-row-info">
           ${tipoTag}
-          <span style="width:1px;height:14px;background:var(--border2)"></span>
-          <span style="font-size:10.5px;color:var(--text3)">Dia</span>
+          <span style="width:1px;height:12px;background:var(--border2)"></span>
+          <span style="font-size:10px;color:var(--text3)">Dia</span>
           <input type="number" class="lb-dia-inp" placeholder="—" min="1" max="31" value="${diaVenc||''}"
             title="Só o dia. Mês atual: ${S.cfg.mes||'—'}"
             onchange="S.listboxes['${tab}'][${li}].items[${ii}].dataPrev=this.value?diaParaData(this.value):'';save();renderNoteCalendar()">

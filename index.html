@@ -2512,14 +2512,12 @@ function buildPanel(p,tab,pi){
       <div style="background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
         <div style="display:flex;align-items:center;gap:10px">
           <span style="font-size:18px">🧾</span>
-          <div>
-            <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px">% Imposto sobre NF</div>
-            <div style="display:flex;align-items:center;gap:6px;margin-top:5px">
-              <input type="number" id="cfg-imposto-nf-pct" value="${pctNF}" min="0" max="100" step="0.1"
-                style="width:64px;font-family:var(--font);font-size:16px;font-weight:800;padding:7px 8px;border:1.5px solid var(--border);border-radius:11px;background:var(--bg2);color:var(--text);outline:none;text-align:center"
-                onchange="setImpostoNFPct(this.value)">
-              <span style="font-size:12px;color:var(--text3);font-weight:600">%</span>
-            </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap">% Imposto sobre NF</span>
+            <input type="number" id="cfg-imposto-nf-pct" value="${pctNF}" min="0" max="100" step="0.1"
+              style="width:56px;font-family:var(--font);font-size:14px;font-weight:800;padding:5px 6px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text);outline:none;text-align:center"
+              onchange="setImpostoNFPct(this.value)">
+            <span style="font-size:11px;color:var(--text3);font-weight:600">%</span>
           </div>
         </div>
         <button class="btn-add-animated" onclick="openMo('mo-cli')" style="font-size:12.5px;padding:11px 18px">

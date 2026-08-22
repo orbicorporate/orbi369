@@ -2526,7 +2526,7 @@ function buildPanel(p,tab,pi){
       </div>
       ${nComNF>0?`<div style="padding:10px 4px 6px;font-size:11px;color:var(--text3)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático: <strong class="num" style="color:var(--red)">${fmt(totalImpostoNF)}</strong></div>`:''}
     </div>`)
-    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
+    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}" style="${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':'display:none'}">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div style="text-align:right">
@@ -2601,7 +2601,7 @@ function buildPanel(p,tab,pi){
       </div>
       <div style="font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#92400e">${fmt(totalProLabore)}</div>
     </div>` : '')
-    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}">${rowsColHtml || '<div class="lb-empty">Nenhum colaborador ainda.</div>'}</div>
+    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}" style="${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':'display:none'}">${rowsColHtml || '<div class="lb-empty">Nenhum colaborador ainda.</div>'}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div class="lb-total-val num">${fmt(f)}</div>
@@ -2673,7 +2673,7 @@ function buildPanel(p,tab,pi){
         <div class="panel-hdr-val num">${headerVal}</div>
       </div>
       <div class="panel-hdr-actions">
-        ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')">▾</button>` : ''}
+        ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':' collapsed'}" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')">▾</button>` : ''}
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✎</button>
       </div>
@@ -3532,11 +3532,17 @@ function showInvestSubTab(id, btn){
 }
 window.showInvestSubTab = showInvestSubTab;
 
+// Lembra se cada lista foi expandida pelo usuário nesta sessão — sem isso,
+// toda vez que a tela re-renderiza (ex: editar um item) a lista voltaria a
+// aparecer expandida mesmo se o usuário tivesse acabado de recolher.
+var _panelExpanded = {};
+function isPanelExpanded(id){ return !!_panelExpanded[id]; }
 function toggleRowsCollapse(wrapId,btnId){
   var el=document.getElementById(wrapId);
   if(!el)return;
   var isHidden=el.style.display==='none';
   el.style.display=isHidden?'':'none';
+  _panelExpanded[wrapId]=isHidden; // ficou visível = expandido = true
   var btn=document.getElementById(btnId);
   if(btn)btn.classList.toggle('collapsed',!isHidden);
 }
@@ -4373,7 +4379,7 @@ function buildListBox(box,tab,li){
         <div class="panel-hdr-val num">${fmtD(total)}<small>total mensal</small></div>
       </div>
       <div class="panel-hdr-actions">
-        <button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')">▾</button>
+        <button class="panel-hdr-menu rows-toggle${isPanelExpanded('lb-rows-'+tab+'-'+li)?'':' collapsed'}" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')">▾</button>
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb">✎</button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir esta lista" data-etab="${tab}" data-eli="${li}" data-action="del-lb" style="margin-left:4px">✕</button>
@@ -4400,7 +4406,7 @@ function buildListBox(box,tab,li){
         <button class="btn btn-g" onclick="lbAddInline('${tab}',${li})">+ Add</button>
       </div>
     </div>
-    <div class="lb-rows-wrap" id="lb-rows-${tab}-${li}">${rowsOrEmpty}</div>
+    <div class="lb-rows-wrap" id="lb-rows-${tab}-${li}" style="${isPanelExpanded('lb-rows-'+tab+'-'+li)?'':'display:none'}">${rowsOrEmpty}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div style="text-align:right">

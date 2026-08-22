@@ -5,6 +5,18 @@
 // Precisa da variável de ambiente ANTHROPIC_API_KEY configurada no projeto
 // Vercel (Project Settings → Environment Variables).
 
+// Rede de segurança: mesmo com a instrução no prompt, o modelo às vezes ainda
+// escreve **negrito** ou # título em markdown. Converte pro que a bolha do
+// chat sabe exibir, ao invés de mostrar os símbolos crus.
+function markdownParaHtmlSimples(txt) {
+  return txt
+    .replace(/^#{1,6}\s*(.+)$/gm, '<strong>$1</strong>')      // # Título -> <strong>
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')          // **negrito** -> <strong>
+    .replace(/^[-*]\s+/gm, '• ')                                // - item / * item -> • item
+    .replace(/\n{2,}/g, '<br><br>')
+    .replace(/\n/g, '<br>');
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Método não permitido' });
@@ -39,6 +51,9 @@ module.exports = async (req, res) => {
     'Use os dados financeiros reais do usuário abaixo quando forem relevantes pra pergunta. ' +
     'Se a pergunta for sobre educação financeira geral (ex: diferença entre CDB e FII), responda normalmente com seu conhecimento, ' +
     'sem inventar números específicos do usuário que não estejam no contexto.\n\n' +
+    'IMPORTANTE — formatação: esta resposta é inserida direto como HTML numa bolha de chat, então NUNCA use markdown ' +
+    '(nada de **negrito**, # títulos, listas com - ou *, ou blocos de código). Escreva em texto corrido, com quebras de linha ' +
+    'simples (<br>) entre ideias quando fizer sentido. Se quiser destacar algo, use <strong>texto</strong> (tag HTML real), nunca asteriscos.\n\n' +
     'Contexto financeiro atual do usuário:\n' + (context || 'Não disponível.');
 
   try {
@@ -65,7 +80,8 @@ module.exports = async (req, res) => {
     }
 
     const answer = (data.content || []).map(function (c) { return c.text || ''; }).join('').trim();
-    res.status(200).json({ answer: answer || 'Não consegui gerar uma resposta agora, tenta de novo.' });
+    const answerLimpo = markdownParaHtmlSimples(answer);
+    res.status(200).json({ answer: answerLimpo || 'Não consegui gerar uma resposta agora, tenta de novo.' });
   } catch (err) {
     res.status(500).json({ error: 'Falha ao chamar a IA: ' + err.message });
   }

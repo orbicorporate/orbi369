@@ -2179,7 +2179,7 @@ function renderFocoDoMes(){
     if(maior && pctMaior >= 40){
       foco = {icone:'📊', cor:'amber', titulo:'"'+maior.nome+'" é '+pctMaior.toFixed(0)+'% da sua receita', texto:'Alta dependência de um único cliente é um risco. Se possível, diversifique a carteira nos próximos meses.'};
     } else {
-      foco = {icone:'✅', cor:'green', titulo:'Tudo em ordem — margem de '+m.toFixed(1)+'%', texto:'Seu negócio está saudável este mês. Considere reinvestir parte do lucro ou aumentar a meta de crescimento.'};
+      foco = {icone:'✓', cor:'green', titulo:'Tudo em ordem — margem de '+m.toFixed(1)+'%', texto:'Seu negócio está saudável este mês. Considere reinvestir parte do lucro ou aumentar a meta de crescimento.'};
     }
   }
 
@@ -2199,7 +2199,7 @@ function renderFocoDoMes(){
     +'<div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(215,245,44,.25),transparent 70%);pointer-events:none"></div>'
     +'<div style="position:absolute;bottom:-60px;left:-30px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(215,245,44,.10),transparent 70%);pointer-events:none"></div>'
     +'<div style="position:relative;display:flex;gap:14px;align-items:flex-start">'
-    +'<span style="font-size:28px;flex-shrink:0">'+foco.icone+'</span>'
+    +'<span style="font-size:28px;flex-shrink:0'+(foco.icone==='✓'?';color:#7ee34a;font-weight:900;line-height:1':'')+'">'+foco.icone+'</span>'
     +'<div style="flex:1;min-width:0">'
     +'<div style="font-size:10px;font-weight:800;color:var(--lime);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px">Foco do mês</div>'
     +'<div style="font-size:19px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.25;letter-spacing:-.2px">'+foco.titulo+'</div>'

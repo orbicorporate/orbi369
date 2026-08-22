@@ -3623,15 +3623,32 @@ window.showUndoToast=showUndoToast;
 // ===================== CHAT =====================
 function toggleChat(){const p=document.getElementById('chat-panel');const bd=document.getElementById('chat-backdrop');p.classList.toggle('on');if(bd)bd.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('chat-inp').focus();}
 function sendSug(btn){document.getElementById('chat-inp').value=btn.textContent;sendChat();}
-function sendChat(){
+async function sendChat(){
   const inp=document.getElementById('chat-inp');const msg=inp.value.trim();if(!msg)return;
   addMsg(msg,'u');inp.value='';
   const typing=addTyping();
-  setTimeout(()=>{
-    typing.remove();
-    addMsg(processCmd(msg),'b');
-    addFollowUpSugs();
-  },450+Math.random()*350);
+  await new Promise(function(r){ setTimeout(r,450+Math.random()*350); });
+
+  var resposta=processCmd(msg);
+
+  // Se o "cérebro" local (padrões/regex) não reconheceu a pergunta, tenta a IA externa
+  if(resposta===ASSIST_FALLBACK){
+    try{
+      var resp=await fetch('/api/ask',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({question:msg,context:assistBuildContext()})
+      });
+      var data=await resp.json();
+      resposta = resp.ok ? (data.answer||resposta) : ('⚠️ '+(data.error||'Não consegui buscar uma resposta agora.'));
+    }catch(err){
+      resposta='⚠️ Não consegui me conectar à IA agora. Tenta de novo em instantes.';
+    }
+  }
+
+  typing.remove();
+  addMsg(resposta,'b');
+  addFollowUpSugs();
 }
 // Sugestões contextuais que reaparecem depois de cada resposta, pra manter a conversa fluindo
 // Sugestões contextuais elaboradas — usa a MESMA lista de perguntas da aba Minha Orbi

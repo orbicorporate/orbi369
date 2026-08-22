@@ -282,7 +282,10 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 
 /* ===== Início v9 — sem meta, sem setas, sem tags de comparação, com degradês ===== */
 .d2-hero{position:relative;overflow:hidden;border-radius:28px;padding:24px 22px 20px;margin-bottom:6px;color:#fff;
-  background:linear-gradient(135deg,#0a0a0a 0%,#1a2205 55%,#2c3a08 100%);
+  background:
+    radial-gradient(circle at -6% -12%, rgba(120,210,110,.32), transparent 42%),
+    radial-gradient(circle at -8% 106%, rgba(110,205,120,.26), transparent 40%),
+    linear-gradient(135deg,#0a1628 0%,#0d2318 55%,#142e12 100%);
   animation:d2HeroGlow 3.2s ease-in-out infinite}
 @keyframes d2HeroGlow{
   0%,100%{box-shadow:0 0 0 0 rgba(199,234,58,0)}

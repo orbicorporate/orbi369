@@ -295,21 +295,11 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .d2-hero-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
 .d2-hero-pill{font-size:10px;font-weight:800;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:100px}
 .d2-hero-num{font-size:32px;font-weight:800;line-height:1;font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em;position:relative;z-index:2}
-.d2-wave-wrap{margin:16px -18px -14px;position:relative;height:68px}
-.d2-wave-path{fill:none;stroke:#c7ea3a;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:340;stroke-dashoffset:340;animation:d2WaveDraw 1.7s cubic-bezier(.22,.9,.3,1) forwards}
-@keyframes d2WaveDraw{to{stroke-dashoffset:0}}
-.d2-wave-travel{fill:#f2ffb0;filter:drop-shadow(0 0 4px rgba(199,234,58,1)) drop-shadow(0 0 9px rgba(199,234,58,.6))}
-/* Ponto final — fica FORA do SVG (que é esticado por preserveAspectRatio="none"),
-   por isso usa pixels reais e nunca vira uma bolha oval */
-.d2-wave-endpoint{position:absolute;width:0;height:0;z-index:3}
-.d2-wave-endpoint .dot{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#c7ea3a;box-shadow:0 0 6px rgba(199,234,58,.85)}
-.d2-wave-endpoint .glow{position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#c7ea3a;opacity:0;animation:d2DotPulseHtml 1.8s ease-out infinite;animation-delay:1.7s}
-@keyframes d2DotPulseHtml{0%{width:9px;height:9px;opacity:.55}75%{width:34px;height:34px;opacity:0}100%{width:34px;height:34px;opacity:0}}
+.d2-wave-wrap{margin:16px -18px -14px;padding:0 18px 14px;position:relative;height:68px;box-sizing:border-box}
+.d2-bars-simple{display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;height:100%}
+.d2-bars-simple i{width:14px;border-radius:6px 6px 2px 2px;display:block}
 @media (prefers-reduced-motion: reduce){
   .d2-hero{animation:none}
-  .d2-wave-path{animation:none;stroke-dashoffset:0}
-  .d2-wave-endpoint .glow{animation:none;opacity:0}
 }
 
 .d2-strip{background:#fff;border:1px solid var(--border);border-radius:100px;padding:10px 16px;margin:16px 0 8px;
@@ -2287,55 +2277,19 @@ function renderInicio(){
     lucroTotal+=calcLFor(neg);
   });
 
-  // Gráfico de onda do hero: curva suave (não reta) com preenchimento em degradê + ponto pulsando
+  // Barrinhas simples do hero (sem linha, sem SVG) — última barra em destaque
   var hist=(S.historico||[]).slice().sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
   var ultimosMeses=hist.slice(0,4).reverse();
   var serieLucro=ultimosMeses.map(function(h){return h.lucro||0;});
   serieLucro.push(lucroTotal);
   var maxSerie=Math.max.apply(null,serieLucro.map(function(v){return Math.abs(v);}).concat([1]));
-  var nPts=serieLucro.length;
-  var chartW=100, chartH=40, padY=4, padX=3;
-  var ptsArr=serieLucro.map(function(v,i){
-    var x = padX + (nPts>1 ? (i/(nPts-1))*(chartW-2*padX) : (chartW-2*padX)/2);
-    var yNorm = Math.max(0,Math.min(1, Math.abs(v)/maxSerie));
-    var y = (chartH-padY) - yNorm*(chartH-2*padY);
-    return {x:x,y:y};
-  });
-  // Suaviza a linha reta em curva usando quadráticas passando pelo ponto médio de cada segmento
-  var wavePath = 'M'+ptsArr[0].x.toFixed(1)+','+ptsArr[0].y.toFixed(1);
-  for(var wi=1; wi<ptsArr.length; wi++){
-    var pPrev=ptsArr[wi-1], pCur=ptsArr[wi];
-    var midX=((pPrev.x+pCur.x)/2).toFixed(1), midY=((pPrev.y+pCur.y)/2).toFixed(1);
-    wavePath += ' Q'+pPrev.x.toFixed(1)+','+pPrev.y.toFixed(1)+' '+midX+','+midY;
-  }
-  var lastPt=ptsArr[ptsArr.length-1];
-  wavePath += ' L'+lastPt.x.toFixed(1)+','+lastPt.y.toFixed(1);
-  var areaPath = wavePath+' L'+lastPt.x.toFixed(1)+','+chartH+' L'+ptsArr[0].x.toFixed(1)+','+chartH+' Z';
-  var reduceMotion = (typeof window!=='undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  var travelDotHtml = reduceMotion ? '' : ''
-    +'<circle r="1.6" class="d2-wave-travel">'
-      +'<animateMotion dur="2.4s" repeatCount="indefinite" rotate="auto" path="'+wavePath+'"/>'
-    +'</circle>';
-
-  // Ponto final: desenhado FORA do SVG (preserveAspectRatio="none" estica tudo dentro
-  // do SVG, o que transformava o círculo pulsante numa "bolha oval" — fora do SVG ele
-  // usa pixels reais e fica sempre redondo)
-  var lastXPct=lastPt.x.toFixed(2), lastYPct=((lastPt.y/chartH)*100).toFixed(2);
-  var endpointHtml='<div class="d2-wave-endpoint" style="left:'+lastXPct+'%;top:'+lastYPct+'%">'
-    +'<span class="glow"></span><span class="dot"></span>'
-  +'</div>';
-
-  var lineChartHtml = ''
-    +'<svg class="d2-wave-path-svg" viewBox="0 0 100 40" preserveAspectRatio="none" style="width:100%;height:100%">'
-      +'<defs><linearGradient id="d2WaveFill" x1="0" y1="0" x2="0" y2="1">'
-        +'<stop offset="0%" stop-color="#c7ea3a" stop-opacity=".35"/>'
-        +'<stop offset="100%" stop-color="#c7ea3a" stop-opacity="0"/>'
-      +'</linearGradient></defs>'
-      +'<path d="'+areaPath+'" fill="url(#d2WaveFill)"/>'
-      +'<path d="'+wavePath+'" class="d2-wave-path"/>'
-      +travelDotHtml
-    +'</svg>'
-    +endpointHtml;
+  var nBars=serieLucro.length;
+  var barsHtml=serieLucro.map(function(v,i){
+    var h=Math.max(14,Math.round((Math.abs(v)/maxSerie)*100));
+    var isLast=i===nBars-1;
+    return '<i style="height:'+h+'%;background:'+(isLast?'#c7ea3a':'rgba(199,234,58,.32)')+'"></i>';
+  }).join('');
+  var lineChartHtml = '<div class="d2-bars-simple">'+barsHtml+'</div>';
 
   // Label do bloco de negócio: nome(s) real(is) da(s) página(s) de negócio
   var negLabel=negocios.map(function(n){return n.nome||'Negócio';}).join(' · ');

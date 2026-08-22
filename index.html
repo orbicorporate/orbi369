@@ -97,14 +97,15 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;position:relative}
 .panel-hdr{padding:22px 20px;display:flex;flex-direction:column;gap:12px;color:#fff;position:relative;overflow:hidden}
 .panel-hdr::after{content:'';position:absolute;right:-12px;top:-12px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.07)}
-.panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;width:100%}
+.panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;width:100%;padding-right:112px;box-sizing:border-box}
 .panel-hdr-icon{width:40px;height:40px;background:rgba(255,255,255,.18);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;cursor:pointer}
-.panel-hdr-info{min-width:0}
-.panel-title-edit{font-size:16.5px;font-weight:800;color:#fff;background:transparent;border:none;outline:none;width:100%;font-family:var(--font);cursor:pointer;letter-spacing:-.01em;text-overflow:ellipsis}
+.panel-hdr-info{min-width:0;flex:1}
+.panel-title-edit{font-size:16.5px;font-weight:800;color:#fff;background:transparent;border:none;outline:none;width:100%;font-family:var(--font);cursor:pointer;letter-spacing:-.01em;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}
 .panel-title-edit:focus{background:rgba(255,255,255,.15);border-radius:5px;padding:2px 6px;cursor:text}
 .panel-sub{font-size:12.5px;color:rgba(255,255,255,.7);margin-top:4px}
-.panel-hdr-r{display:flex;align-items:center;gap:9px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;width:100%}
-.panel-hdr-val{font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#fff;text-align:right;letter-spacing:-.02em}
+.panel-hdr-r{display:flex;align-items:center;gap:9px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-start;width:100%}
+.panel-hdr-val{font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#fff;text-align:left;letter-spacing:-.02em}
+.panel-hdr-actions{position:absolute;top:20px;right:20px;display:flex;align-items:center;gap:8px;z-index:5}
 .panel-hdr-val small{display:inline;font-size:11px;color:rgba(255,255,255,.65);font-weight:600;margin-left:7px;letter-spacing:0}
 /* Chip de mês — linha fina ao lado do valor nos cabeçalhos coloridos */
 .hdr-mes-chip{display:inline-block;margin-left:8px;padding:2px 8px;font-size:9px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;letter-spacing:.4px;text-transform:lowercase;vertical-align:middle;font-family:'Open Sans',Arial,sans-serif}
@@ -2691,6 +2692,8 @@ function buildPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${headerVal}</div>
+      </div>
+      <div class="panel-hdr-actions">
         ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')">▾</button>` : ''}
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✎</button>
@@ -4389,6 +4392,8 @@ function buildListBox(box,tab,li){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(total)}<small>total mensal</small></div>
+      </div>
+      <div class="panel-hdr-actions">
         <button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')">▾</button>
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb">✎</button>
@@ -6061,8 +6066,10 @@ function renderSaldoGeral(){
     +'<div style="font-size:14px;font-weight:700;color:#fff;letter-spacing:.3px">Saldo Geral do M\u00eas</div>'
     +'<div class="panel-sub">Consolida\u00e7\u00e3o completa · Margem: '+pct(margem)+'</div>'
     +'</div></div>'
-    +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
+    +'<div class="panel-hdr-r">'
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
+    +'</div>'
+    +'<div class="panel-hdr-actions">'
     +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">?</button>'
     +'</div></div>'
 

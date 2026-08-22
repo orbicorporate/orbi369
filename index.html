@@ -95,15 +95,15 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 
 /* PANEL — fully editable */
 .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;position:relative}
-.panel-hdr{padding:22px 20px;display:flex;align-items:center;justify-content:space-between;color:#fff;position:relative;overflow:hidden}
+.panel-hdr{padding:22px 20px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;color:#fff;position:relative;overflow:hidden}
 .panel-hdr::after{content:'';position:absolute;right:-12px;top:-12px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.07)}
-.panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;flex:1}
+.panel-hdr-l{display:flex;align-items:center;gap:12px;position:relative;min-width:0;flex:1 1 190px}
 .panel-hdr-icon{width:40px;height:40px;background:rgba(255,255,255,.18);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;cursor:pointer}
 .panel-hdr-info{min-width:0}
 .panel-title-edit{font-size:16.5px;font-weight:800;color:#fff;background:transparent;border:none;outline:none;width:100%;font-family:var(--font);cursor:pointer;letter-spacing:-.01em}
 .panel-title-edit:focus{background:rgba(255,255,255,.15);border-radius:5px;padding:2px 6px;cursor:text}
 .panel-sub{font-size:12.5px;color:rgba(255,255,255,.7);margin-top:4px}
-.panel-hdr-r{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.panel-hdr-r{display:flex;align-items:center;gap:9px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 .panel-hdr-val{font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#fff;text-align:right;letter-spacing:-.02em}
 .panel-hdr-val small{display:block;font-size:10.5px;color:rgba(255,255,255,.65);font-weight:400;margin-top:2px}
 /* Chip de mês — linha fina ao lado do valor nos cabeçalhos coloridos */

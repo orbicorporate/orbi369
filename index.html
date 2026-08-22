@@ -295,9 +295,6 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .d2-hero-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
 .d2-hero-pill{font-size:10px;font-weight:800;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:100px}
 .d2-hero-num{font-size:32px;font-weight:800;line-height:1;font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em;position:relative;z-index:2}
-.d2-wave-wrap{margin:16px -18px -14px;padding:0 18px 14px;position:relative;height:68px;box-sizing:border-box}
-.d2-bars-simple{display:flex;align-items:flex-end;justify-content:flex-end;gap:6px;height:100%}
-.d2-bars-simple i{width:14px;border-radius:6px 6px 2px 2px;display:block}
 @media (prefers-reduced-motion: reduce){
   .d2-hero{animation:none}
 }
@@ -2277,20 +2274,6 @@ function renderInicio(){
     lucroTotal+=calcLFor(neg);
   });
 
-  // Barrinhas simples do hero (sem linha, sem SVG) — última barra em destaque
-  var hist=(S.historico||[]).slice().sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
-  var ultimosMeses=hist.slice(0,4).reverse();
-  var serieLucro=ultimosMeses.map(function(h){return h.lucro||0;});
-  serieLucro.push(lucroTotal);
-  var maxSerie=Math.max.apply(null,serieLucro.map(function(v){return Math.abs(v);}).concat([1]));
-  var nBars=serieLucro.length;
-  var barsHtml=serieLucro.map(function(v,i){
-    var h=Math.max(14,Math.round((Math.abs(v)/maxSerie)*100));
-    var isLast=i===nBars-1;
-    return '<i style="height:'+h+'%;background:'+(isLast?'#c7ea3a':'rgba(199,234,58,.32)')+'"></i>';
-  }).join('');
-  var lineChartHtml = '<div class="d2-bars-simple">'+barsHtml+'</div>';
-
   // Label do bloco de negócio: nome(s) real(is) da(s) página(s) de negócio
   var negLabel=negocios.map(function(n){return n.nome||'Negócio';}).join(' · ');
 
@@ -2309,8 +2292,7 @@ function renderInicio(){
         +'<div class="d2-hero-tag">Este mês</div>'
         +'<div class="d2-hero-pill">'+M()+'</div>'
       +'</div>'
-      +'<div class="d2-hero-num">'+fmt(lucroTotal)+'</div>'
-      +'<div class="d2-wave-wrap">'+lineChartHtml+'</div>'
+      +'<div class="d2-hero-num" style="margin-bottom:4px">'+fmt(lucroTotal)+'</div>'
     +'</div>'
 
     +'<div class="d2-strip"><span class="dot blue"></span>'+negLabel+'</div>'

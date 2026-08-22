@@ -2769,7 +2769,20 @@ function openAddItemModal(tab,pi){
   openMo('mo-add-item');
   document.getElementById('mo-add-item-ttl').textContent='Adicionar lançamento — '+S.panels[tab][pi].title;
 }
-function removeItem(tab,pi,ii){S.panels[tab][pi].items.splice(ii,1);save();renderAll();}
+function removeItem(tab,pi,ii){
+  const panel=S.panels[tab]&&S.panels[tab][pi];
+  const item=panel&&panel.items&&panel.items[ii];
+  if(!item)return;
+  const label=item.desc||item.nome||'item';
+  if(!confirm('Excluir "'+label+'"?\n\nVocê vai poder desfazer logo em seguida.'))return;
+  panel.items.splice(ii,1);
+  save();renderAll();
+  showUndoToast('🗑️ "'+label+'" removido.',function(){
+    panel.items.splice(ii,0,item);
+    save();renderAll();
+    showToast('↩️ "'+label+'" restaurado!');
+  });
+}
 function openTagForItem(e,tab,pi,ii){
   e.stopPropagation();
   activeTagCtx={type:'item',tab,pi,ii};
@@ -2944,7 +2957,19 @@ function addCli(){
   document.getElementById('nc-nome').value='';document.getElementById('nc-val').value='';
   save();renderAll();showToast('✅ '+S.cfg.lblC+' "'+nome+'" adicionado!');
 }
-function removeCli(i){const n=S.clientes[i].nome;S.clientes.splice(i,1);save();renderAll();showToast('🗑️ "'+n+'" removido.');}
+function removeCli(i){
+  const item=S.clientes[i];
+  if(!item)return;
+  if(!confirm('Excluir "'+item.nome+'"?\n\nVocê vai poder desfazer logo em seguida, mas não deixe pra depois.'))return;
+  const idx=i;
+  S.clientes.splice(i,1);
+  save();renderAll();
+  showUndoToast('🗑️ "'+item.nome+'" removido.',function(){
+    S.clientes.splice(idx,0,item);
+    save();renderAll();
+    showToast('↩️ "'+item.nome+'" restaurado!');
+  });
+}
 // Marca/desmarca um cliente como "Com NF" (aplica % de imposto configurado)
 function toggleComNF(oi){
   if(!S.clientes[oi])return;
@@ -2986,7 +3011,19 @@ function addCol(){
   document.getElementById('nco-nome').value='';document.getElementById('nco-cargo').value='';document.getElementById('nco-val').value='';
   save();renderAll();showToast('✅ Colaborador "'+nome+'" adicionado!');
 }
-function removeCol(i){const n=S.colaboradores[i].nome;S.colaboradores.splice(i,1);save();renderAll();showToast('🗑️ "'+n+'" removido.');}
+function removeCol(i){
+  const item=S.colaboradores[i];
+  if(!item)return;
+  if(!confirm('Excluir "'+item.nome+'"?\n\nVocê vai poder desfazer logo em seguida, mas não deixe pra depois.'))return;
+  const idx=i;
+  S.colaboradores.splice(i,1);
+  save();renderAll();
+  showUndoToast('🗑️ "'+item.nome+'" removido.',function(){
+    S.colaboradores.splice(idx,0,item);
+    save();renderAll();
+    showToast('↩️ "'+item.nome+'" restaurado!');
+  });
+}
 function saveImp(){S.imposto=parseFloat(document.getElementById('imp-val').value)||0;save();renderAll();showToast('✅ Imposto: '+fmt(S.imposto));}
 
 // ===================== IMPORTAR LISTA DE CLIENTES =====================
@@ -3518,6 +3555,25 @@ function closeMo(id){const el=document.getElementById(id);if(el)el.classList.rem
 document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');});});
 document.addEventListener('click',e=>{if(!e.target.closest('#pmenu')&&!e.target.classList.contains('panel-hdr-menu'))document.getElementById('pmenu').classList.remove('on');});
 function showToast(msg){const t=document.getElementById('toast');if(t){t.textContent=msg;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2600);}}
+
+function showUndoToast(msg,undoFn){
+  var old=document.getElementById('undo-toast');
+  if(old)old.remove();
+  var el=document.createElement('div');
+  el.id='undo-toast';
+  el.style.cssText='position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#141414;color:#fff;padding:12px 12px 12px 16px;border-radius:100px;display:flex;align-items:center;gap:12px;font-family:var(--font);font-size:13px;font-weight:600;z-index:99999;box-shadow:0 10px 26px rgba(0,0,0,.32);max-width:92vw';
+  var span=document.createElement('span');
+  span.textContent=msg;
+  span.style.cssText='white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+  var btn=document.createElement('button');
+  btn.textContent='Desfazer';
+  btn.style.cssText='background:#c7ea3a;color:#1a2400;border:none;border-radius:100px;padding:8px 16px;font-weight:800;font-size:12.5px;cursor:pointer;flex-shrink:0;font-family:var(--font)';
+  btn.onclick=function(){ undoFn(); el.remove(); };
+  el.appendChild(span);el.appendChild(btn);
+  document.body.appendChild(el);
+  setTimeout(function(){ if(el.parentNode)el.remove(); },7000);
+}
+window.showUndoToast=showUndoToast;
 
 // ===================== CHAT =====================
 function toggleChat(){const p=document.getElementById('chat-panel');const bd=document.getElementById('chat-backdrop');p.classList.toggle('on');if(bd)bd.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('chat-inp').focus();}
@@ -4386,7 +4442,19 @@ function lbAddItem(tab,li){
   S.listboxes[tab][li].items.push({nome:nome.trim(),valor});
   save();renderAll();showToast('✅ "'+nome+'" adicionado!');
 }
-function lbDelItem(tab,li,ii){S.listboxes[tab][li].items.splice(ii,1);save();renderAll();}
+function lbDelItem(tab,li,ii){
+  const box=S.listboxes[tab]&&S.listboxes[tab][li];
+  const item=box&&box.items&&box.items[ii];
+  if(!item)return;
+  if(!confirm('Excluir "'+item.nome+'"?\n\nVocê vai poder desfazer logo em seguida.'))return;
+  box.items.splice(ii,1);
+  save();renderAll();
+  showUndoToast('🗑️ "'+item.nome+'" removido.',function(){
+    box.items.splice(ii,0,item);
+    save();renderAll();
+    showToast('↩️ "'+item.nome+'" restaurado!');
+  });
+}
 function lbEditNome(td,tab,li,ii){
   const item=S.listboxes[tab][li].items[ii];
   const inp=document.createElement('input');inp.className='ie-inp';inp.value=item.nome;

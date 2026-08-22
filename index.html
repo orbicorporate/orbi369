@@ -399,6 +399,24 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .lb-total-sub{font-size:11px;color:#059669;font-weight:700;margin-top:2px}
 .lb-empty{padding:24px 16px;text-align:center;font-size:12.5px;color:var(--text3)}
 
+/* Clientes/Colaboradores — cards de item no lugar da tabela densa */
+.tr-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:10px}
+.tr-row{padding:14px 16px;border-radius:14px;background:var(--card);
+  border:1.5px solid rgba(0,0,0,.08);border-bottom-color:rgba(0,0,0,.18)}
+.tr-row-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.tr-row-name{font-size:14.5px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.tr-row-name .idx{color:var(--text3);font-weight:600;margin-right:5px}
+.tr-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
+.tr-row-mid{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.tr-row-cargo{font-size:12.5px;color:var(--text2);cursor:pointer}
+.tr-row-bar{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.tr-row-bar .pb{flex:1}
+.tr-row-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tr-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px}
+.tr-summary-c{border-radius:16px;padding:13px 14px;background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%)}
+.tr-summary-lbl{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
+.tr-summary-val{font-family:'Open Sans',Arial,sans-serif;font-size:17px;font-weight:800;margin-top:5px}
+
 /* TABLE */
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:280px}
@@ -2448,6 +2466,44 @@ function buildPanel(p,tab,pi){
     const totalImpostoNF = calcImpostoNF();
     const nComNF = S.clientes.filter(c=>c.status==='ativo' && c.comNF).length;
     headerVal=`${fmt(r)}<small>${atRec} recorrente${atRec!==1?'s':''}${atAvu>0?' + '+atAvu+' avulso'+(atAvu>1?'s':''):''}</small>`;
+    const rowsCliHtml = sorted.map((c,i)=>{
+      const pp=r>0?(c.valor/r)*100:0,oi=S.clientes.indexOf(c);
+      const bs=c.status==='ativo'?'bg-green':c.status==='pausado'?'bg-amber':'bg-blue';
+      const rec=S.recebidos&&S.recebidos[c.nome];
+      const tipo=c.tipo||'recorrente';
+      const tipoBadge = tipo==='avulso'
+        ? '<span class="badge ed" style="background:#fef3c7;color:#854f0b;border:1px solid #fde68a;font-size:9.5px" onclick="cycleTipoCli('+oi+')" title="Avulso — não aparece no próximo mês após receber">🎯 Avulso</span>'
+        : '<span class="badge ed" style="background:transparent;color:var(--lime-dk);border:1.5px solid var(--lime-dk);font-size:9.5px;font-weight:700" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
+      const diaReceb = extrairDia(c.dataReceb);
+      const comNF = !!c.comNF;
+      const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;
+      const recBtn = rec
+        ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10.5px;padding:4px 10px" onclick="toggleRecebido('${c.nome}')">&#10003; Recebido</button>`
+        : `<button class="btn btn-sm" style="background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);font-size:10.5px;padding:4px 10px" onclick="toggleRecebido('${c.nome}')">Recebido</button>`;
+      return `<div class="tr-row" style="${rec?'background:var(--green-bg)':''}">
+        <div class="tr-row-top">
+          <div class="tr-row-name" onclick="inlineEdit(this,'cli','nome',${oi})"><span class="idx">${i+1}.</span>${c.nome}</div>
+          <div class="tr-row-val" onclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</div>
+        </div>
+        <div class="tr-row-mid">
+          ${tipoBadge}
+          <span class="badge ${bs} ed" onclick="cycleStatus('cli',${oi})">${c.status}</span>
+        </div>
+        <div class="tr-row-bar">
+          <div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div></div>
+          <span style="font-size:10.5px;color:var(--text3);font-weight:600">${pct(pp)}</span>
+        </div>
+        <div class="tr-row-bottom">
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;font-size:11px;color:var(--text2)">
+            <input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:16px;height:16px;cursor:pointer">Com NF
+            ${comNF&&pctNF>0?`<span style="font-size:10px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}
+          </label>
+          <input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" class="lb-dia-inp" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()">
+          ${recBtn}
+          <button class="btn btn-r btn-sm" style="margin-left:auto" onclick="removeCli(${oi})">✕</button>
+        </div>
+      </div>`;
+    }).join('');
     bodyHTML=(`<div style="background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
       <div style="display:flex;align-items:center;gap:8px">
         <span style="font-size:11px;font-weight:700;color:var(--text2)">🧾 % Imposto sobre NF:</span>
@@ -2458,31 +2514,14 @@ function buildPanel(p,tab,pi){
       </div>
       ${nComNF>0?`<div style="flex:1;min-width:180px;text-align:right"><span style="font-size:10.5px;color:var(--text3)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático:</span> <strong class="num" style="color:var(--red);font-size:13px">${fmt(totalImpostoNF)}</strong></div>`:''}
     </div>`)
-    +`<div class="tw"><table><thead><tr><th>#</th><th>${S.cfg.lblC}</th><th>Tipo</th><th>${S.cfg.lblF}</th><th>%</th><th>Status</th><th title="Marque se esse cliente emite Nota Fiscal — aplica o % de imposto configurado acima">Com NF</th><th title="Dia do recebimento no mês atual">Dia receb.</th><th>Recebimento</th><th></th></tr></thead><tbody>
-      ${sorted.map((c,i)=>{
-        const pp=r>0?(c.valor/r)*100:0,oi=S.clientes.indexOf(c);
-        const bs=c.status==='ativo'?'bg-green':c.status==='pausado'?'bg-amber':'bg-blue';
-        const rec=S.recebidos&&S.recebidos[c.nome];
-        const tipo=c.tipo||'recorrente';
-        const tipoBadge = tipo==='avulso'
-          ? '<span class="badge ed" style="background:#fef3c7;color:#854f0b;border:1px solid #fde68a;font-size:9px" onclick="cycleTipoCli('+oi+')" title="Avulso — não aparece no próximo mês após receber">🎯 Avulso</span>'
-          : '<span class="badge ed" style="background:transparent;color:var(--lime-dk);border:1.5px solid var(--lime-dk);font-size:9px;font-weight:700" onclick="cycleTipoCli('+oi+')" title="Recorrente — aparece todos os meses">🔄 Recorrente</span>';
-        const diaReceb = extrairDia(c.dataReceb);
-        const comNF = !!c.comNF;
-        const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;
-        return `<tr style="${rec?'background:var(--green-bg)':''}"><td class="mu">${i+1}</td>
-          <td class="inline-edit nome-cell" onclick="inlineEdit(this,'cli','nome',${oi})">${c.nome}</td>
-          <td>${tipoBadge}</td>
-          <td class="num r inline-edit" onclick="inlineEdit(this,'cli','valor',${oi})">${fmt(c.valor)}</td>
-          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
-          <td><span class="badge ${bs} ed" onclick="cycleStatus('cli',${oi})">${c.status}</span></td>
-          <td><label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:16px;height:16px;cursor:pointer">${comNF&&pctNF>0?`<span style="font-size:9.5px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}</label></td>
-          <td><input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" style="width:50px;font-size:11px;padding:3px 5px;border:1px solid var(--border);border-radius:5px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()"></td>
-          <td>${rec?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">&#10003; Recebido</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleRecebido('${c.nome}')">Recebido</button>`}</td>
-          <td><button class="btn btn-r btn-sm" onclick="removeCli(${oi})">&#10005;</button></td></tr>`;
-      }).join('')}
-      <tr class="tr-tot"><td colspan="3">TOTAL</td><td class="num r gc">${fmt(r)}</td><td colspan="2"></td><td class="num r" style="color:var(--red)">${totalImpostoNF>0?'-'+fmt(totalImpostoNF):'—'}</td><td colspan="3"></td></tr>
-    </tbody></table></div>
+    +`<div class="tr-rows-wrap">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
+    <div class="lb-total-row">
+      <div class="lb-total-lbl">TOTAL</div>
+      <div style="text-align:right">
+        <div class="lb-total-val num">${fmt(r)}</div>
+        ${totalImpostoNF>0?`<div class="lb-total-sub" style="color:var(--red)">-${fmt(totalImpostoNF)} imposto</div>`:''}
+      </div>
+    </div>
     ${totalImpostoNF>0?`<div style="padding:8px 14px;background:var(--red-bg);border-top:1px solid var(--red-border);font-size:11.5px;color:var(--red)">🧾 Imposto sobre NF (${nComNF} cliente${nComNF!==1?'s':''}): <strong>${fmt(totalImpostoNF)}</strong> — já descontado do faturamento no card "Imposto" e no Lucro operacional.</div>`:''}
     <div id="recebidos-summary-${pi}"></div><div class="chart-row"><div class="chart-box"><div class="chart-ttl">Receita por ${S.cfg.lblC.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
@@ -2511,21 +2550,38 @@ function buildPanel(p,tab,pi){
       var cls = t==='Sócio' ? 'style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;font-weight:800"' : t==='CLT' ? 'class="bg-blue"' : 'class="bg-gray"';
       return '<span class="badge" '+cls+'>'+(t==='Sócio'?'👑 ':'')+t+'</span>';
     }
-    bodyHTML=(S.colaboradores.length>0 ? `<div style="display:flex;flex-wrap:wrap;border-bottom:1px solid var(--border)">
-      <div style="flex:1;min-width:110px;padding:12px 16px;border-right:1px solid var(--border);background:var(--bg3)">
-        <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Total previsto</div>
-        <div class="num" style="font-size:17px;font-weight:700;color:var(--text)">${fmt(f)}</div>
-      </div>
-      <div style="flex:1;min-width:110px;padding:12px 16px;border-right:1px solid var(--border);background:var(--bg3)">
-        <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Pago (${nPagoCol}/${S.colaboradores.length})</div>
-        <div class="num" style="font-size:17px;font-weight:700;color:var(--green)">${fmt(totalPagoCol)}</div>
-      </div>
-      <div style="flex:1;min-width:110px;padding:12px 16px;background:var(--bg3)">
-        <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Falta pagar</div>
-        <div class="num" style="font-size:17px;font-weight:700;color:${faltaPagarCol>0?'var(--amber)':'var(--green)'}">${fmt(faltaPagarCol)}</div>
-      </div>
+    const rowsColHtml = sorted.map((c,i)=>{
+      const pp=f>0?(c.valor/f)*100:0,oi=S.colaboradores.indexOf(c);
+      const cpago=S.colPagos&&S.colPagos[c.nome];
+      const isSocio=c.tipo==='Sócio';
+      const pagoBtn=cpago
+        ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10.5px;padding:4px 10px" onclick="toggleColPago('${c.nome}')">&#10003; Pago</button>`
+        : `<button class="btn btn-sm" style="background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);font-size:10.5px;padding:4px 10px" onclick="toggleColPago('${c.nome}')">Pago</button>`;
+      return `<div class="tr-row" style="${cpago?'background:var(--green-bg)':isSocio?'background:#fffbeb':''}">
+        <div class="tr-row-top">
+          <div class="tr-row-name" onclick="inlineEdit(this,'col','nome',${oi})"><span class="idx">${i+1}.</span>${c.nome}</div>
+          <div class="tr-row-val" onclick="inlineEdit(this,'col','valor',${oi})">${fmt(c.valor)}</div>
+        </div>
+        <div class="tr-row-mid">
+          <span class="tr-row-cargo" onclick="inlineEdit(this,'col','cargo',${oi})">${c.cargo}</span>
+          ${tipoBadge(c.tipo)}
+        </div>
+        <div class="tr-row-bar">
+          <div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div></div>
+          <span style="font-size:10.5px;color:var(--text3);font-weight:600">${pct(pp)}</span>
+        </div>
+        <div class="tr-row-bottom">
+          ${pagoBtn}
+          <button class="btn btn-r btn-sm" style="margin-left:auto" onclick="removeCol(${oi})">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+    bodyHTML=(S.colaboradores.length>0 ? `<div class="tr-summary">
+      <div class="tr-summary-c"><div class="tr-summary-lbl">Total previsto</div><div class="tr-summary-val num">${fmt(f)}</div></div>
+      <div class="tr-summary-c"><div class="tr-summary-lbl">Pago (${nPagoCol}/${S.colaboradores.length})</div><div class="tr-summary-val num" style="color:var(--green)">${fmt(totalPagoCol)}</div></div>
+      <div class="tr-summary-c"><div class="tr-summary-lbl">Falta pagar</div><div class="tr-summary-val num" style="color:${faltaPagarCol>0?'var(--amber)':'var(--green)'}">${fmt(faltaPagarCol)}</div></div>
     </div>` : '')
-    +(socios.length>0 ? `<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:14px;padding:16px 18px;margin:14px 14px 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    +(socios.length>0 ? `<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1.5px solid #f59e0b;border-radius:14px;padding:16px 18px;margin:0 14px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
       <span style="font-size:26px">👑</span>
       <div style="flex:1;min-width:180px">
         <div style="font-size:10.5px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px">Sócios · Pró-labore</div>
@@ -2533,22 +2589,11 @@ function buildPanel(p,tab,pi){
       </div>
       <div style="font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#92400e">${fmt(totalProLabore)}</div>
     </div>` : '')
-    +`<div class="tw" style="margin-top:14px"><table><thead><tr><th>#</th><th>Nome</th><th>Tipo</th><th>${S.cfg.lblCargo}</th><th>Custo</th><th>%</th><th>Pago</th><th></th></tr></thead><tbody>
-      ${sorted.map((c,i)=>{
-        const pp=f>0?(c.valor/f)*100:0,oi=S.colaboradores.indexOf(c);
-        const cpago=S.colPagos&&S.colPagos[c.nome];
-        const isSocio=c.tipo==='Sócio';
-        return `<tr style="${cpago?'background:var(--green-bg)':isSocio?'background:#fffbeb':''}"><td class="mu">${i+1}</td>
-          <td class="inline-edit nome-cell" onclick="inlineEdit(this,'col','nome',${oi})">${c.nome}</td>
-          <td>${tipoBadge(c.tipo)}</td>
-          <td class="inline-edit" onclick="inlineEdit(this,'col','cargo',${oi})">${c.cargo}</td>
-          <td class="num r inline-edit" onclick="inlineEdit(this,'col','valor',${oi})">${fmt(c.valor)}</td>
-          <td><div class="pb"><div class="pb-t"><div class="pb-f" style="width:${Math.min(pp,100)}%;background:${pp>30?'var(--amber)':'var(--lime-dk)'}"></div></div><span style="font-size:9px;color:var(--text3)">${pct(pp)}</span></div></td>
-          <td>${cpago?`<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">&#10003; Pago</button>`:`<button class="btn btn-sm" style="background:#f7f7f3;color:#4a4a4a;border:1.5px solid #ddddd8;font-size:10px;padding:3px 9px" onclick="toggleColPago('${c.nome}')">Pago</button>`}</td>
-          <td><button class="btn btn-r btn-sm" onclick="removeCol(${oi})">&#10005;</button></td></tr>`;
-      }).join('')}
-      <tr class="tr-tot"><td colspan="4">TOTAL</td><td class="num r rc">${fmt(f)}</td><td colspan="3"></td></tr>
-    </tbody></table></div>
+    +`<div class="tr-rows-wrap">${rowsColHtml || '<div class="lb-empty">Nenhum colaborador ainda.</div>'}</div>
+    <div class="lb-total-row">
+      <div class="lb-total-lbl">TOTAL</div>
+      <div class="lb-total-val num">${fmt(f)}</div>
+    </div>
     <div class="chart-row"><div class="chart-box"><div class="chart-ttl">Custo por ${S.cfg.lblCol.toLowerCase()}</div><div class="chart-wrap"><canvas id="chart-${tab}-${pi}"></canvas></div></div></div>
     <div class="add-row">
       <span></span>

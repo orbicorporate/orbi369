@@ -129,6 +129,17 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .panel-hdr-menu{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;z-index:5;pointer-events:auto}
 .rows-toggle{transition:transform .2s}
 .rows-toggle.collapsed{transform:rotate(-90deg)}
+
+/* Botões de ação (Recebido/Pago/Excluir) — pílula moderna com check animado */
+.act-btn{font-family:var(--font);font-weight:800;font-size:11.5px;padding:8px 14px;border-radius:100px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:none;transition:all .2s}
+.act-btn.off{background:var(--bg2);color:var(--text2);border:1.5px solid var(--border)}
+.act-btn.off:hover{background:var(--bg3)}
+.act-btn.on{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 3px 10px rgba(5,150,105,.35)}
+.act-btn.on .chk{display:inline-block;animation:chkPop .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes chkPop{0%{transform:scale(0) rotate(-25deg);opacity:0}55%{transform:scale(1.35) rotate(10deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.act-btn-del{width:32px;height:32px;border-radius:50%;background:var(--red-bg);color:var(--red);border:1px solid var(--red-border);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:800;transition:all .2s;flex-shrink:0}
+.act-btn-del:hover{background:var(--red);color:#fff;transform:scale(1.05)}
+
 .panel-help-btn{background:#0a0e17 !important;color:#fff !important;font-weight:800;font-size:13px !important}
 .panel-help-btn:hover{background:#1a2235 !important}
 .panel-del-btn{background:#0a0e17 !important;color:#fff !important;font-weight:800;font-size:13px !important}
@@ -2482,8 +2493,8 @@ function buildPanel(p,tab,pi){
       const comNF = !!c.comNF;
       const impostoDoCliente = comNF ? (Number(c.valor)||0)*(pctNF/100) : 0;
       const recBtn = rec
-        ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10.5px;padding:4px 10px" onclick="toggleRecebido('${c.nome}')">&#10003; Recebido</button>`
-        : `<button class="btn btn-sm" style="background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);font-size:10.5px;padding:4px 10px" onclick="toggleRecebido('${c.nome}')">Recebido</button>`;
+        ? `<button class="act-btn on" onclick="toggleRecebido('${c.nome}')"><span class="chk">✓</span> Recebido</button>`
+        : `<button class="act-btn off" onclick="toggleRecebido('${c.nome}')">Recebido</button>`;
       return `<div class="tr-row" style="${rec?'background:var(--green-bg)':''}">
         <div class="tr-row-top">
           <div class="tr-row-name" onclick="inlineEdit(this,'cli','nome',${oi})"><span class="idx">${i+1}.</span>${c.nome}</div>
@@ -2509,7 +2520,7 @@ function buildPanel(p,tab,pi){
           </div>
           <div class="tr-row-actions">
             ${recBtn}
-            <button class="btn btn-r btn-sm" onclick="removeCli(${oi})">✕</button>
+            <button class="act-btn-del" onclick="removeCli(${oi})">✕</button>
           </div>
         </div>
       </div>`;
@@ -2565,8 +2576,8 @@ function buildPanel(p,tab,pi){
       const cpago=S.colPagos&&S.colPagos[c.nome];
       const isSocio=c.tipo==='Sócio';
       const pagoBtn=cpago
-        ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10.5px;padding:4px 10px" onclick="toggleColPago('${c.nome}')">&#10003; Pago</button>`
-        : `<button class="btn btn-sm" style="background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);font-size:10.5px;padding:4px 10px" onclick="toggleColPago('${c.nome}')">Pago</button>`;
+        ? `<button class="act-btn on" onclick="toggleColPago('${c.nome}')"><span class="chk">✓</span> Pago</button>`
+        : `<button class="act-btn off" onclick="toggleColPago('${c.nome}')">Pago</button>`;
       return `<div class="tr-row" style="${cpago?'background:var(--green-bg)':isSocio?'background:#fffbeb':''}">
         <div class="tr-row-top">
           <div class="tr-row-name" onclick="inlineEdit(this,'col','nome',${oi})"><span class="idx">${i+1}.</span>${c.nome}</div>
@@ -2582,7 +2593,7 @@ function buildPanel(p,tab,pi){
         </div>
         <div class="tr-row-bottom">
           ${pagoBtn}
-          <button class="btn btn-r btn-sm" onclick="removeCol(${oi})">✕</button>
+          <button class="act-btn-del" onclick="removeCol(${oi})">✕</button>
         </div>
       </div>`;
     }).join('');
@@ -4322,8 +4333,8 @@ function buildListBox(box,tab,li){
   const rows=items.map((it,ii)=>{
     const isPago=lbItemPago(box.id,it.nome);
     const pagoBtn=isPago
-      ? `<button class="btn btn-sm" style="background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;font-size:10.5px;padding:4px 10px" onclick="toggleLbPago('${box.id}','${it.nome}')">&#10003; Pago</button>`
-      : `<button class="btn btn-sm" style="background:var(--bg2);color:var(--text2);border:1.5px solid var(--border);font-size:10.5px;padding:4px 10px" onclick="toggleLbPago('${box.id}','${it.nome}')">Pago</button>`;
+      ? `<button class="act-btn on" onclick="toggleLbPago('${box.id}','${it.nome}')"><span class="chk">✓</span> Pago</button>`
+      : `<button class="act-btn off" onclick="toggleLbPago('${box.id}','${it.nome}')">Pago</button>`;
     const diaVenc = extrairDia(it.dataPrev);
     const tipo = it.tipo || 'variavel';
     const tipoTag = tipo==='fixo'
@@ -4345,7 +4356,7 @@ function buildListBox(box,tab,li){
         </div>
         <div class="tr-row-actions">
           ${pagoBtn}
-          <button class="btn btn-r btn-sm" onclick="lbDelItem('${tab}',${li},${ii})">✕</button>
+          <button class="act-btn-del" onclick="lbDelItem('${tab}',${li},${ii})">✕</button>
         </div>
       </div>
     </div>`;

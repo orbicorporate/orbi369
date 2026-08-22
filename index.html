@@ -33,8 +33,8 @@
 /* iOS dá zoom automático em campos com fonte menor que 16px ao focar — trava isso globalmente */
 input,select,textarea{font-size:16px !important}
 @media(min-width:480px){input,select,textarea{font-size:inherit !important}}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:14px}
+html{scroll-behavior:smooth;overflow-x:hidden;width:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;font-size:14px;overflow-x:hidden;width:100%;max-width:100vw;overscroll-behavior-x:none}
 .num{font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums}
 
 /* SETUP */

@@ -127,6 +127,8 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
   to { opacity: 1; }
 }
 .panel-hdr-menu{background:rgba(255,255,255,.15);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;position:relative;z-index:5;pointer-events:auto}
+.rows-toggle{transition:transform .2s}
+.rows-toggle.collapsed{transform:rotate(-90deg)}
 .panel-help-btn{background:#0a0e17 !important;color:#fff !important;font-weight:800;font-size:13px !important}
 .panel-help-btn:hover{background:#1a2235 !important}
 .panel-del-btn{background:#0a0e17 !important;color:#fff !important;font-weight:800;font-size:13px !important}
@@ -385,14 +387,14 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .lb-form-row2>div{flex:1;min-width:110px}
 .lb-form-row2 input,.lb-form-row2 select{width:100%;font-family:var(--font);font-size:14px;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text);outline:none;box-sizing:border-box}
 .lb-form-row2 button{height:42px;padding:0 20px;white-space:nowrap;flex:0 0 auto}
-.lb-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:10px}
-.lb-row{padding:14px 16px;border-radius:14px;background:var(--card);
+.lb-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:8px}
+.lb-row{padding:11px 14px;border-radius:13px;background:var(--card);
   border:1.5px solid rgba(0,0,0,.08);border-bottom-color:rgba(0,0,0,.18)}
-.lb-row-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
-.lb-row-name{font-size:14.5px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
-.lb-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
-.lb-row-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.lb-dia-inp{width:52px;font-size:11px;padding:5px 6px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center}
+.lb-row-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.lb-row-name{font-size:14px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.lb-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:16.5px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
+.lb-row-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.lb-dia-inp{width:44px;font-size:11px;padding:4px 5px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);font-family:var(--font);text-align:center}
 .lb-total-row{padding:15px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-top:2px solid var(--border2)}
 .lb-total-lbl{font-size:12px;font-weight:800;color:var(--text)}
 .lb-total-val{font-family:'Open Sans',Arial,sans-serif;font-size:19px;font-weight:800;color:var(--text)}
@@ -400,18 +402,20 @@ body{background:linear-gradient(165deg,#e9eefb 0%,#eeeaf9 35%,#f2f1fa 65%,#fbfaf
 .lb-empty{padding:24px 16px;text-align:center;font-size:12.5px;color:var(--text3)}
 
 /* Clientes/Colaboradores — cards de item no lugar da tabela densa */
-.tr-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:10px}
-.tr-row{padding:14px 16px;border-radius:14px;background:var(--card);
+.tr-rows-wrap{padding:12px 14px 4px;display:flex;flex-direction:column;gap:8px}
+.tr-row{padding:11px 14px;border-radius:13px;background:var(--card);
   border:1.5px solid rgba(0,0,0,.08);border-bottom-color:rgba(0,0,0,.18)}
-.tr-row-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-.tr-row-name{font-size:14.5px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.tr-row-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.tr-row-name{font-size:14px;font-weight:700;color:var(--text);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
 .tr-row-name .idx{color:var(--text3);font-weight:600;margin-right:5px}
-.tr-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
-.tr-row-mid{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
-.tr-row-cargo{font-size:12.5px;color:var(--text2);cursor:pointer}
-.tr-row-bar{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.tr-row-val{font-family:'Open Sans',Arial,sans-serif;font-size:16.5px;font-weight:800;color:var(--text);letter-spacing:-.02em;white-space:nowrap;cursor:pointer}
+.tr-row-mid{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.tr-row-cargo{font-size:12px;color:var(--text2);cursor:pointer}
+.tr-row-bar{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .tr-row-bar .pb{flex:1}
-.tr-row-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tr-row-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tr-row-info{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg3);border-radius:9px;padding:4px 8px}
+.tr-row-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .tr-summary{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px}
 .tr-summary-c{border-radius:16px;padding:13px 14px;background:linear-gradient(160deg,#f4f5f9 0%,#eef1f8 50%,#f1eef8 100%)}
 .tr-summary-lbl{font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px}
@@ -2494,13 +2498,19 @@ function buildPanel(p,tab,pi){
           <span style="font-size:10.5px;color:var(--text3);font-weight:600">${pct(pp)}</span>
         </div>
         <div class="tr-row-bottom">
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;font-size:11px;color:var(--text2)">
-            <input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:16px;height:16px;cursor:pointer">Com NF
-            ${comNF&&pctNF>0?`<span style="font-size:10px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}
-          </label>
-          <input type="number" placeholder="Dia" min="1" max="31" value="${diaReceb||''}" class="lb-dia-inp" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()">
-          ${recBtn}
-          <button class="btn btn-r btn-sm" style="margin-left:auto" onclick="removeCli(${oi})">✕</button>
+          <div class="tr-row-info">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;font-size:11px;color:var(--text2)">
+              <input type="checkbox" ${comNF?'checked':''} onchange="toggleComNF(${oi})" style="width:15px;height:15px;cursor:pointer">NF
+              ${comNF&&pctNF>0?`<span style="font-size:10px;color:var(--red)" title="Imposto sobre este cliente">-${fmt(impostoDoCliente)}</span>`:''}
+            </label>
+            <span style="width:1px;height:14px;background:var(--border2)"></span>
+            <span style="font-size:10.5px;color:var(--text3)">Dia</span>
+            <input type="number" placeholder="—" min="1" max="31" value="${diaReceb||''}" class="lb-dia-inp" title="Só o dia. Mês atual: ${S.cfg.mes||'—'}" onchange="S.clientes[${oi}].dataReceb=this.value?diaParaData(this.value):'';save()">
+          </div>
+          <div class="tr-row-actions">
+            ${recBtn}
+            <button class="btn btn-r btn-sm" onclick="removeCli(${oi})">✕</button>
+          </div>
         </div>
       </div>`;
     }).join('');
@@ -2514,7 +2524,7 @@ function buildPanel(p,tab,pi){
       </div>
       ${nComNF>0?`<div style="flex:1;min-width:180px;text-align:right"><span style="font-size:10.5px;color:var(--text3)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático:</span> <strong class="num" style="color:var(--red);font-size:13px">${fmt(totalImpostoNF)}</strong></div>`:''}
     </div>`)
-    +`<div class="tr-rows-wrap">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
+    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div style="text-align:right">
@@ -2572,7 +2582,7 @@ function buildPanel(p,tab,pi){
         </div>
         <div class="tr-row-bottom">
           ${pagoBtn}
-          <button class="btn btn-r btn-sm" style="margin-left:auto" onclick="removeCol(${oi})">✕</button>
+          <button class="btn btn-r btn-sm" onclick="removeCol(${oi})">✕</button>
         </div>
       </div>`;
     }).join('');
@@ -2589,7 +2599,7 @@ function buildPanel(p,tab,pi){
       </div>
       <div style="font-family:'Open Sans',Arial,sans-serif;font-size:22px;font-weight:800;color:#92400e">${fmt(totalProLabore)}</div>
     </div>` : '')
-    +`<div class="tr-rows-wrap">${rowsColHtml || '<div class="lb-empty">Nenhum colaborador ainda.</div>'}</div>
+    +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}">${rowsColHtml || '<div class="lb-empty">Nenhum colaborador ainda.</div>'}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div class="lb-total-val num">${fmt(f)}</div>
@@ -2659,6 +2669,7 @@ function buildPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${headerVal}</div>
+        ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')">▾</button>` : ''}
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✎</button>
       </div>
@@ -3480,6 +3491,16 @@ function showInvestSubTab(id, btn){
 }
 window.showInvestSubTab = showInvestSubTab;
 
+function toggleRowsCollapse(wrapId,btnId){
+  var el=document.getElementById(wrapId);
+  if(!el)return;
+  var isHidden=el.style.display==='none';
+  el.style.display=isHidden?'':'none';
+  var btn=document.getElementById(btnId);
+  if(btn)btn.classList.toggle('collapsed',!isHidden);
+}
+window.toggleRowsCollapse=toggleRowsCollapse;
+
 function showTab(id,btn){
   document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('on'));
   document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
@@ -4258,12 +4279,18 @@ function buildListBox(box,tab,li){
         <div class="lb-row-val" onclick="lbEditValor(this,'${tab}',${li},${ii})" title="Toque pra editar">${fmtD(Number(it.valor)||0)}</div>
       </div>
       <div class="lb-row-bottom">
-        ${tipoTag}
-        <input type="number" class="lb-dia-inp" placeholder="Dia" min="1" max="31" value="${diaVenc||''}"
-          title="Só o dia. Mês atual: ${S.cfg.mes||'—'}"
-          onchange="S.listboxes['${tab}'][${li}].items[${ii}].dataPrev=this.value?diaParaData(this.value):'';save();renderNoteCalendar()">
-        ${pagoBtn}
-        <button class="btn btn-r btn-sm" style="margin-left:auto" onclick="lbDelItem('${tab}',${li},${ii})">✕</button>
+        <div class="tr-row-info">
+          ${tipoTag}
+          <span style="width:1px;height:14px;background:var(--border2)"></span>
+          <span style="font-size:10.5px;color:var(--text3)">Dia</span>
+          <input type="number" class="lb-dia-inp" placeholder="—" min="1" max="31" value="${diaVenc||''}"
+            title="Só o dia. Mês atual: ${S.cfg.mes||'—'}"
+            onchange="S.listboxes['${tab}'][${li}].items[${ii}].dataPrev=this.value?diaParaData(this.value):'';save();renderNoteCalendar()">
+        </div>
+        <div class="tr-row-actions">
+          ${pagoBtn}
+          <button class="btn btn-r btn-sm" onclick="lbDelItem('${tab}',${li},${ii})">✕</button>
+        </div>
       </div>
     </div>`;
   }).join('');
@@ -4284,6 +4311,7 @@ function buildListBox(box,tab,li){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(total)}<small>total mensal</small></div>
+        <button class="panel-hdr-menu rows-toggle" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')">▾</button>
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')">?</button>
         <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb">✎</button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir esta lista" data-etab="${tab}" data-eli="${li}" data-action="del-lb" style="margin-left:4px">✕</button>
@@ -4310,7 +4338,7 @@ function buildListBox(box,tab,li){
         <button class="btn btn-g" onclick="lbAddInline('${tab}',${li})">+ Add</button>
       </div>
     </div>
-    <div class="lb-rows-wrap">${rowsOrEmpty}</div>
+    <div class="lb-rows-wrap" id="lb-rows-${tab}-${li}">${rowsOrEmpty}</div>
     <div class="lb-total-row">
       <div class="lb-total-lbl">TOTAL</div>
       <div style="text-align:right">

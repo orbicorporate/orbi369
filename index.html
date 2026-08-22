@@ -111,7 +111,7 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .hdr-mes-chip{display:inline-block;margin-left:8px;padding:2px 8px;font-size:9px;font-weight:500;color:rgba(255,255,255,.85);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;letter-spacing:.4px;text-transform:lowercase;vertical-align:middle;font-family:'Open Sans',Arial,sans-serif}
 /* Animação pra destacar botão de perguntas decisivas quando "Pense mais" */
 /* Botão de adicionar com degradê animado (verde escuro ↔ verde claro) */
-.btn-add-animated{font-family:var(--font);font-size:13.5px;font-weight:800;padding:12px 22px;border:none;border-radius:16px;background:linear-gradient(115deg,#a8c400,#d7f52c,#eaff6b,#d7f52c,#a8c400);background-size:300% 100%;animation:addGradientMove 3.5s ease-in-out infinite;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 14px rgba(168,196,0,.4)}
+.btn-add-animated{font-family:var(--font);font-size:13.5px;font-weight:800;padding:12px 22px;border:none;border-radius:16px;background:linear-gradient(115deg,#8fac00,#c7ea3a,#d9f56a,#c7ea3a,#8fac00);background-size:300% 100%;animation:addGradientMove 3.5s ease-in-out infinite;color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px;box-shadow:0 4px 14px rgba(143,172,0,.45)}
 .btn-add-animated .plus-ic{font-size:17px;font-weight:800;color:var(--ink);line-height:1}
 @keyframes addGradientMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 
@@ -2511,8 +2511,8 @@ function buildPanel(p,tab,pi){
       </div>`;
     }).join('');
     bodyHTML=(`<div style="padding:16px 16px 4px">
-      <div style="background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
-        <div style="display:flex;align-items:center;gap:10px">
+      <div style="background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${nComNF>0?'10px':'0'}">
           <span style="font-size:18px">🧾</span>
           <div style="display:flex;align-items:center;gap:8px">
             <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap">% Imposto sobre NF</span>
@@ -2522,11 +2522,13 @@ function buildPanel(p,tab,pi){
             <span style="font-size:11px;color:var(--text3);font-weight:600">%</span>
           </div>
         </div>
+        ${nComNF>0?`<div style="font-size:11px;color:var(--text3);padding-top:10px;border-top:1px dashed var(--border)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático: <strong class="num" style="color:var(--red)">${fmt(totalImpostoNF)}</strong></div>`:''}
+      </div>
+      <div style="margin-top:12px">
         <button class="btn-add-animated" onclick="openMo('mo-cli')" style="font-size:12.5px;padding:11px 18px">
           <span class="plus-ic">+</span> Adicionar cliente
         </button>
       </div>
-      ${nComNF>0?`<div style="padding:10px 4px 6px;font-size:11px;color:var(--text3)">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático: <strong class="num" style="color:var(--red)">${fmt(totalImpostoNF)}</strong></div>`:''}
     </div>`)
     +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}" style="${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':'display:none'}">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>
     <div class="lb-total-row">

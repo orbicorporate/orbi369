@@ -311,6 +311,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
 .d3-val{font-size:19px;font-weight:800;font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
 .d3-val.big{font-size:24px}
 .d3-blue{background:linear-gradient(160deg,#3b76f6 0%,#1d4ed8 55%,#152f7a 100%);color:#fff}
+.d3-lime{background:linear-gradient(160deg,#e4fa7c 0%,#c7ea3a 60%,#b9de2e 100%);color:#1a2400}
+.d3-lime .d3-lbl{opacity:.6}
 .d3-gray{background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);color:var(--text)}
 
 .d3-mosaic{display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:auto auto;gap:10px;margin-bottom:6px}
@@ -2233,7 +2235,7 @@ function renderMets(){
     mosaicoHtml += '<div class="d3-m-wide d3-white"><div class="d3-lbl">Receita recorrente</div>'
       +'<div class="d3-val">'+fmt(rRec)+' <span style="font-size:11px;font-weight:600;color:var(--text3)">· '+atRec+' '+(atRec!==1?'recorrentes':'recorrente')+'</span></div></div>';
   }
-  mosaicoHtml += '<div class="d3-m-tall d3-amber"><div class="d3-lbl">Ticket médio</div><div class="d3-val big">'+fmt(t)+'</div></div>';
+  mosaicoHtml += '<div class="d3-m-tall d3-blue"><div class="d3-lbl">Ticket médio</div><div class="d3-val big">'+fmt(t)+'</div></div>';
   if(mostraAvu){
     mosaicoHtml += '<div class="d3-m-sm d3-white"><div class="d3-lbl">'+(modelo==='avulso'?'Receita de projetos':'Receita avulsa')+'</div>'
       +'<div class="d3-val">'+fmt(rAvu)+' <span style="font-size:11px;font-weight:600;color:var(--text3)">· '+atAvu+' '+(atAvu!==1?'pendentes':'pendente')+'</span></div></div>';
@@ -2249,7 +2251,7 @@ function renderMets(){
     +'</div>'
 
     +'<div class="d3-bento">'
-      +'<div class="d3-big d3-blue"><div class="d3-lbl">Receita</div><div class="d3-val big">'+fmt(r)+'</div></div>'
+      +'<div class="d3-big d3-lime"><div class="d3-lbl">Receita</div><div class="d3-val big">'+fmt(r)+'</div></div>'
       +'<div class="d3-sm1 d3-gray"><div class="d3-lbl">'+S.cfg.lblCol+'</div><div class="d3-val">'+fmt(f)+'</div></div>'
       +'<div class="d3-sm2 d3-gray"><div class="d3-lbl">Imposto (NF)</div><div class="d3-val">'+fmt(impostoTotal)+'</div></div>'
     +'</div>'

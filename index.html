@@ -78,7 +78,7 @@ body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf
 .hdr-name{font-size:15px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
 .hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .hdr-mes{font-size:11px;color:var(--text3);background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 11px}
-.hdr-btn{font-size:12px;font-weight:700;padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer}
+.hdr-btn{font-size:12px;font-weight:700;padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 
 /* TABS */
 .tabs{background:var(--bg2);border-bottom:2px solid var(--border);display:flex;padding:10px 16px;gap:8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:60px;z-index:190;box-shadow:0 2px 5px rgba(0,0,0,.04)}
@@ -823,7 +823,7 @@ td.inline-edit:active{background:var(--blue-bg)}
   </div>
   <div class="hdr-right">
     <div class="hdr-mes" id="hdr-mes">—</div>
-    <button class="hdr-btn panel-help-btn" title="Rever tour de introdução" onclick="reverIntroducao()">?</button>
+    <button class="hdr-btn panel-help-btn" title="Rever tour de introdução" onclick="reverIntroducao()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
     <button class="hdr-btn" onclick="openMo('mo-config')">⚙️</button>
   </div>
 </div>
@@ -886,8 +886,8 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="entpes-total">R$&nbsp;0,00<small>total previsto</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-entradas','Entradas previstas','ph-green')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-entradas','Entradas previstas','ph-green')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div style="padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap">
@@ -917,8 +917,8 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="pagos-total-hdr">R$&nbsp;0,00<small>total pago</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz, cartão...) conforme forem sendo pagas. É o único lugar pra contas recorrentes — evita lançar a mesma conta duas vezes. Toque no texto do item pra marcar como pago, ou no ✎ pra editar nome e valor.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz, cartão...) conforme forem sendo pagas. É o único lugar pra contas recorrentes — evita lançar a mesma conta duas vezes. Toque no texto do item pra marcar como pago, ou no ✎ pra editar nome e valor.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div style="padding:11px 14px;background:var(--bg3);border-bottom:1px solid var(--border)">
@@ -998,8 +998,8 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="tempo-hora-val">R$ 0</div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Tempo = Dinheiro','Calcula quanto vale sua hora de trabalho (lucro ÷ horas trabalhadas no mês). Use isso pra decidir se vale a pena gastar tempo numa tarefa específica ou terceirizar.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-tempo','Tempo = Dinheiro','ph-teal')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Tempo = Dinheiro','Calcula quanto vale sua hora de trabalho (lucro ÷ horas trabalhadas no mês). Use isso pra decidir se vale a pena gastar tempo numa tarefa específica ou terceirizar.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-tempo','Tempo = Dinheiro','ph-teal')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div id="tempo-container" style="padding:14px;background:var(--card)"></div>
@@ -1020,8 +1020,8 @@ td.inline-edit:active{background:var(--blue-bg)}
         </div>
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Minha Orbi','Pergunta qualquer coisa sobre suas finanças em linguagem natural — \'qual minha margem?\', \'vale contratar?\', \'e se eu perder meu maior cliente?\'. Ela responde com base nos seus dados reais, não é um chatbot genérico.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-assistente','Minha Orbi','ph-purple')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Minha Orbi','Pergunta qualquer coisa sobre suas finanças em linguagem natural — \'qual minha margem?\', \'vale contratar?\', \'e se eu perder meu maior cliente?\'. Ela responde com base nos seus dados reais, não é um chatbot genérico.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-assistente','Minha Orbi','ph-purple')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div id="assist-container" style="padding:16px;background:var(--card)"></div>
@@ -1038,8 +1038,8 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r" style="position:relative;z-index:2">
         <div class="panel-hdr-val num" id="dec-stats">0</div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Decisões a tomar','Escreva uma decisão que você precisa tomar (contratar, comprar algo, reajustar cliente) e a IA faz 4 perguntas rápidas pra te ajudar a decidir com mais clareza, considerando seus números reais.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Decisões a tomar','Escreva uma decisão que você precisa tomar (contratar, comprar algo, reajustar cliente) e a IA faz 4 perguntas rápidas pra te ajudar a decidir com mais clareza, considerando seus números reais.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar" onclick="_editFixedPanelModal('note-decisoes','Decisões a tomar','ph-indigo')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div style="padding:12px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
@@ -1170,8 +1170,8 @@ td.inline-edit:active{background:var(--blue-bg)}
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num" id="inv-total-hdr">R$ 0</div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Carteira de investimentos','Cadastre cada ativo separado (Tesouro Direto, ações, fundos...) com valor investido e data. O app estima o rendimento com base nas taxas de mercado — edite a taxa manualmente se quiser simular algo específico.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('inv-carteira','Carteira de investimentos','ph-green')">✎</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Carteira de investimentos','Cadastre cada ativo separado (Tesouro Direto, ações, fundos...) com valor investido e data. O app estima o rendimento com base nas taxas de mercado — edite a taxa manualmente se quiser simular algo específico.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('inv-carteira','Carteira de investimentos','ph-green')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     <div class="tw">
@@ -2677,9 +2677,9 @@ function buildPanel(p,tab,pi){
         <div class="panel-hdr-val num">${headerVal}</div>
       </div>
       <div class="panel-hdr-actions">
-        ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':' collapsed'}" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')">▾</button>` : ''}
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel">✎</button>
+        ${(p.type==='clientes'||p.type==='colaboradores') ? `<button class="panel-hdr-menu rows-toggle${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':' collapsed'}" id="rt-${tab}-${pi}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('tr-rows-${tab}-${pi}','rt-${tab}-${pi}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>` : ''}
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.type==='clientes'?S.cfg.lblC:p.type==='colaboradores'?S.cfg.lblCol:p.title}',helpTextoPainel('${p.type}','${tab}'))"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Editar" data-etab="${tab}" data-epi="${pi}" data-action="edit-panel"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
     ${bodyHTML}`;
@@ -4190,7 +4190,7 @@ function buildFaturaPanel(p,tab,pi){
       </div>
       <div class="panel-hdr-r">
         <div class="panel-hdr-val num">${fmtD(displayTotal)}<small>${p.fatObs||'fatura do mês'}</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')">?</button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir este painel de cartão" onclick="confirmarExcluirPainel('${tab}',${pi})">✕</button>
       </div>
     </div>
@@ -4415,9 +4415,9 @@ function buildListBox(box,tab,li){
         <div class="panel-hdr-val num">${fmtD(total)}<small>total mensal</small></div>
       </div>
       <div class="panel-hdr-actions">
-        <button class="panel-hdr-menu rows-toggle${isPanelExpanded('lb-rows-'+tab+'-'+li)?'':' collapsed'}" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')">▾</button>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')">?</button>
-        <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb">✎</button>
+        <button class="panel-hdr-menu rows-toggle${isPanelExpanded('lb-rows-'+tab+'-'+li)?'':' collapsed'}" id="rt-${tab}-${li}" title="Recolher/expandir lista" onclick="toggleRowsCollapse('lb-rows-${tab}-${li}','rt-${tab}-${li}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${box.title}','Custos operacionais do negócio, tudo num só lugar. Marque cada item como 🔒 Fixo (se repete todo mês) ou 🔀 Variável (muda de valor ou não é garantido), pra manter a visão clara sem duplicar lançamentos.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="Renomear" data-etab="${tab}" data-eli="${li}" data-action="edit-lb"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir esta lista" data-etab="${tab}" data-eli="${li}" data-action="del-lb" style="margin-left:4px">✕</button>
       </div>
     </div>
@@ -6112,7 +6112,7 @@ function renderSaldoGeral(){
     +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(lucroLiquido)+'<small>lucro l\u00edquido</small></div>'
     +'</div>'
     +'<div class="panel-hdr-actions">'
-    +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')">?</button>'
+    +'<button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp(\'Saldo Geral do M\u00eas\',\'Junta receita, folha, impostos e custos fixos de todos os pain\u00e9is num s\u00f3 resumo. \u00c9 a vis\u00e3o mais completa da sa\u00fade financeira do seu neg\u00f3cio nesse m\u00eas.\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>'
     +'</div></div>'
 
     +secLbl('1. Receita')

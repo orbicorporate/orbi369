@@ -1913,10 +1913,12 @@ function renderInicio(){
   }).join('');
 
   // Meta mensal de lucro (mesma referência usada no painel "Pra lucrar X/mês" da aba Negócio)
+  // Prioridade: valor já em memória (_opMetaLucro) > valor salvo (S.cfg.metaLucro) > default de 30% da receita
   var meta=_opMetaLucro;
   if(meta===null||meta===undefined||!meta){
-    meta=Math.max(Math.round(receita*0.3/1000)*1000,5000);
+    meta=(S.cfg && S.cfg.metaLucro>0) ? S.cfg.metaLucro : Math.max(Math.round(receita*0.3/1000)*1000,5000);
   }
+  if(_opMetaLucro===null||_opMetaLucro===undefined) _opMetaLucro=meta; // cacheia pra manter Início e Negócio sincronizados
   var metaPct=meta>0?Math.min(100,Math.max(0,Math.round((lucro/meta)*100))):0;
 
   var html=''
@@ -6289,7 +6291,7 @@ function renderOpIA(){
   // ---- SIMULAÇÃO: meta de lucro ----
   // Default: 30% da receita atual ou R$ 10k
   if(_opMetaLucro===null){
-    _opMetaLucro=Math.max(Math.round(receita*0.3/1000)*1000, 5000);
+    _opMetaLucro=(S.cfg && S.cfg.metaLucro>0) ? S.cfg.metaLucro : Math.max(Math.round(receita*0.3/1000)*1000, 5000);
   }
   var metaLucro=_opMetaLucro;
   // Pra atingir metaLucro de forma realista, usamos a MARGEM % atual como referência —
@@ -6457,7 +6459,11 @@ function renderOpIA(){
 
 function ajustarMetaLucro(valor){
   _opMetaLucro=parseFloat(valor)||0;
+  if(!S.cfg)S.cfg={};
+  S.cfg.metaLucro=_opMetaLucro;
+  save();
   renderOpIA();
+  if(typeof renderInicio==='function')renderInicio();
 }
 
 // ================ GUIA EDUCATIVO DE INVESTIMENTOS =================

@@ -266,6 +266,34 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:1
   .ini-headline{font-size:22px}
 }
 
+/* ===== Início v9 — sem meta, sem setas, sem tags de comparação, com degradês ===== */
+.d2-hero{background:#141414;border-radius:28px;padding:20px 18px 18px;margin-bottom:6px;color:#fff}
+.d2-hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.d2-hero-tag{font-size:11px;font-weight:700;color:rgba(255,255,255,.55)}
+.d2-hero-pill{font-size:10px;font-weight:800;background:rgba(255,255,255,.12);padding:4px 9px;border-radius:100px}
+.d2-hero-num{font-size:32px;font-weight:800;line-height:1;font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.d2-hero-bottom{display:flex;align-items:flex-end;justify-content:flex-end;margin-top:16px}
+.d2-bars{display:flex;align-items:flex-end;gap:5px;height:40px}
+.d2-bars i{width:14px;border-radius:6px 6px 2px 2px;display:block}
+
+.d2-sec-lbl{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin:20px 2px 8px}
+.d2-sec-lbl:first-of-type{margin-top:0}
+
+.d2-bento{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:10px;margin-bottom:6px}
+.d2-big{grid-column:1;grid-row:1/3;border-radius:22px;padding:16px 15px;display:flex;flex-direction:column;justify-content:flex-end}
+.d2-sm1{grid-column:2;grid-row:1;border-radius:20px;padding:14px}
+.d2-sm2{grid-column:2;grid-row:2;border-radius:20px;padding:14px}
+.d2-lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:8px;opacity:.75}
+.d2-val{font-size:19px;font-weight:800;font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.d2-val.big{font-size:24px}
+
+.d2-blue{background:linear-gradient(160deg,#3b76f6 0%,#1d4ed8 55%,#152f7a 100%);color:#fff;box-shadow:0 10px 22px rgba(29,78,216,.28)}
+.d2-lime{background:linear-gradient(160deg,#e4fa7c 0%,#c7ea3a 60%,#b9de2e 100%);color:#1a2400}
+.d2-lime .d2-lbl{opacity:.6}
+.d2-roxo{background:linear-gradient(160deg,#8b5cf6 0%,#6d28d9 60%,#5b21b6 100%);color:#fff}
+.d2-roxo .d2-lbl{opacity:.8}
+.d2-gray{background:linear-gradient(160deg,#f2f2f5 0%,#e7e7eb 100%);color:var(--text)}
+
 /* TABLE */
 .tw{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:280px}
@@ -2074,57 +2102,39 @@ window.setModeloNegocio = setModeloNegocio;
 function setEl(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
 function setVal(id,v){const e=document.getElementById(id);if(e&&!e.matches(':focus'))e.value=v||'';}
 
-// ===================== INÍCIO (dashboard bento) =====================
+// ===================== INÍCIO (dashboard v9) =====================
 function renderInicio(){
   var el=document.getElementById('inicio-content');
   if(!el)return;
 
   var negocios=(S.negocios&&S.negocios.length)?S.negocios:[{id:S.negocioAtivoId||'neg1',nome:(S.cfg&&S.cfg.nome)||'Negócio 1',clientes:S.clientes,colaboradores:S.colaboradores,impostoNFPct:(S.cfg&&S.cfg.impostoNFPct)||0}];
 
-  var receitaTotal=0, lucroTotal=0, receitaRecTotal=0;
-  var negStats=negocios.map(function(neg){
-    var r=calcRFor(neg), l=calcLFor(neg), rRec=calcR_RecFor(neg);
-    receitaTotal+=r; lucroTotal+=l; receitaRecTotal+=rRec;
-    return {neg:neg, receita:r, lucro:l};
+  var receitaTotal=0, folhaTotal=0, impostoTotal=0, lucroTotal=0;
+  negocios.forEach(function(neg){
+    receitaTotal+=calcRFor(neg);
+    folhaTotal+=calcFFor(neg);
+    impostoTotal+=calcImpostoNFFor(neg);
+    lucroTotal+=calcLFor(neg);
   });
 
-  // Mês anterior fechado no Histórico, pra calcular a variação % do total
-  // (histórico hoje só guarda snapshot do negócio ativo — comparação é aproximada
-  // quando existe mais de 1 negócio)
+  // Barrinhas do hero: só tendência visual, sem número de comparação
   var hist=(S.historico||[]).slice().sort(function(a,b){return (b.timestamp||0)-(a.timestamp||0);});
-  var mesAnterior=hist[0]||null;
-  function deltaPct(atual,anterior){
-    if(anterior===null||anterior===undefined||anterior===0) return null;
-    return ((atual-anterior)/Math.abs(anterior))*100;
-  }
-  var dLucro=mesAnterior?deltaPct(lucroTotal,mesAnterior.lucro):null;
-
-  function deltaHtml(d,cls){
-    cls=cls||'';
-    if(d===null||d===undefined||!isFinite(d)) return '<span class="'+cls+'">—</span>';
-    var neg=d<0;
-    return '<span class="'+cls+(neg?' neg':'')+'">'+(neg?'':'+')+pct(d)+'</span>';
-  }
-
-  // Barrinhas do hero: últimos meses do histórico (do negócio ativo) + total atual de todos os negócios na última barra
   var ultimosMeses=hist.slice(0,4).reverse();
-  var serieReceita=ultimosMeses.map(function(h){return h.lucro||0;});
-  serieReceita.push(lucroTotal);
-  var maxSerie=Math.max.apply(null,serieReceita.concat([1]));
+  var serieLucro=ultimosMeses.map(function(h){return h.lucro||0;});
+  serieLucro.push(lucroTotal);
+  var maxSerie=Math.max.apply(null,serieLucro.concat([1]));
   var coresBarras=['#3d5a1f','#4d7a26','#5e8f2c','#69a331','#8fbf2c','#c7ea3a'];
-  var nBars=serieReceita.length;
-  var barsHtml=serieReceita.map(function(v,i){
+  var nBars=serieLucro.length;
+  var barsHtml=serieLucro.map(function(v,i){
     var h=Math.max(10,Math.round((Math.abs(v)/maxSerie)*100));
     var corIdx=Math.max(0,coresBarras.length-(nBars-i));
     var cor=coresBarras[corIdx]||coresBarras[coresBarras.length-1];
     return '<i style="height:'+h+'%;background:'+cor+'"></i>';
   }).join('');
 
-  // Lucro recorrente previsto: receita recorrente de todos os negócios, aplicando a margem média atual
-  var margemMedia = receitaTotal>0 ? (lucroTotal/receitaTotal) : 0;
-  var lucroRecPrevisto = receitaTotal>0 ? receitaRecTotal*margemMedia : receitaRecTotal;
+  // Label do bloco de negócio: nome(s) real(is) da(s) página(s) de negócio
+  var negLabel=negocios.map(function(n){return n.nome||'Negócio';}).join(' · ');
 
-  // Cards financeiros globais
   var ganhosPessoais=calcGanhosPessoais();
   var custosFixos=calcCustosFixosPessoal();
   var cartoes=calcCartoesTotal();
@@ -2132,76 +2142,37 @@ function renderInicio(){
   var imobiliario=calcImobiliarioTotal();
   var carteiraGeral=calcCarteiraGeralTotal();
 
-  // Meta mensal (contra o lucro total de todos os negócios)
-  var meta=_opMetaLucro;
-  if(meta===null||meta===undefined||!meta){
-    meta=(S.cfg && S.cfg.metaLucro>0) ? S.cfg.metaLucro : Math.max(Math.round(receitaTotal*0.3/1000)*1000,5000);
-  }
-  if(_opMetaLucro===null||_opMetaLucro===undefined) _opMetaLucro=meta;
-  var metaPct=meta>0?Math.min(100,Math.max(0,Math.round((lucroTotal/meta)*100))):0;
-
-  var negCardsHtml=negStats.map(function(ns){
-    return '<div class="ini-neg-card">'
-      +'<div class="ini-neg-name">'+(ns.neg.nome||'Negócio')+'</div>'
-      +'<div class="ini-neg-stat-lbl">Lucro</div>'
-      +'<div class="ini-neg-stat-val ini-num'+(ns.lucro<0?' neg-red':'')+'">'+fmt(ns.lucro)+'</div>'
-      +'<div class="ini-neg-stat-lbl">Receita</div>'
-      +'<div class="ini-neg-stat-val ini-num" style="margin-bottom:0">'+fmt(ns.receita)+'</div>'
-    +'</div>';
-  }).join('');
-
   var html=''
-    +'<div class="ini-headline">Visão geral<small>'+(S.cfg.mes||'—')+'</small></div>'
+    +'<div class="ini-headline">Lucro total<small>'+(S.cfg.mes||'—')+' · '+negocios.length+' negócio'+(negocios.length!==1?'s':'')+'</small></div>'
 
-    +'<div class="ini-hero">'
-      +'<div class="ini-hero-top">'
-        +'<div class="ini-hero-tag">Lucro total · '+negocios.length+' negócio'+(negocios.length!==1?'s':'')+'</div>'
-        +'<div class="ini-hero-pill">'+M()+'</div>'
+    +'<div class="d2-hero">'
+      +'<div class="d2-hero-top">'
+        +'<div class="d2-hero-tag">Este mês</div>'
+        +'<div class="d2-hero-pill">'+M()+'</div>'
       +'</div>'
-      +'<div class="ini-hero-num ini-num">'+fmt(lucroTotal)+'</div>'
-      +'<div class="ini-hero-delta-row">'
-        +'<div>'
-          +'<div class="ini-hero-delta ini-num">'+deltaHtml(dLucro)+'</div>'
-          +'<div class="ini-hero-delta-sub">'+(mesAnterior?('vs '+mesAnterior.mes):'sem mês anterior fechado')+'</div>'
-        +'</div>'
-        +'<div class="ini-bars">'+barsHtml+'</div>'
-      +'</div>'
+      +'<div class="d2-hero-num">'+fmt(lucroTotal)+'</div>'
+      +'<div class="d2-hero-bottom"><div class="d2-bars">'+barsHtml+'</div></div>'
     +'</div>'
 
-    +'<div class="ini-section-lbl">Negócios</div>'
-    +'<div class="ini-neg-grid">'+negCardsHtml+'</div>'
-
-    +'<div class="ini-op-chip">'
-      +'<div>'
-        +'<div class="ini-bk-lbl" style="margin-bottom:4px">Lucro recorrente previsto</div>'
-        +'<div class="ini-bk-val ini-num" style="margin-bottom:0">'+fmt(lucroRecPrevisto)+'</div>'
-      +'</div>'
-      +'<div class="ini-bk-delta" title="Receita recorrente de todos os negócios × margem média atual">'+fmt(receitaRecTotal)+' rec.</div>'
+    +'<div class="d2-sec-lbl">'+negLabel+'</div>'
+    +'<div class="d2-bento">'
+      +'<div class="d2-big d2-blue"><div class="d2-lbl">Receita total</div><div class="d2-val big">'+fmt(receitaTotal)+'</div></div>'
+      +'<div class="d2-sm1 d2-gray"><div class="d2-lbl">Folha</div><div class="d2-val">'+fmt(folhaTotal)+'</div></div>'
+      +'<div class="d2-sm2 d2-gray"><div class="d2-lbl">Imposto (NF)</div><div class="d2-val">'+fmt(impostoTotal)+'</div></div>'
     +'</div>'
 
-    +'<div class="ini-section-lbl">Pessoal</div>'
-    +'<div class="ini-chips-grid">'
-      +'<div class="ini-chip"><div class="ini-chip-lbl">Ganhos pessoais do mês</div><div class="ini-chip-val ini-num">'+fmt(ganhosPessoais)+'</div></div>'
-      +'<div class="ini-chip"><div class="ini-chip-lbl">Custos fixos do mês</div><div class="ini-chip-val ini-num">'+fmt(custosFixos)+'</div></div>'
-      +'<div class="ini-chip"><div class="ini-chip-lbl">Cartões</div><div class="ini-chip-val ini-num">'+fmt(cartoes)+'</div></div>'
+    +'<div class="d2-sec-lbl">Pessoal</div>'
+    +'<div class="d2-bento">'
+      +'<div class="d2-big d2-lime"><div class="d2-lbl">Ganhos do mês</div><div class="d2-val big">'+fmt(ganhosPessoais)+'</div></div>'
+      +'<div class="d2-sm1 d2-gray"><div class="d2-lbl">Custos fixos</div><div class="d2-val">'+fmt(custosFixos)+'</div></div>'
+      +'<div class="d2-sm2 d2-gray"><div class="d2-lbl">Cartões</div><div class="d2-val">'+fmt(cartoes)+'</div></div>'
     +'</div>'
 
-    +'<div class="ini-section-lbl">Patrimônio</div>'
-    +'<div class="ini-chips-grid">'
-      +'<div class="ini-chip"><div class="ini-chip-lbl">Investimentos total</div><div class="ini-chip-val ini-num">'+fmt(investTotal)+'</div></div>'
-      +'<div class="ini-chip"><div class="ini-chip-lbl">Imobiliário</div><div class="ini-chip-val ini-num">'+fmt(imobiliario)+'</div></div>'
-      +'<div class="ini-chip" style="grid-column:1/3"><div class="ini-chip-lbl">Carteira geral (sem imóveis)</div><div class="ini-chip-val ini-num">'+fmt(carteiraGeral)+'</div></div>'
-    +'</div>'
-
-    +'<div class="ini-meta">'
-      +'<div class="ini-meta-top">'
-        +'<div>'
-          +'<div class="ini-meta-title">Meta mensal de lucro</div>'
-          +'<div class="ini-meta-sub">'+fmt(lucroTotal)+' de '+fmt(meta)+'</div>'
-        +'</div>'
-        +'<div class="ini-meta-pct ini-num">'+metaPct+'%</div>'
-      +'</div>'
-      +'<div class="ini-bar"><i style="width:'+metaPct+'%"></i></div>'
+    +'<div class="d2-sec-lbl">Investimentos</div>'
+    +'<div class="d2-bento">'
+      +'<div class="d2-big d2-roxo"><div class="d2-lbl">Investimentos total</div><div class="d2-val big">'+fmt(investTotal)+'</div></div>'
+      +'<div class="d2-sm1 d2-gray"><div class="d2-lbl">Imobiliário</div><div class="d2-val">'+fmt(imobiliario)+'</div></div>'
+      +'<div class="d2-sm2 d2-gray"><div class="d2-lbl">Carteira geral</div><div class="d2-val">'+fmt(carteiraGeral)+'</div></div>'
     +'</div>';
 
   el.innerHTML=html;

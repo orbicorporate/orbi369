@@ -3643,6 +3643,7 @@ async function sendChat(){
   await new Promise(function(r){ setTimeout(r,450+Math.random()*350); });
 
   var resposta=processCmd(msg);
+  var sugestoesContextuais=null; // só preenchido quando a IA externa responde
 
   // Se o "cérebro" local (padrões/regex) não reconheceu a pergunta, tenta a IA externa
   if(resposta===ASSIST_FALLBACK){
@@ -3654,6 +3655,9 @@ async function sendChat(){
       });
       var data=await resp.json();
       resposta = resp.ok ? (data.answer||resposta) : ('⚠️ '+(data.error||'Não consegui buscar uma resposta agora.'));
+      if(resp.ok && Array.isArray(data.sugestoes) && data.sugestoes.length>0){
+        sugestoesContextuais=data.sugestoes;
+      }
     }catch(err){
       resposta='⚠️ Não consegui me conectar à IA agora. Tenta de novo em instantes.';
     }
@@ -3661,10 +3665,11 @@ async function sendChat(){
 
   typing.remove();
   addMsg(resposta,'b');
-  addFollowUpSugs();
+  addFollowUpSugs(sugestoesContextuais);
 }
-// Sugestões contextuais que reaparecem depois de cada resposta, pra manter a conversa fluindo
-// Sugestões contextuais elaboradas — usa a MESMA lista de perguntas da aba Minha Orbi
+// Sugestões contextuais que reaparecem depois de cada resposta, pra manter a conversa fluindo.
+// Quando a IA externa responde, ela já sugere as próprias perguntas de continuação (relacionadas
+// ao que acabou de ser respondido). Esse pool só serve de reserva pras respostas locais (padrões).
 var POOL_SUGESTOES_ELABORADAS=[
   'quanto tenho de lucro?','qual meu ticket médio?','vale reajustar?','como está minha margem?',
   'tenho risco de dependência de cliente?','como diversificar minha receita?','quanto pago de pró-labore?',
@@ -3672,9 +3677,11 @@ var POOL_SUGESTOES_ELABORADAS=[
   'e se eu perder meu maior cliente?','qual meu ponto de equilíbrio?','vale a pena contratar agora?',
   'como estou comparado ao mês passado?','quanto preciso faturar pra lucrar mais?'
 ];
-function addFollowUpSugs(){
+function addFollowUpSugs(sugestoesContextuais){
   const msgs=document.getElementById('chat-msgs');
-  const escolhidas=POOL_SUGESTOES_ELABORADAS.slice().sort(()=>Math.random()-0.5).slice(0,3);
+  const escolhidas=(sugestoesContextuais && sugestoesContextuais.length>0)
+    ? sugestoesContextuais
+    : POOL_SUGESTOES_ELABORADAS.slice().sort(()=>Math.random()-0.5).slice(0,3);
   const d=document.createElement('div');
   d.className='ch-sugs';
   d.style.marginLeft='4px';

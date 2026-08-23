@@ -91,6 +91,10 @@ module.exports = async (req, res) => {
     'separar ideias nem dentro de parênteses; troque por vírgula, ponto, dois-pontos ou reescreva a frase.\n\n' +
     'Final: termine SEMPRE com uma frase curta oferecendo continuar ajudando ou perguntando se ficou claro ' +
     '(ex: "Ficou claro?", "Quer que eu detalhe algum ponto?", "Faz sentido pro seu caso?"). Varie a frase, não repita sempre a mesma.\n\n' +
+    'Depois dessa frase final, em uma nova linha, escreva exatamente "###SUGESTOES###" e, nas 3 linhas seguintes, ' +
+    '3 perguntas curtas de continuação (cada uma numa linha, sem numeração, sem marcador "-") que façam sentido como próximo passo ' +
+    'depois da SUA resposta específica (ligadas ao que você acabou de explicar, não genéricas). Exemplo de formato no final:\n' +
+    '###SUGESTOES###\npergunta curta relacionada 1?\npergunta curta relacionada 2?\npergunta curta relacionada 3?\n\n' +
     'Contexto financeiro atual do usuário:\n' + (context || 'Não disponível.');
 
   try {
@@ -103,7 +107,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 450,
+        max_tokens: 550,
         system: systemPrompt,
         messages: [{ role: 'user', content: question }]
       })
@@ -116,9 +120,26 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const answer = (data.content || []).map(function (c) { return c.text || ''; }).join('').trim();
+    const raw = (data.content || []).map(function (c) { return c.text || ''; }).join('').trim();
+
+    // Separa a resposta das sugestões de continuação (marcador ###SUGESTOES###)
+    var answer = raw;
+    var sugestoes = [];
+    var marcadorIdx = raw.indexOf('###SUGESTOES###');
+    if (marcadorIdx !== -1) {
+      answer = raw.slice(0, marcadorIdx).trim();
+      sugestoes = raw.slice(marcadorIdx + '###SUGESTOES###'.length)
+        .split('\n')
+        .map(function (s) { return s.replace(/^[-•\d.)\s]+/, '').trim(); })
+        .filter(Boolean)
+        .slice(0, 3);
+    }
+
     const answerHtml = markdownParaHtmlRico(answer);
-    res.status(200).json({ answer: answerHtml || 'Não consegui gerar uma resposta agora, tenta de novo.' });
+    res.status(200).json({
+      answer: answerHtml || 'Não consegui gerar uma resposta agora, tenta de novo.',
+      sugestoes: sugestoes
+    });
   } catch (err) {
     res.status(500).json({ error: 'Falha ao chamar a IA: ' + err.message });
   }

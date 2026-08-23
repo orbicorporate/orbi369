@@ -1382,18 +1382,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       <div class="msg-bbl">Olá! Sou o <strong>Analista Orbi</strong>.<br><br>Posso <strong>adicionar/remover clientes e colaboradores</strong>, responder sobre finanças, e também <strong>interpretar extratos</strong> que você colar aqui.<br><br>Exemplos:<br>• <em>"Adiciona cliente ABC 5000"</em><br>• <em>"Remove colaborador Adrian"</em><br>• <em>"Pausa cliente Buz"</em><br>• Cole linhas de extrato direto aqui</div>
       <div class="msg-ts">agora</div>
     </div>
-    <div class="ch-sugs" id="ch-sugs-inicial">
-      <button onclick="sendSug(this)" class="sug-chip">quanto tenho de lucro?</button>
-      <button onclick="sendSug(this)" class="sug-chip">qual meu ticket médio?</button>
-      <button onclick="sendSug(this)" class="sug-chip">vale reajustar?</button>
-      <button onclick="sendSug(this)" class="sug-chip">como está minha margem?</button>
-      <button onclick="sendSug(this)" class="sug-chip">tenho risco de dependência de cliente?</button>
-      <button onclick="sendSug(this)" class="sug-chip">como diversificar minha receita?</button>
-      <button onclick="sendSug(this)" class="sug-chip">quanto pago de pró-labore?</button>
-      <button onclick="sendSug(this)" class="sug-chip">quanto devo no cartão?</button>
-      <button onclick="sendSug(this)" class="sug-chip">quanto vale minha hora?</button>
-      <button onclick="sendSug(this)" class="sug-chip">decisões pendentes?</button>
-    </div>
+    <div class="ch-sugs" id="ch-sugs-inicial"></div>
     <div style="font-size:10px;color:var(--text3);margin-top:6px;padding:0 4px">Ou pergunte qualquer outra coisa — eu entendo linguagem natural.</div>
   </div>
   <div class="ch-inp-row">
@@ -3634,7 +3623,45 @@ function showUndoToast(msg,undoFn){
 window.showUndoToast=showUndoToast;
 
 // ===================== CHAT =====================
-function toggleChat(){const p=document.getElementById('chat-panel');const bd=document.getElementById('chat-backdrop');p.classList.toggle('on');if(bd)bd.classList.toggle('on');if(p.classList.contains('on'))document.getElementById('chat-inp').focus();}
+// Escolhe até 4 perguntas iniciais com base em sinais reais do negócio/pessoal do
+// usuário (concentração de cliente, margem, dívida de cartão, diversificação),
+// em vez de mostrar sempre a mesma lista fixa pra todo mundo.
+function sugestoesIniciaisInteligentes(){
+  try{
+    var r=calcR(), f=calcF(), m=calcM();
+    var ativos=(S.clientes||[]).filter(function(c){return c.status==='ativo';});
+    var maiorCliente=ativos.length?Math.max.apply(null,ativos.map(function(c){return c.valor||0;})):0;
+    var pctMaiorCliente=r>0?(maiorCliente/r*100):0;
+    var cartaoDebt=(typeof calcCartoesTotal==='function')?calcCartoesTotal():0;
+
+    var candidatos=[];
+    if(pctMaiorCliente>=30) candidatos.push({q:'tenho risco de dependência de cliente?',score:pctMaiorCliente});
+    if(m<25 && r>0) candidatos.push({q:'vale reajustar?',score:100-m});
+    if(cartaoDebt>0) candidatos.push({q:'quanto devo no cartão?',score:Math.min(cartaoDebt/500,80)});
+    if(ativos.length>0 && ativos.length<=3) candidatos.push({q:'como diversificar minha receita?',score:55});
+    if(f>0 && r>0 && (f/r)>0.5) candidatos.push({q:'qual meu ponto de equilíbrio?',score:60});
+
+    candidatos.sort(function(a,b){return b.score-a.score;});
+    var escolhidas=candidatos.slice(0,4).map(function(c){return c.q;});
+
+    var reserva=['quanto tenho de lucro?','qual meu ticket médio?','como está minha margem?','quanto pago de pró-labore?','quanto vale minha hora?','decisões pendentes?'];
+    var i=0;
+    while(escolhidas.length<4 && i<reserva.length){
+      if(escolhidas.indexOf(reserva[i])===-1) escolhidas.push(reserva[i]);
+      i++;
+    }
+    return escolhidas.slice(0,4);
+  }catch(e){
+    return ['quanto tenho de lucro?','como está minha margem?','vale reajustar?','decisões pendentes?'];
+  }
+}
+function popularSugestoesIniciais(){
+  var box=document.getElementById('ch-sugs-inicial');
+  if(!box || box.childElementCount>0) return; // já populado, não repete
+  var escolhidas=sugestoesIniciaisInteligentes();
+  box.innerHTML=escolhidas.map(function(p){return '<button onclick="sendSug(this)" class="sug-chip">'+p+'</button>';}).join('');
+}
+function toggleChat(){const p=document.getElementById('chat-panel');const bd=document.getElementById('chat-backdrop');p.classList.toggle('on');if(bd)bd.classList.toggle('on');if(p.classList.contains('on')){document.getElementById('chat-inp').focus();popularSugestoesIniciais();}}
 function sendSug(btn){document.getElementById('chat-inp').value=btn.textContent;sendChat();}
 async function sendChat(){
   const inp=document.getElementById('chat-inp');const msg=inp.value.trim();if(!msg)return;

@@ -588,9 +588,9 @@ td.inline-edit:active{background:var(--blue-bg)}
 
 /* ===== CHAT ===== */
 #chat-bubble{
-  position:fixed;bottom:20px;right:18px;width:50px;height:50px;
+  position:fixed;bottom:38px;right:18px;width:50px;height:50px;
   background:#0a0e17;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:400;border:none;
+  cursor:pointer;z-index:400;border:none;overflow:hidden;
   box-shadow:0 0 0 0 rgba(34,211,160,0);
 }
 /* Spinning green light border */
@@ -610,6 +610,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 @keyframes spin-glow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 #chat-bubble:hover{transform:scale(1.06);transition:transform .2s}
 .bubble-word{font-size:13px;font-weight:300;color:#fff;letter-spacing:1.5px;position:relative;z-index:1}
+.bubble-icon{width:100%;height:100%;object-fit:cover;position:relative;z-index:1;border-radius:50%}
 
 #chat-backdrop{position:fixed;inset:0;background:rgba(10,14,23,.55);z-index:399;display:none;backdrop-filter:blur(2px)}
 #chat-backdrop.on{display:block}
@@ -1362,7 +1363,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 <!-- CHAT -->
 <div id="chat-backdrop" onclick="toggleChat()"></div>
 <button id="chat-bubble" onclick="toggleChat()">
-  <span class="bubble-word">orbi</span>
+  <img src="/icon.jpeg" alt="orbi" class="bubble-icon">
 </button>
 
 <div id="chat-panel">

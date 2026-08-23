@@ -2513,23 +2513,17 @@ function buildPanel(p,tab,pi){
       </div>`;
     }).join('');
     bodyHTML=(`<div style="padding:16px 16px 4px">
-      <div style="background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:${nComNF>0?'10px':'0'}">
-          <span style="font-size:18px">🧾</span>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap">% Imposto sobre NF</span>
-            <input type="number" id="cfg-imposto-nf-pct" value="${pctNF}" min="0" max="100" step="0.1"
-              style="width:56px;font-family:var(--font);font-size:14px;font-weight:800;padding:5px 6px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text);outline:none;text-align:center"
-              onchange="setImpostoNFPct(this.value)">
-            <span style="font-size:11px;color:var(--text3);font-weight:600">%</span>
-          </div>
-        </div>
-        ${nComNF>0?`<div style="font-size:11px;color:var(--text3);padding-top:10px;border-top:1px dashed var(--border);line-height:1.5">${nComNF} cliente${nComNF!==1?'s':''} com NF · imposto automático: <strong class="num" style="color:var(--red)">${fmt(totalImpostoNF)}</strong><br>Já descontado do faturamento no card "Imposto" e no Lucro operacional.</div>`:''}
-      </div>
-      <div style="margin-top:12px">
-        <button class="btn-add-animated" onclick="openMo('mo-cli')" style="font-size:12.5px;padding:11px 18px">
-          <span class="plus-ic">+</span> Adicionar cliente
-        </button>
+      <button class="btn-add-animated" onclick="openMo('mo-cli')" style="font-size:12.5px;padding:11px 18px;width:100%;justify-content:center">
+        <span class="plus-ic">+</span> Adicionar cliente
+      </button>
+      <div style="background:linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%);border:1.5px solid var(--border);border-radius:12px;padding:8px 12px;margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:13px">🧾</span>
+        <span style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.2px;white-space:nowrap">Imposto NF</span>
+        <input type="number" id="cfg-imposto-nf-pct" value="${pctNF}" min="0" max="100" step="0.1"
+          style="width:38px;font-family:var(--font);font-size:12px;font-weight:800;padding:3px 4px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;text-align:center"
+          onchange="setImpostoNFPct(this.value)">
+        <span style="font-size:9.5px;color:var(--text3);font-weight:600">%</span>
+        ${nComNF>0?`<span style="font-size:9.5px;color:var(--text3);margin-left:auto;white-space:nowrap">${nComNF} c/NF: <strong class="num" style="color:var(--red)">${fmt(totalImpostoNF)}</strong></span>`:''}
       </div>
     </div>`)
     +`<div class="tr-rows-wrap" id="tr-rows-${tab}-${pi}" style="${isPanelExpanded('tr-rows-'+tab+'-'+pi)?'':'display:none'}">${rowsCliHtml || '<div class="lb-empty">Nenhum '+S.cfg.lblC.toLowerCase()+' ainda.</div>'}</div>

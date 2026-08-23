@@ -1,20 +1,51 @@
 // Serverless function (Vercel) — recebe a pergunta do Analista Orbi no navegador,
 // chama a API da Anthropic com a chave guardada no servidor (nunca exposta no
-// código do site) e devolve a resposta em texto simples.
+// código do site) e devolve a resposta já convertida pra HTML formatado.
 //
 // Precisa da variável de ambiente ANTHROPIC_API_KEY configurada no projeto
 // Vercel (Project Settings → Environment Variables).
 
-// Rede de segurança: mesmo com a instrução no prompt, o modelo às vezes ainda
-// escreve **negrito** ou # título em markdown. Converte pro que a bolha do
-// chat sabe exibir, ao invés de mostrar os símbolos crus.
-function markdownParaHtmlSimples(txt) {
-  return txt
-    .replace(/^#{1,6}\s*(.+)$/gm, '<strong>$1</strong>')      // # Título -> <strong>
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')          // **negrito** -> <strong>
-    .replace(/^[-*]\s+/gm, '• ')                                // - item / * item -> • item
-    .replace(/\n{2,}/g, '<br><br>')
-    .replace(/\n/g, '<br>');
+// Converte o markdown padrão que o modelo escreve (# título, **negrito**,
+// listas com - ou 1.) em HTML de verdade, usando classes estilizadas no app
+// (ai-h = título, ai-p = parágrafo espaçado, ai-ul/ai-ol = listas com marcador).
+function markdownParaHtmlRico(txt) {
+  var lines = txt.replace(/\r\n/g, '\n').split('\n');
+  var html = '';
+  var listType = null; // 'ul' | 'ol'
+
+  function fecharLista() {
+    if (listType) { html += '</' + listType + '>'; listType = null; }
+  }
+  function inline(s) {
+    return s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }
+
+  lines.forEach(function (raw) {
+    var line = raw.trim();
+    if (!line) { fecharLista(); return; }
+
+    var h = line.match(/^#{1,6}\s*(.+)$/);
+    if (h) { fecharLista(); html += '<span class="ai-h">' + inline(h[1]) + '</span>'; return; }
+
+    var ul = line.match(/^[-*]\s+(.+)$/);
+    if (ul) {
+      if (listType !== 'ul') { fecharLista(); html += '<ul class="ai-ul">'; listType = 'ul'; }
+      html += '<li>' + inline(ul[1]) + '</li>';
+      return;
+    }
+
+    var ol = line.match(/^\d+[.)]\s+(.+)$/);
+    if (ol) {
+      if (listType !== 'ol') { fecharLista(); html += '<ol class="ai-ol">'; listType = 'ol'; }
+      html += '<li>' + inline(ol[1]) + '</li>';
+      return;
+    }
+
+    fecharLista();
+    html += '<p class="ai-p">' + inline(line) + '</p>';
+  });
+  fecharLista();
+  return html;
 }
 
 module.exports = async (req, res) => {
@@ -47,13 +78,13 @@ module.exports = async (req, res) => {
 
   const systemPrompt =
     'Você é o "Analista Orbi", assistente financeiro dentro do app Orbi369 (gestão financeira de negócio/pessoal/investimentos). ' +
-    'Responda em português brasileiro, de forma direta, prática e curta (poucos parágrafos, sem enrolação). ' +
+    'Responda em português brasileiro, de forma direta e prática. ' +
     'Use os dados financeiros reais do usuário abaixo quando forem relevantes pra pergunta. ' +
     'Se a pergunta for sobre educação financeira geral (ex: diferença entre CDB e FII), responda normalmente com seu conhecimento, ' +
     'sem inventar números específicos do usuário que não estejam no contexto.\n\n' +
-    'IMPORTANTE — formatação: esta resposta é inserida direto como HTML numa bolha de chat, então NUNCA use markdown ' +
-    '(nada de **negrito**, # títulos, listas com - ou *, ou blocos de código). Escreva em texto corrido, com quebras de linha ' +
-    'simples (<br>) entre ideias quando fizer sentido. Se quiser destacar algo, use <strong>texto</strong> (tag HTML real), nunca asteriscos.\n\n' +
+    'Formatação: use markdown simples e limpo — ## para títulos curtos quando ajudar a organizar, **negrito** só nos pontos ' +
+    'realmente importantes, listas com "- " para itens soltos ou "1. " quando a ordem importa. Não exagere na estrutura: ' +
+    'para respostas curtas, texto corrido em 1-2 parágrafos já basta, sem forçar título ou lista.\n\n' +
     'Contexto financeiro atual do usuário:\n' + (context || 'Não disponível.');
 
   try {
@@ -66,7 +97,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 600,
+        max_tokens: 700,
         system: systemPrompt,
         messages: [{ role: 'user', content: question }]
       })
@@ -80,8 +111,8 @@ module.exports = async (req, res) => {
     }
 
     const answer = (data.content || []).map(function (c) { return c.text || ''; }).join('').trim();
-    const answerLimpo = markdownParaHtmlSimples(answer);
-    res.status(200).json({ answer: answerLimpo || 'Não consegui gerar uma resposta agora, tenta de novo.' });
+    const answerHtml = markdownParaHtmlRico(answer);
+    res.status(200).json({ answer: answerHtml || 'Não consegui gerar uma resposta agora, tenta de novo.' });
   } catch (err) {
     res.status(500).json({ error: 'Falha ao chamar a IA: ' + err.message });
   }

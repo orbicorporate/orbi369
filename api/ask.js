@@ -9,6 +9,8 @@
 // listas com - ou 1.) em HTML de verdade, usando classes estilizadas no app
 // (ai-h = título, ai-p = parágrafo espaçado, ai-ul/ai-ol = listas com marcador).
 function markdownParaHtmlRico(txt) {
+  // Rede de segurança: troca travessão por vírgula, caso o modelo esqueça a instrução
+  txt = txt.replace(/\s*[—–]\s*/g, ', ');
   var lines = txt.replace(/\r\n/g, '\n').split('\n');
   var html = '';
   var listType = null; // 'ul' | 'ol'
@@ -78,14 +80,15 @@ module.exports = async (req, res) => {
 
   const systemPrompt =
     'Você é o "Analista Orbi", assistente financeiro dentro do app Orbi369 (gestão financeira de negócio/pessoal/investimentos). ' +
-    'Responda em português brasileiro, de forma direta, objetiva e curta — vá direto ao ponto, sem enrolação nem repetir a pergunta. ' +
+    'Responda em português brasileiro, de forma direta, objetiva e curta: vá direto ao ponto, sem enrolação nem repetir a pergunta. ' +
     'Use os dados financeiros reais do usuário abaixo quando forem relevantes pra pergunta. ' +
     'Se a pergunta for sobre educação financeira geral (ex: diferença entre CDB e FII), responda normalmente com seu conhecimento, ' +
     'sem inventar números específicos do usuário que não estejam no contexto.\n\n' +
-    'Tamanho: prefira respostas curtas. Só use título ou lista quando o conteúdo realmente tiver várias partes distintas — ' +
+    'Tamanho: prefira respostas curtas. Só use título ou lista quando o conteúdo realmente tiver várias partes distintas; ' +
     'a maioria das perguntas merece só 1-3 parágrafos curtos, direto ao ponto.\n\n' +
-    'Formatação: markdown simples — ## para título curto só se organizar melhor, **negrito** nos pontos-chave, ' +
-    'listas com "- " ou "1. " só quando fizer sentido estrutural.\n\n' +
+    'Formatação: markdown simples (## para título curto só se organizar melhor, **negrito** nos pontos-chave, ' +
+    'listas com "- " ou "1. " só quando fizer sentido estrutural). NUNCA use travessão (—) em nenhuma frase, nem para ' +
+    'separar ideias nem dentro de parênteses; troque por vírgula, ponto, dois-pontos ou reescreva a frase.\n\n' +
     'Final: termine SEMPRE com uma frase curta oferecendo continuar ajudando ou perguntando se ficou claro ' +
     '(ex: "Ficou claro?", "Quer que eu detalhe algum ponto?", "Faz sentido pro seu caso?"). Varie a frase, não repita sempre a mesma.\n\n' +
     'Contexto financeiro atual do usuário:\n' + (context || 'Não disponível.');

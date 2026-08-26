@@ -1343,6 +1343,9 @@ td.inline-edit:active{background:var(--blue-bg)}
   <div class="mo-box">
     <div class="mo-hdr"><div class="mo-ttl">⚙️ Configuração rápida</div><button class="mo-cls" onclick="closeMo('mo-config')">✕</button></div>
     <div class="mo-body">
+      <div style="background:var(--bg3);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--text2)">
+        Conta logada: <strong id="qc-conta-email" style="color:var(--text)">—</strong>
+      </div>
       <div class="fgrid">
         <div class="fg"><label>Nome</label><input type="text" id="qc-nome"></div>
         <div class="fg"><label>Segmento</label>
@@ -3556,7 +3559,13 @@ function showTab(id,btn){
   if(id==='pes')buildAddPanelModal('pes');
   if(id==='ext')buildAddPanelModal('ext');
 }
-function openMo(id){const el=document.getElementById(id);if(el)el.classList.add('on');}
+function openMo(id){
+  const el=document.getElementById(id);if(el)el.classList.add('on');
+  if(id==='mo-config'){
+    const span=document.getElementById('qc-conta-email');
+    if(span) span.textContent = (currentUser && currentUser.email) ? currentUser.email : 'não identificada';
+  }
+}
 function closeMo(id){const el=document.getElementById(id);if(el)el.classList.remove('on');}
 document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on');});});
 document.addEventListener('click',e=>{if(!e.target.closest('#pmenu')&&!e.target.classList.contains('panel-hdr-menu'))document.getElementById('pmenu').classList.remove('on');});

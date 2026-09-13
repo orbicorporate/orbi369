@@ -915,40 +915,6 @@ td.inline-edit:active{background:var(--blue-bg)}
   </div>
   <div id="panels-pes"></div>
   <div id="listboxes-pes"></div>
-  
-  <!-- PAGOS -->
-  <div class="panel" style="margin-bottom:14px">
-    <div class="panel-hdr ph-green" data-fpk="pes-pagos">
-      <div class="panel-hdr-l">
-        <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Checklist</div>
-          <div class="panel-sub" id="pagos-sub">0 itens pagos</div>
-        </div>
-      </div>
-      <div class="panel-hdr-r" style="position:relative;z-index:2">
-        <div class="panel-hdr-val num" id="pagos-total-hdr">R$&nbsp;0,00<small>total pago</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Checklist','Marque aqui suas contas fixas mensais (aluguel, água, luz, cartão...) conforme forem sendo pagas. É o único lugar pra contas recorrentes — evita lançar a mesma conta duas vezes. Toque no texto do item pra marcar como pago, ou no ✎ pra editar nome e valor.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
-        <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-pagos','Checklist','ph-green')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
-      </div>
-    </div>
-    <div style="padding:11px 14px;background:var(--bg3);border-bottom:1px solid var(--border)">
-      <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Clique para marcar como pago</div>
-      <div id="pagos-chips" style="display:flex;flex-wrap:wrap;gap:6px"></div>
-    </div>
-    <div style="padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap">
-      <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:130px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Novo item</label>
-        <input type="text" id="pagos-nome" placeholder="Ex: Aluguel, CELESC, Empregada..." style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')pagosAddItem()">
-      </div>
-      <div style="display:flex;flex-direction:column;gap:3px;min-width:90px">
-        <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Valor (R$)</label>
-        <input type="number" id="pagos-val" placeholder="0" min="0" style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;width:100%" onkeydown="if(event.key==='Enter')pagosAddItem()">
-      </div>
-      <button class="btn btn-g btn-sm" style="height:33px;padding:0 14px" onclick="pagosAddItem()">+ Add</button>
-    </div>
-    <div id="pagos-table"></div>
-    <div id="pagos-saldo" style="border-top:1px solid var(--border)"></div>
-  </div>
 
   <div id="pes-saldo-box" style="margin-top:4px"></div>
 
@@ -1670,6 +1636,7 @@ function runMigracoes(){
   if(!S.historico)S.historico=[];
   if(!S.calEvents)S.calEvents={};if(!S.recebidos)S.recebidos={};if(!S.colPagos)S.colPagos={};if(!S.lbPagos)S.lbPagos={};if(!S.pagosMarcados)S.pagosMarcados={};if(!S.entradasPes)S.entradasPes=[];
   ensureOpListboxes();
+  if(typeof migrarChecklistParaLancamentos==='function')migrarChecklistParaLancamentos();
   var OLD_NAMES=['Saídas Conta Juliana','Extrato Conta Juliana','Pagamentos feitos gerais','Pagamentos feitos'];
   // Remove o painel manual "Imposto mensal" — agora só consideramos o imposto calculado sobre clientes "Com NF"
   if(S.panels && S.panels.op){
@@ -2048,7 +2015,6 @@ function renderAll(){
   setTimeout(renderSaldoGeral,80);
   setTimeout(renderColSaldo,55);
   setTimeout(renderEntPes,60);
-  setTimeout(renderPagos,65);
   setTimeout(renderPesSaldo,70);
   setTimeout(renderPesRecomendacoes,78);
   setTimeout(renderPesCatsChart,85);
@@ -2638,7 +2604,38 @@ function buildPanel(p,tab,pi){
     const col=isEntry?'gc':'rc';
     const pre=isEntry?'+':'−';
     headerVal=`${isEntry?'+':'−'}${fmt(total)}`;
-    bodyHTML=`<div class="tw"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead><tbody>
+    let chipsHTML='';
+    if(p.id==='jul'&&tab==='pes'){
+      const catalogo=pagosAllItens();
+      const nPagos=catalogo.filter(it=>pagosIsPaidNome(it.nome)).length;
+      chipsHTML=`<div style="padding:11px 14px;background:var(--bg3);border-bottom:1px solid var(--border)">
+        <div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px">Contas fixas · toque pra marcar como pago (${nPagos}/${catalogo.length})</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${catalogo.map((it,idx)=>{
+            const pagoItem=pagosIsPaidNome(it.nome);
+            const pago=!!pagoItem;
+            const valorMostrar=pago?pagoItem.valor:it.valor;
+            const nomeEsc=it.nome.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+            return `<span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;border:1.5px solid ${pago?'#059669':'#ddddd8'};background:${pago?'#059669':'#f7f7f3'};overflow:hidden">
+              <span style="font-family:var(--font);font-size:11px;font-weight:700;padding:5px 4px 5px 12px;cursor:pointer;color:${pago?'#fff':'#4a4a4a'}" onclick="pagosToggleChip('${nomeEsc}')">${pago?'&#10003; ':''}${it.nome}${valorMostrar>0?' ('+fmt(valorMostrar)+')':''}</span>
+              <span style="cursor:pointer;font-size:10px;padding:5px 10px 5px 4px;opacity:${pago?'.9':'.6'}" title="Editar nome/valor" onclick="event.stopPropagation();pagosEditItem(${idx})">✏️</span>
+            </span>`;
+          }).join('')}
+        </div>
+        <div style="display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap;margin-top:10px">
+          <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:130px">
+            <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Nova conta fixa</label>
+            <input type="text" id="pagos-nome" placeholder="Ex: Aluguel, CELESC, Empregada..." style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')pagosAddItem()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;min-width:90px">
+            <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Valor (R$)</label>
+            <input type="number" id="pagos-val" placeholder="0" min="0" style="font-family:var(--font);font-size:12px;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;width:100%" onkeydown="if(event.key==='Enter')pagosAddItem()">
+          </div>
+          <button class="btn btn-g btn-sm" style="height:33px;padding:0 14px" onclick="pagosAddItem()">+ Add</button>
+        </div>
+      </div>`;
+    }
+    bodyHTML=chipsHTML+`<div class="tw"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead><tbody>
       ${items.map((it,ii)=>{
         const tc=TC[it.cat]||'bg-gray';
         const rowStyle=isInt?'style="background:var(--amber-bg)"':'';
@@ -3956,6 +3953,8 @@ async function bootApp(){
   if(!S.custosFix)S.custosFix=[];
   if(!S.customTabs)S.customTabs=[];
   ensurePesPanels();
+  migrarChecklistParaLancamentos();
+  save();
   restoreCustomTabs();
   // 🗓 FECHAMENTO AUTOMÁTICO — se a data real do sistema estiver em mês diferente do S.cfg.mes,
   // fecha automaticamente os meses pendentes (salva snapshots no histórico)
@@ -5828,63 +5827,34 @@ function pagosAllItens(){
   if(!S.pagosItens)S.pagosItens=JSON.parse(JSON.stringify(PAGOS_DEFAULT));
   return S.pagosItens;
 }
-function renderPagos(){
-  var itens=pagosAllItens();
-  var marcados=S.pagosMarcados||{};
-  var total=0,npagos=0;
-  itens.forEach(function(it){if(marcados[it.nome]){total+=Number(it.valor)||0;npagos++;}});
-  var subEl=document.getElementById('pagos-sub');
-  if(subEl)subEl.textContent=npagos+' de '+itens.length+' itens pagos';
-  var totEl=document.getElementById('pagos-total-hdr');
-  if(totEl)totEl.innerHTML=fmt(total)+'<small>total pago</small>';
-  var chipsEl=document.getElementById('pagos-chips');
-  if(chipsEl){
-    chipsEl.innerHTML='';
-    itens.forEach(function(it,idx){
-      var pago=!!marcados[it.nome];
-      var wrap=document.createElement('span');
-      wrap.style.cssText='display:inline-flex;align-items:center;gap:3px;border-radius:20px;border:1.5px solid '+(pago?'#059669':'#ddddd8')+';background:'+(pago?'#059669':'#f7f7f3')+';margin:0 4px 4px 0;overflow:hidden';
-      var label=document.createElement('span');
-      label.style.cssText='font-family:var(--font);font-size:11px;font-weight:700;padding:5px 4px 5px 12px;cursor:pointer;color:'+(pago?'#fff':'#4a4a4a');
-      label.innerHTML=(pago?'&#10003; ':'')+it.nome+(it.valor>0?' ('+fmt(it.valor)+')':'');
-      label.onclick=function(){pagosMarca(it.nome);};
-      var editBtn=document.createElement('span');
-      editBtn.textContent='✏️';
-      editBtn.title='Editar nome/valor';
-      editBtn.style.cssText='cursor:pointer;font-size:10px;padding:5px 10px 5px 4px;opacity:'+(pago?'.9':'.6');
-      editBtn.onclick=function(e){e.stopPropagation();pagosEditItem(idx);};
-      wrap.appendChild(label);
-      wrap.appendChild(editBtn);
-      chipsEl.appendChild(wrap);
-    });
-  }
-  var tblEl=document.getElementById('pagos-table');
-  if(!tblEl)return;
-  var paid=itens.filter(function(it){return !!marcados[it.nome];});
-  if(paid.length===0){
-    tblEl.innerHTML='<div style="padding:14px;text-align:center;font-size:12px;color:var(--text3)">Nenhum item marcado. Clique nos chips acima para marcar como pago.</div>';
-    return;
-  }
-  var rows='';
-  paid.forEach(function(it){
-    var idx=itens.indexOf(it);
-    rows+='<tr style="background:var(--green-bg)">'
-      +'<td class="inline-edit" onclick="pagosEditItem('+idx+')"><strong>&#10003; '+it.nome+'</strong></td>'
-      +'<td class="num r gc inline-edit" onclick="pagosEditItem('+idx+')">'+fmt(Number(it.valor)||0)+'</td>'
-      +'<td><button class="btn btn-r btn-sm" onclick="pagosDesmarcar(\''+it.nome+'\')" style="font-size:10px">Desmarcar</button></td>'
-      +'</tr>';
-  });
-  tblEl.innerHTML='<div class="tw"><table>'
-    +'<thead><tr><th>Item pago</th><th>Valor</th><th></th></tr></thead>'
-    +'<tbody>'+rows+'</tbody>'
-    +'<tr class="tr-tot"><td><strong>TOTAL PAGO</strong></td><td class="num r gc"><strong>'+fmt(total)+'</strong></td><td></td></tr>'
-    +'</table></div>';
-
-  // saldo summary — removido (era Total previsto / Total pago / Saldo disponível)
-  var saldoEl=document.getElementById('pagos-saldo');
-  if(saldoEl)saldoEl.innerHTML='';
+// Painel "jul" (lançamentos) — é a fonte única de verdade do dinheiro pago.
+function pagosJulPanel(){
+  if(!S.panels||!S.panels.pes)return null;
+  return S.panels.pes.find(function(p){return p.id==='jul'&&p.type==='lancamentos';})||null;
 }
-// Edição do nome/valor de um item do Checklist (cuidando da chave de "pago" se o nome mudar)
+// Um item do checklist está "pago" quando existe um lançamento ligado a ele (fromChecklist)
+function pagosIsPaidNome(nome){
+  var jul=pagosJulPanel();
+  if(!jul||!jul.items)return null;
+  return jul.items.find(function(it){return it.fromChecklist===nome;})||null;
+}
+// Toca no chip: marca como pago (cria o lançamento) ou desmarca (remove o lançamento)
+function pagosToggleChip(nome){
+  var jul=pagosJulPanel();
+  if(!jul){showToast('⚠️ Painel de pagamentos não encontrado.');return;}
+  jul.items=jul.items||[];
+  var idx=jul.items.findIndex(function(it){return it.fromChecklist===nome;});
+  if(idx>=0){
+    jul.items.splice(idx,1);
+  }else{
+    var cat=pagosAllItens().find(function(it){return it.nome===nome;});
+    var valor=cat?(Number(cat.valor)||0):0;
+    jul.items.push({data:new Date().toLocaleDateString('pt-BR'),desc:nome,cat:'Fixo',valor:valor,tag:(TC['Fixo']||'bg-blue'),fromChecklist:nome});
+  }
+  save();renderAll();
+}
+window.pagosToggleChip=pagosToggleChip;
+// Edição do nome/valor de um item do Checklist (sincroniza com o lançamento já pago, se houver)
 function pagosEditItem(idx){
   var itens=pagosAllItens();
   var item=itens[idx];
@@ -5922,10 +5892,11 @@ function pagosSalvarEdit(idx){
   var novoValor=parseFloat(document.getElementById('pe-valor').value)||0;
   if(!novoNome){showToast('⚠️ Nome não pode ficar vazio.');return;}
   var nomeAntigo=item.nome;
-  // Se o nome mudou, migra a chave de "pago" pro novo nome
-  if(nomeAntigo!==novoNome && S.pagosMarcados && S.pagosMarcados[nomeAntigo]!==undefined){
-    S.pagosMarcados[novoNome]=S.pagosMarcados[nomeAntigo];
-    delete S.pagosMarcados[nomeAntigo];
+  // Se já existe um lançamento pago ligado a este item, sincroniza nome/valor nele também
+  var jul=pagosJulPanel();
+  if(jul&&jul.items){
+    var li=jul.items.find(function(x){return x.fromChecklist===nomeAntigo;});
+    if(li){li.fromChecklist=novoNome;li.desc=novoNome;li.valor=novoValor;}
   }
   item.nome=novoNome;
   item.valor=novoValor;
@@ -5939,25 +5910,14 @@ function pagosDelItem(idx){
   var itens=pagosAllItens();
   var item=itens[idx];
   if(!item)return;
-  if(S.pagosMarcados)delete S.pagosMarcados[item.nome];
   itens.splice(idx,1);
   save();
   var mo=document.getElementById('mo-pagos-edit');if(mo)mo.remove();
   renderAll();
-  showToast('🗑 Item removido.');
+  showToast('🗑 Item removido da lista. Se já estava pago, o lançamento continua no histórico.');
 }
 window.pagosDelItem=pagosDelItem;
 
-function pagosMarca(nome){
-  if(!S.pagosMarcados)S.pagosMarcados={};
-  S.pagosMarcados[nome]=!S.pagosMarcados[nome];
-  save();renderPesCompleto();
-}
-function pagosDesmarcar(nome){
-  if(!S.pagosMarcados)S.pagosMarcados={};
-  S.pagosMarcados[nome]=false;
-  save();renderPesCompleto();
-}
 function pagosAddItem(){
   var nEl=document.getElementById('pagos-nome');
   var vEl=document.getElementById('pagos-val');
@@ -5968,8 +5928,7 @@ function pagosAddItem(){
   if(!S.pagosItens)S.pagosItens=JSON.parse(JSON.stringify(PAGOS_DEFAULT));
   if(S.pagosItens.find(function(it){return it.nome.toLowerCase()===nome.toLowerCase();})){showToast('Item ja existe.');return;}
   S.pagosItens.push({nome:nome,valor:valor});
-  nEl.value='';vEl.value='';
-  save();renderPesCompleto();
+  save();renderAll();
   showToast('Ok! "'+nome+'" adicionado.');
 }
 
@@ -6353,6 +6312,27 @@ function ensurePesPanels(){
   if(!temPag){
     S.panels.pes.push({id:'jul',title:'Pagamentos por PIX (extras)',icon:'🏦',color:'ph-teal',type:'lancamentos',items:[]});
   }
+}
+
+// Migração única: funde o antigo Checklist (S.pagosItens/S.pagosMarcados) dentro do painel
+// de lançamentos "jul" — pra virar uma coisa só, com o cálculo abatendo certinho.
+// Cada item já marcado como pago vira um lançamento real (fromChecklist liga os dois).
+function migrarChecklistParaLancamentos(){
+  if(S._migChecklistUnificado)return;
+  var jul=(S.panels&&S.panels.pes||[]).find(function(p){return p.id==='jul'&&p.type==='lancamentos';});
+  if(!jul)return; // painel ainda não existe (será criado por ensurePesPanels) — tenta de novo na próxima chamada
+  jul.items=jul.items||[];
+  var marcados=S.pagosMarcados||{};
+  var catalogo=S.pagosItens||[];
+  catalogo.forEach(function(it){
+    if(marcados[it.nome]){
+      var jaExiste=jul.items.some(function(li){return li.fromChecklist===it.nome;});
+      if(!jaExiste){
+        jul.items.push({data:new Date().toLocaleDateString('pt-BR'),desc:it.nome,cat:'Fixo',valor:Number(it.valor)||0,tag:(TC['Fixo']||'bg-blue'),fromChecklist:it.nome});
+      }
+    }
+  });
+  S._migChecklistUnificado=true;
 }
 
 // Adiciona um novo painel de cartão (fatura) na aba Pessoal
@@ -6882,7 +6862,6 @@ function ajustarPeriodoRec(valor){
 // Usado quando uma ação afeta múltiplos painéis (entradas/custos/pagos/etc)
 function renderPesCompleto(){
   renderEntPes();
-  renderPagos();
   renderPesSaldo();
   renderPesRecomendacoes();
 }

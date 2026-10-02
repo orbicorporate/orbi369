@@ -626,7 +626,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 
 #chat-backdrop{position:fixed;inset:0;background:rgba(10,14,23,.55);z-index:399;display:none;backdrop-filter:blur(2px)}
 #chat-backdrop.on{display:block}
-#chat-panel{position:fixed;bottom:50%;right:50%;transform:translate(50%,50%);width:min(560px,96vw);height:min(800px,92vh);max-height:92vh;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.35);z-index:400;display:none;flex-direction:column;overflow:hidden;animation:su .25s ease}
+#chat-panel{position:fixed;bottom:50%;right:50%;transform:translate(50%,50%);width:min(560px,96vw);height:min(800px,92vh);max-height:92vh;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20);z-index:400;display:none;flex-direction:column;overflow:hidden;animation:su .25s ease}
 #chat-panel.on{display:flex}
 @keyframes su{from{opacity:0;transform:translate(50%,50%) scale(.95)}to{opacity:1;transform:translate(50%,50%) scale(1)}}
 .ch-hdr{background:#0a0e17;padding:16px 18px;display:flex;align-items:center;justify-content:space-between}
@@ -691,7 +691,7 @@ td.inline-edit:active{background:var(--blue-bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 /* ===== AUTH SCREEN ===== */
 #auth-screen{position:fixed;inset:0;background:linear-gradient(160deg,#0a0e17,#111827 60%,#1a1033);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:var(--font)}
-#auth-box{width:380px;max-width:100%;background:#fff;border-radius:18px;padding:32px 28px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+#auth-box{width:380px;max-width:100%;background:#fff;border-radius:18px;padding:32px 28px;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)}
 .auth-logo{width:52px;height:52px;background:#0a0e17;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
 .auth-logo span{font-size:11px;font-weight:300;color:#fff;letter-spacing:1.5px}
 .auth-title{text-align:center;font-size:19px;font-weight:500;color:var(--text);margin-bottom:4px}
@@ -937,6 +937,52 @@ input,select,textarea,.fat-picker,.tr-row,.lb-row,.cp-opt{
 /* Linhas NAO levam backdrop-filter: sao dezenas por tela e o custo de
    composicao trava o scroll no iPhone. Translucidez sem desfoque basta. */
 .tr-row,.lb-row{background:rgba(255,255,255,.70)}
+
+/* ============================================================
+   REFINO 3 — vidro no cromo restante. Nada de superficie chapada.
+   ============================================================ */
+
+/* Overlay base dos modais com classe */
+.mo{background:rgba(18,20,38,.34);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%)}
+.mo-box{border:1px solid rgba(255,255,255,.72);border-radius:28px}
+
+/* Abas: pilulas escuras viram vidro escuro. A ativa fica solida,
+   porque e o unico ponto que precisa de peso total. */
+.tb{background:linear-gradient(135deg,rgba(10,14,23,.72),rgba(18,35,61,.66));
+  -webkit-backdrop-filter:blur(14px) saturate(160%);backdrop-filter:blur(14px) saturate(160%);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 2px 10px rgba(10,14,23,.16),inset 0 1px 0 rgba(255,255,255,.1)}
+.tb:hover{background:linear-gradient(135deg,rgba(18,35,61,.8),rgba(30,58,95,.72))}
+.tb.on{background:var(--lime);border-color:rgba(255,255,255,.5);color:var(--ink)}
+
+/* Barra de backup e icone do logo */
+.bkp-bar{background:rgba(10,14,23,.78);
+  -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%)}
+.hdr-icon{background:rgba(10,14,23,.82);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.16);border-radius:12px}
+.hdr-mes,.hdr-btn{background:rgba(255,255,255,.58);border:1px solid rgba(255,255,255,.72);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+/* Botoes secundarios em vidro; os primarios seguem solidos,
+   senao a acao principal perde afordancia. */
+.btn-gh{background:rgba(255,255,255,.52);border:1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--text2)}
+.btn-gh:hover{background:rgba(255,255,255,.72)}
+.btn-r{background:rgba(254,242,242,.72);border:1px solid rgba(254,202,202,.8);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.badge{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+
+/* Faixas internas e formularios */
+.add-row,.lb-formwrap,.fat-entry,.fat-tools,th,.tr-tot td,.lb-total-row,.chart-row{
+  background:rgba(248,248,253,.55)}
+.chart-box{background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.7)}
+.tr-summary-c{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+
+/* Setup tambem entra no sistema */
+#setup{background:#f5f4fa}
+.setup-box{background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.72);border-radius:28px}
 </style>
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
@@ -2858,7 +2904,7 @@ function buildPanel(p,tab,pi){
             const pago=!!pagoItem;
             const valorMostrar=pago?pagoItem.valor:it.valor;
             const nomeEsc=it.nome.replace(/'/g,"\\'").replace(/"/g,'&quot;');
-            return `<span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;border:1.5px solid ${pago?'#059669':'#ddddd8'};background:${pago?'#059669':'#f7f7f3'};overflow:hidden">
+            return `<span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;border:1px solid ${pago?'rgba(5,150,105,.55)':'rgba(255,255,255,.75)'};background:${pago?'rgba(5,150,105,.82)':'rgba(255,255,255,.55)'};-webkit-backdrop-filter:blur(10px) saturate(160%);backdrop-filter:blur(10px) saturate(160%);box-shadow:${pago?'0 2px 10px rgba(5,150,105,.22)':'0 1px 3px rgba(31,34,61,.06)'};overflow:hidden">
               <span style="font-family:var(--font);font-size:11px;font-weight:500;padding:5px 4px 5px 12px;cursor:pointer;color:${pago?'#fff':'#4a4a4a'}" onclick="pagosToggleChip('${nomeEsc}')">${pago?'&#10003; ':''}${it.nome}${valorMostrar>0?' ('+fmt(valorMostrar)+')':''}</span>
               <span style="cursor:pointer;font-size:10px;padding:5px 10px 5px 4px;opacity:${pago?'.9':'.6'}" title="Editar nome/valor" onclick="event.stopPropagation();pagosEditItem(${idx})">✏️</span>
             </span>`;
@@ -3278,10 +3324,10 @@ function openImportCli(){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-import-cli';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
     +'<div style="font-size:15px;font-weight:500;color:var(--text)">📥 Importar lista de '+(S.cfg.lblC||'clientes').toLowerCase()+'</div>'
@@ -3361,10 +3407,10 @@ function openImportCol(){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-import-col';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:460px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
     +'<div style="font-size:15px;font-weight:500;color:var(--text)">📥 Importar lista de '+(S.cfg.lblCol||'colaboradores').toLowerCase()+'</div>'
@@ -3447,10 +3493,10 @@ function _mostrarErrosImport(tipo, erros, added, totalLinhas, qual){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-import-erros';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:520px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:520px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   var formatoStr = qual==='cli' ? 'Nome, Valor' : 'Nome, Cargo, Valor';
 
@@ -3510,10 +3556,10 @@ function openImportPagos(tab, pi){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-import-pagos';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:520px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:520px;max-width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML =
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
     +'<div style="font-size:15px;font-weight:500;color:var(--text)">📥 Importar lançamentos em "'+(p.title||'Pagamentos')+'"</div>'
@@ -4234,9 +4280,9 @@ function abrirEntradaRapida(){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-entrada-rapida';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10600;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10600;display:flex;align-items:center;justify-content:center;padding:20px';
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:18px;padding:26px 22px;width:340px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:26px;padding:26px 22px;width:340px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML =
     '<div style="text-align:center;margin-bottom:18px">'
     +'<div style="font-size:32px;margin-bottom:6px">⚡</div>'
@@ -4293,10 +4339,10 @@ function showPanelHelp(titulo, texto){
   if(old) old.remove();
   var mo = document.createElement('div');
   mo.id = 'mo-panel-help';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10200;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10200;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:340px;max-width:100%;box-shadow:0 12px 40px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:340px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
     +'<span style="font-size:22px">💡</span>'
     +'<div style="font-size:15px;font-weight:500;color:var(--text)">'+titulo+'</div>'
@@ -4327,10 +4373,10 @@ function showOnboardingModal(){
   _onbStep = 1;
   var mo = document.createElement('div');
   mo.id = 'mo-onboarding';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
   var bx = document.createElement('div');
   bx.id = 'onb-box';
-  bx.style.cssText = 'background:var(--bg);border-radius:16px;padding:28px 24px;width:400px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:24px;padding:28px 24px;width:400px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   mo.appendChild(bx);
   document.body.appendChild(mo);
   renderOnbStep();
@@ -5198,9 +5244,9 @@ function openPdfImport(tab,pi){
   const cartoes=p.cartaoTypes;
 
   const mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   const bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:0;width:640px;max-width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:0;width:640px;max-width:100%;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   mo.appendChild(bx);
   mo.addEventListener('click',function(e){if(e.target===mo)mo.remove();});
   document.body.appendChild(mo);
@@ -5463,9 +5509,9 @@ function clearFatItems(tab,pi){
   var cartoes=Object.keys(porCartao);
 
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:24px;width:380px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:24px;width:380px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   // Se não tem itens, mostra aviso simples e sai
   if(qtdItens===0){
@@ -5546,9 +5592,9 @@ function clearCartaoItems(tab,pi,nomeCartao){
   var totalCartao=doCartao.reduce(function(s,it){return s+(Number(it.valor)||0);},0);
 
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:24px;width:360px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:24px;width:360px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   // Pega a cor do cartão pro visual
   var cartaoTypes=normalizeCartaoTypes(p.cartaoTypes||[]);
@@ -6143,10 +6189,10 @@ function pagosEditItem(idx){
   if(old)old.remove();
   var mo=document.createElement('div');
   mo.id='mo-pagos-edit';
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10500;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick=function(e){if(e.target===mo)mo.remove();};
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:340px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:340px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML=
     '<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:14px">✏️ Editar item</div>'
     +'<label style="display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;text-transform:uppercase">Nome</label>'
@@ -6623,9 +6669,9 @@ function addCartaoPainel(){
   // Modal customizado (evita problemas de prompt() bloqueado em alguns navegadores/mobile)
   var mo = document.createElement('div');
   mo.id = 'mo-add-cartao';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:22px;width:360px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:360px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML =
     '<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:14px">💳 Adicionar cartão</div>'
     +'<label style="display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px">Nome do cartão</label>'
@@ -10073,9 +10119,9 @@ function deletarMes(i){
   if(!snap)return;
 
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:320px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:320px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   bx.innerHTML=''
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
     +'<div style="width:36px;height:36px;background:var(--red-bg);border:1px solid var(--red-border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px">⚠️</div>'
@@ -10468,9 +10514,9 @@ function deleteCustomTab(id){
   var temDados=nPainel>0||nLista>0;
 
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:24px;width:340px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:24px;width:340px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   bx.innerHTML=''
     +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
@@ -10806,10 +10852,10 @@ function openCalEventModal(dayKey,dayNum){
 
   var mo=document.createElement('div');
   mo.id='cal-event-modal';
-  mo.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:9999;display:flex;align-items:center;justify-content:center';
+  mo.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center';
 
   var box=document.createElement('div');
-  box.style.cssText='background:var(--bg);border-radius:14px;padding:24px;width:320px;max-width:90%;box-shadow:0 8px 32px rgba(0,0,0,.2)';
+  box.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:24px;width:320px;max-width:90%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   var title=document.createElement('div');
   title.style.cssText='font-size:15px;font-weight:500;color:var(--text);margin-bottom:4px';
@@ -10916,9 +10962,9 @@ document.addEventListener('click', function(ev){
 
 function _orbiModal(opts){
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:300px;max-width:92vw;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:300px;max-width:92vw;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   var ttl=document.createElement('div');
   ttl.style.cssText='font-size:14px;font-weight:500;color:var(--text);margin-bottom:14px';
   ttl.textContent=opts.title;
@@ -10951,9 +10997,9 @@ function _orbiModal(opts){
 
 function _orbiConfirm(msg, onOk){
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:290px;max-width:92vw;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:290px;max-width:92vw;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   var tx=document.createElement('div');tx.style.cssText='font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px';tx.textContent=msg;
   var sub=document.createElement('div');sub.style.cssText='font-size:12px;color:var(--text3);margin-bottom:16px';sub.textContent='Esta a\u00e7\u00e3o n\u00e3o pode ser desfeita.';
   var row=document.createElement('div');row.style.cssText='display:flex;gap:8px;justify-content:flex-end';
@@ -10967,9 +11013,9 @@ function _orbiConfirm(msg, onOk){
 
 function _editPanelModal(tab, pi, p){
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:320px;max-width:92vw;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:320px;max-width:92vw;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   // Title
   var ttl=document.createElement('div');
@@ -11059,9 +11105,9 @@ function _editFixedPanelModal(key, defaultTitle, defaultColor){
   var current = getFixedPanelCfg(key, defaultTitle, defaultColor);
 
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:320px;max-width:92vw;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:320px;max-width:92vw;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   var ttl=document.createElement('div');
   ttl.style.cssText='font-size:14px;font-weight:500;color:var(--text);margin-bottom:14px';
@@ -11216,9 +11262,9 @@ function confirmarExcluirPainel(tab,pi){
   if(!panel)return;
   var nome=panel.title;
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:290px;max-width:92vw;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:290px;max-width:92vw;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
   var tx=document.createElement('div');tx.style.cssText='font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px';
   tx.textContent='Excluir "'+nome+'"?';
   var sub=document.createElement('div');sub.style.cssText='font-size:12px;color:var(--text3);margin-bottom:18px';
@@ -11321,11 +11367,11 @@ function openCartaoPicker(tab, pi){
 
   var mo = document.createElement('div');
   mo.id = 'mo-cartao-picker';
-  mo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+  mo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
   mo.onclick = function(e){ if(e.target===mo) mo.remove(); };
 
   var bx = document.createElement('div');
-  bx.style.cssText = 'background:var(--bg);border-radius:14px;padding:20px;width:380px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:20px;width:380px;max-width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   // DEFINE AS FUNÇÕES ANTES (pra evitar race condition)
   window._cartaoPickerSelect = function(cIdx){
@@ -11341,9 +11387,9 @@ function openCartaoPicker(tab, pi){
     var nome = p.cartaoTypes[cIdx].nome;
     // Modal customizado em vez de confirm() que pode ser bloqueado
     var confMo = document.createElement('div');
-    confMo.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px';
+    confMo.style.cssText = 'position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:10001;display:flex;align-items:center;justify-content:center;padding:20px';
     var confBx = document.createElement('div');
-    confBx.style.cssText = 'background:var(--bg);border-radius:12px;padding:20px;width:320px;max-width:100%;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+    confBx.style.cssText = 'background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:20px;width:320px;max-width:100%;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
     confBx.innerHTML =
       '<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:10px">🗑 Excluir cartão?</div>'
       +'<div style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.45">Você tem certeza que quer excluir o cartão <strong>"'+nome+'"</strong>?</div>'
@@ -11453,9 +11499,9 @@ function manageCartaoTypes(tab,pi){
   if(!p.cartaoTypes)p.cartaoTypes=[];
   p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
   var mo=document.createElement('div');
-  mo.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
+  mo.style.cssText='position:fixed;inset:0;background:rgba(18,20,38,.34);-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px';
   var bx=document.createElement('div');
-  bx.style.cssText='background:var(--bg);border-radius:14px;padding:22px;width:360px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 8px 30px rgba(0,0,0,.3)';
+  bx.style.cssText='background:rgba(255,255,255,.62);-webkit-backdrop-filter:saturate(180%) blur(30px);backdrop-filter:saturate(180%) blur(30px);border:1px solid rgba(255,255,255,.72);border-radius:22px;padding:22px;width:360px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 2px 8px rgba(31,34,61,.10),0 24px 64px rgba(31,34,61,.20)';
 
   function buildColorDots(selectedKey,onPick){
     var wrap=document.createElement('div');

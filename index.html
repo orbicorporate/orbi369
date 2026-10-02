@@ -14,8 +14,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 :root{
-  --bg:#f0f0ec;--bg2:#f7f7f3;--bg3:#e8e8e4;--card:#f7f7f3;
-  --border:#ddddd8;--border2:#c8c8c2;
+  --bg:#f0f0ec;--bg2:rgba(255,255,255,.62);--bg3:rgba(246,246,252,.72);--card:rgba(255,255,255,.58);
+  --border:rgba(255,255,255,.72);--border2:rgba(148,152,180,.34);
   --text:#1a1a1a;--text2:#4a4a4a;--text3:#8a8a8a;
   --green:#059669;--green-bg:#ecfdf5;--green-border:#a7f3d0;
   --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;
@@ -25,16 +25,28 @@
   --teal:#0d9488;--teal-bg:#f0fdfa;--teal-border:#99f6e4;
   --lime:#d7f52c;--lime-dk:#a8c400;--ink:#0a0a0a;
   --font:'Open Sans',Arial,sans-serif;
-  --shadow:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.04);
-  --shadow-lg:0 4px 16px rgba(0,0,0,.1),0 12px 32px rgba(0,0,0,.06);
-  --r-lg:24px;--r-md:18px;--r-sm:13px;
+  /* Vidro: desfoque + saturação, com a aresta superior iluminada */
+  --glass-blur:saturate(165%) blur(20px);
+  --glass-edge:rgba(255,255,255,.85);
+  /* Prisma: a luz decomposta que corre na borda dos cards */
+  --prism:linear-gradient(135deg,rgba(126,232,250,.70) 0%,rgba(167,139,250,.60) 28%,rgba(240,171,252,.52) 52%,rgba(215,245,44,.58) 78%,rgba(126,232,250,.40) 100%);
+  --shadow:0 1px 2px rgba(31,34,61,.05),0 6px 20px rgba(31,34,61,.07);
+  --shadow-lg:0 2px 6px rgba(31,34,61,.07),0 18px 46px rgba(31,34,61,.11);
+  --r-lg:30px;--r-md:22px;--r-sm:16px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 /* iOS dá zoom automático em campos com fonte menor que 16px ao focar — trava isso globalmente */
 input,select,textarea{font-size:16px !important}
 @media(min-width:480px){input,select,textarea{font-size:inherit !important}}
 html{scroll-behavior:smooth;overflow-x:hidden;width:100%}
-body{background:linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 35%,#f7f6fb 65%,#fbfaf8 100%);background-attachment:fixed;color:var(--text);font-family:var(--font);min-height:100vh;font-size:14px;width:100%;max-width:100vw;overflow-x:clip;overscroll-behavior-x:none}
+body{background:#f5f4fa;color:var(--text);font-family:var(--font);min-height:100vh;font-size:14px;width:100%;max-width:100vw;overflow-x:clip;overscroll-behavior-x:none;position:relative}
+/* Campo de luz por trás do vidro: três fontes frias/quentes que o blur dos cards recolhe */
+body::before{content:'';position:fixed;inset:-10% -10% -10% -10%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(42% 34% at 12% 4%,rgba(126,232,250,.34) 0%,transparent 70%),
+    radial-gradient(46% 38% at 92% 14%,rgba(167,139,250,.30) 0%,transparent 72%),
+    radial-gradient(52% 40% at 72% 88%,rgba(215,245,44,.20) 0%,transparent 70%),
+    linear-gradient(165deg,#f4f5fc 0%,#f6f3fb 38%,#f8f6fb 68%,#fbfaf8 100%);}
 .num{font-family:'Open Sans',Arial,sans-serif;font-variant-numeric:tabular-nums}
 
 /* SETUP */
@@ -702,6 +714,130 @@ td.inline-edit:active{background:var(--blue-bg)}
 .auth-msg.err{background:#fee2e2;color:#dc2626}
 .auth-msg.ok{background:#dcfce7;color:#059669}
 #auth-logout-btn{display:none !important}
+
+/* ============================================================
+   VIDRO + PRISMA — camada de refino visual (sobrepõe o acima)
+   O blur fica só nas superfícies grandes (painéis, métricas,
+   cabeçalho, abas, modais). Linhas de tabela e chips usam
+   preenchimento translúcido sem blur, pra não travar o scroll
+   no celular.
+   ============================================================ */
+
+/* ---- Superfícies de vidro ---- */
+.panel,.met,.mo-box,.setup-box{
+  background:var(--card);
+  -webkit-backdrop-filter:var(--glass-blur);
+  backdrop-filter:var(--glass-blur);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow),inset 0 1px 0 var(--glass-edge);
+}
+.panel{border-radius:var(--r-lg);margin-bottom:26px}
+.met{border-radius:var(--r-md);padding:22px}
+
+/* ---- A aresta de prisma: 1px de luz decomposta na borda ----
+   Anel feito com mask-composite pra pintar só a borda, não o miolo. */
+.panel::before,.met::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  padding:1px;background:var(--prism);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;z-index:3;opacity:.55;
+}
+.met{position:relative}
+/* O cabeçalho escuro do painel já tem glow próprio; ali o prisma seria ruído */
+.panel-hdr::before{z-index:1}
+
+/* ---- Cromo: cabeçalho e abas em vidro ---- */
+.hdr{
+  background:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border-bottom:1px solid rgba(255,255,255,.6);
+  box-shadow:0 1px 0 rgba(148,152,180,.14),0 6px 24px rgba(31,34,61,.06);
+  height:66px;padding:0 20px;
+}
+.tabs{
+  background:rgba(255,255,255,.52);
+  -webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border-bottom:1px solid rgba(255,255,255,.55);
+  box-shadow:0 1px 0 rgba(148,152,180,.12);
+  padding:13px 18px;gap:10px;top:66px;
+}
+.tb{border-radius:var(--r-md);padding:12px 18px}
+.tb.on{box-shadow:0 4px 18px rgba(215,245,44,.45),inset 0 1px 0 rgba(255,255,255,.5)}
+
+/* ---- Respiro ---- */
+.tab-pane{padding:30px 18px}
+.panel-hdr{padding:26px 24px;gap:14px}
+.panel-hdr-actions{top:24px;right:24px}
+.panel-hdr-l{padding-right:118px}
+.mets{gap:16px;margin-bottom:24px}
+.panel-body{padding:18px 20px}
+.add-row{padding:14px 20px}
+td{padding:16px 14px}
+th{padding:12px 14px}
+
+/* ---- Superfícies internas: translúcidas, sem blur próprio ---- */
+.add-row,th,.tr-tot td,.lb-total-row{background:rgba(246,246,252,.72)}
+.tr-row,.lb-row{
+  background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 1px 2px rgba(31,34,61,.04);
+  border-radius:var(--r-sm);
+}
+.badge{border-radius:20px}
+.btn{border-radius:12px}
+.btn-sm{border-radius:10px}
+.cp-opt{border-radius:12px}
+
+/* ---- Campos: vidro leve, foco com luz de prisma ---- */
+input,select,textarea{
+  background:rgba(255,255,255,.66);
+  border-color:rgba(255,255,255,.8);
+  border-radius:var(--r-sm);
+  transition:border-color .18s,box-shadow .18s;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:rgba(167,139,250,.55);
+  box-shadow:0 0 0 3px rgba(167,139,250,.14);
+  outline:none;
+}
+
+/* ---- Campos com escopo proprio: mesma linguagem de vidro ----
+   Estes seletores tem especificidade maior que "input" sozinho,
+   entao precisam ser alinhados aqui ou ficariam de fora do refresh. */
+.fg input,.fg select,.fg textarea,
+.lb-form-row2 input,.lb-form-row2 select,
+.s-group input,.s-group select{
+  background:rgba(255,255,255,.66);
+  border-color:rgba(255,255,255,.8);
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus,
+.lb-form-row2 input:focus,.lb-form-row2 select:focus,
+.s-group input:focus,.s-group select:focus{
+  border-color:rgba(167,139,250,.6);
+  box-shadow:0 0 0 4px rgba(167,139,250,.16);
+}
+.lb-formwrap{background:rgba(246,246,252,.66)}
+
+/* ---- Acessibilidade e desempenho ---- */
+:focus-visible{outline:2px solid rgba(109,40,217,.7);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  html{scroll-behavior:auto}
+}
+/* Sem suporte a backdrop-filter: cai pra superfície sólida, sem perder contraste */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .panel,.met,.mo-box,.hdr,.tabs,.setup-box{background:rgba(255,255,255,.93)}
+}
+@media(max-width:480px){
+  .tab-pane{padding:20px 12px}
+  .panel-hdr{padding:22px 18px}
+  .panel-hdr-actions{top:20px;right:18px}
+  .panel{border-radius:26px;margin-bottom:20px}
+  .met{padding:18px}
+  td{padding:14px 12px}
+}
 </style>
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';

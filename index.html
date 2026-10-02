@@ -885,21 +885,26 @@ td.inline-edit:active{background:var(--blue-bg)}
 
 <!-- ===== TAB: PESSOAL ===== -->
 <div id="tab-pes" class="tab-pane">
+  <div id="pes-mets" style="margin-bottom:14px"></div>
   <!-- ENTRADAS PREVISTAS -->
   <div class="panel" style="margin-bottom:14px">
     <div class="panel-hdr ph-green" data-fpk="pes-entradas">
       <div class="panel-hdr-l">
         <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff" data-fpk-title>Entradas previstas</div>
+          <div style="font-size:16.5px;font-weight:800;color:#fff" data-fpk-title>Entradas previstas</div>
           <div class="panel-sub" id="entpes-sub">0 entradas</div>
         </div>
       </div>
-      <div class="panel-hdr-r" style="position:relative;z-index:2">
+      <div class="panel-hdr-r">
         <div class="panel-hdr-val num" id="entpes-total">R$&nbsp;0,00<small>total previsto</small></div>
-        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. Isso soma no seu Saldo Pessoal do Mês.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
+      </div>
+      <div class="panel-hdr-actions">
+        <button class="panel-hdr-menu rows-toggle" id="rt-entpes" title="Recolher/expandir" onclick="toggleRowsCollapse('entpes-body','rt-entpes')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+        <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('Entradas previstas','Some aqui qualquer entrada de dinheiro pessoal que não vem do seu negócio — salário de outro trabalho, aluguel recebido, pensão, etc. O lucro do negócio entra sozinho, puxado da aba Negócio.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
         <button class="panel-hdr-menu panel-help-btn" title="Editar nome e cor" onclick="_editFixedPanelModal('pes-entradas','Entradas previstas','ph-green')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 20.5H21"/><path d="M16.7 3.8a2.1 2.1 0 0 1 3 3L7.5 19l-4 1 1-4Z"/></svg></button>
       </div>
     </div>
+    <div id="entpes-body">
     <div style="padding:10px 14px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;gap:7px;align-items:flex-end;flex-wrap:wrap">
       <div style="display:flex;flex-direction:column;gap:3px;flex:2;min-width:130px">
         <label style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">Descri&#231;&#227;o</label>
@@ -912,6 +917,7 @@ td.inline-edit:active{background:var(--blue-bg)}
       <button class="btn btn-g btn-sm" style="height:33px;padding:0 14px" onclick="entpesAdd()">+ Add</button>
     </div>
     <div id="entpes-table"></div>
+    </div>
   </div>
   <div id="panels-pes"></div>
   <div id="listboxes-pes"></div>
@@ -2016,6 +2022,7 @@ function renderAll(){
   setTimeout(renderColSaldo,55);
   setTimeout(renderEntPes,60);
   setTimeout(renderPesSaldo,70);
+  setTimeout(renderPesMets,72);
   setTimeout(renderPesRecomendacoes,78);
   setTimeout(renderPesCatsChart,85);
   setTimeout(renderHistorico,90);
@@ -4314,17 +4321,20 @@ function buildFaturaPanel(p,tab,pi){
     <div class="panel-hdr ${color}">
       <div class="panel-hdr-l">
         <div class="panel-hdr-info">
-          <div style="font-size:13px;font-weight:700;color:#fff">${p.title||'Cartões'}</div>
+          <div style="font-size:16.5px;font-weight:800;color:#fff">${p.title||'Cartões'}</div>
           <div class="panel-sub">${items.length} lançamentos · ${fmtD(itemsTotal)}</div>
         </div>
       </div>
       <div class="panel-hdr-r">
-        <div class="panel-hdr-val num">${fmtD(displayTotal)}<small>${p.fatObs||'fatura do mês'}</small></div>
+        <div class="panel-hdr-val num">${fmtD(displayTotal)}<small>fatura do mês</small></div>
+      </div>
+      <div class="panel-hdr-actions">
+        <button class="panel-hdr-menu rows-toggle${isLancExpanded('fat-body-'+tab+'-'+pi)?'':' collapsed'}" id="ft-${tab}-${pi}" title="Recolher/expandir" onclick="toggleRowsCollapse('fat-body-${tab}-${pi}','ft-${tab}-${pi}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
         <button class="panel-hdr-menu panel-help-btn" title="O que é isso?" onclick="showPanelHelp('${p.title||'Cartão'}','Lance os gastos do seu cartão aqui, item por item, ou use o campo \'Valor total da fatura\' pra digitar o total direto sem detalhar. Esse valor entra no cálculo do Saldo Pessoal do Mês.')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>
         <button class="panel-hdr-menu panel-del-btn" title="Excluir este painel de cartão" onclick="confirmarExcluirPainel('${tab}',${pi})">✕</button>
       </div>
     </div>
-
+    <div id="fat-body-${tab}-${pi}" style="${isLancExpanded('fat-body-'+tab+'-'+pi)?'':'display:none'}">
     ${items.length>0?`
     <div style="padding:12px 14px 0;display:flex;gap:8px;flex-wrap:wrap">${cartaoCards}</div>
     <div style="padding:10px 14px;border-bottom:1px solid var(--border)">
@@ -4430,6 +4440,7 @@ function buildFaturaPanel(p,tab,pi){
         <button class="btn btn-g btn-sm" onclick="importFaturaList('${tab}',${pi})">📥 Importar</button>
         <button class="btn btn-gh btn-sm" onclick="toggleFatImport('fatimp-${tab}-${pi}')">Fechar</button>
       </div>
+    </div>
     </div>
     <!-- Rodapé integrado: Total faturas + botão Adicionar cartão (só aparece no último painel) -->
     <div class="fatura-rodape" data-rodape="${tab}-${pi}" style="display:none;padding:11px 14px;border-top:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
@@ -6409,102 +6420,216 @@ window.addCartaoPainel = addCartaoPainel;
 window._confirmarAddCartao = _confirmarAddCartao;
 
 // =================== SALDO PESSOAL ===================
-function renderPesSaldo(fatTotalOverride){
-  var el=document.getElementById('pes-saldo-box');
-  if(!el)return;
+// ======================= SALDO PESSOAL DO MÊS =======================
+// Espelha a gramática do "Saldo Geral do Mês" da aba Negócio:
+// seções numeradas (secLbl) + cards mkC em grid de 2 colunas.
+//
+// REGRA DE OURO: toda saída pessoal passa por aqui. Antes, só o painel de
+// contas pagas entrava na conta; fatura de cartão e listas pessoais eram
+// calculadas e descartadas, o que deixava o saldo otimista.
+//
+// Fontes de saída (cada uma aparece como seu próprio card, pra dar pra auditar):
+//   a) Contas pagas  -> painel 'jul' (lançamentos). Alimentado pelos chips do checklist.
+//   b) Fatura cartão -> painéis type 'fatura' (soma fatItems, senão fatTotal manual)
+//   c) Listas        -> listboxes da aba Pessoal (aluguel, carro, empregados...)
+function pesNumeros(fatTotalOverride){
+  var pesPanels=(S.panels&&S.panels.pes)||[];
 
-  var mes=S.cfg&&S.cfg.mes?S.cfg.mes:'Este mês';
+  // ---- ENTRADAS ----
+  var entManual=(S.entradasPes||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
+  var lucroNegAuto=(typeof calcLucroParaPessoal==='function')?calcLucroParaPessoal():0;
+  if(lucroNegAuto<0)lucroNegAuto=0;
+  var entTotal=entManual+lucroNegAuto;
+  var nEntradas=(S.entradasPes||[]).length+(lucroNegAuto>0?1:0);
 
-  // 1. Entradas previstas (Entradas previstas da aba Pessoal + Lucro do negócio automático)
-  var entTotal=(S.entradasPes||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
-  // Inclui o lucro do negócio como entrada automática se positivo
-  var lucroNegAuto = (typeof calcLucroParaPessoal==='function') ? calcLucroParaPessoal() : 0;
-  if(lucroNegAuto > 0) entTotal += lucroNegAuto;
+  // ---- a) CONTAS PAGAS (painel jul) ----
+  var contasPagas=0,nContasPagas=0;
+  pesPanels.forEach(function(p){
+    if(p.id==='jul'&&p.type==='lancamentos'){
+      (p.items||[]).forEach(function(it){contasPagas+=(Number(it.valor)||0);nContasPagas++;});
+    }
+  });
 
-  // 2. Cartões — soma faturas (usa fatItems se houver, senão fatTotal manual)
-  var totalCartao=0;
-  if(typeof fatTotalOverride==='number' && fatTotalOverride>0){
+  // ---- b) FATURA DE CARTÃO ----
+  var totalCartao=0,nCartoes=0;
+  if(typeof fatTotalOverride==='number'&&fatTotalOverride>0){
     totalCartao=fatTotalOverride;
-  } else {
-    var pesPanels=(S.panels&&S.panels.pes)||[];
+  }else{
     pesPanels.forEach(function(p){
       if(p.type==='fatura'){
         var itemsSum=(p.fatItems||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
-        totalCartao+=itemsSum>0?itemsSum:(Number(p.fatTotal)||0);
+        var v=itemsSum>0?itemsSum:(Number(p.fatTotal)||0);
+        totalCartao+=v;
+        if(v>0)nCartoes++;
       }
     });
   }
 
-  // 3. Custos fixos
-  var totalCF=(S.custosFix||[]).reduce(function(s,it){return s+(Number(it.valor)||0);},0);
-
-  // Pagamentos por PIX (extras) (painel 'jul' tipo lancamentos) — ESTE é o valor real das contas
-  var totalPago=0;
-  var nLancPago=0;
-  var pesPanelsAll=(S.panels&&S.panels.pes)||[];
-  pesPanelsAll.forEach(function(p){
-    if(p.id==='jul'&&p.type==='lancamentos'){
-      (p.items||[]).forEach(function(it){
-        totalPago+=(Number(it.valor)||0);
-        nLancPago++;
-      });
-    }
+  // ---- c) LISTAS PESSOAIS ----
+  var totalListas=0,listasPago=0,nListaItens=0;
+  ((S.listboxes&&S.listboxes.pes)||[]).forEach(function(box){
+    (box.items||[]).forEach(function(it){
+      var v=Number(it.valor)||0;
+      totalListas+=v;nListaItens++;
+      if(typeof lbItemPago==='function'&&lbItemPago(box.id,it.nome))listasPago+=v;
+    });
   });
 
-  var totalSaidas=totalPago;
-  var saldoPrev=entTotal-totalSaidas;
-  var saldoCor=saldoPrev>=0?'#059669':'#dc2626';
-  var saldoBg=saldoPrev>=0?'var(--green-bg)':'var(--red-bg)';
-  var saldoBorder=saldoPrev>=0?'var(--green-border)':'var(--red-border)';
-
-  // % das saídas sobre entradas — sinal de alerta se passar de 100%
-  var pctSaidas=entTotal>0?Math.round((totalSaidas/entTotal)*100):0;
-
-  function mkItem(icon,lbl,val,sub,color){
-    return '<div style="flex:1;min-width:140px;padding:12px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;gap:3px">'
-      +'<div style="display:flex;align-items:center;gap:6px">'
-      +'<span style="font-size:14px">'+icon+'</span>'
-      +'<span style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px">'+lbl+'</span>'
-      +'</div>'
-      +'<div class="num" style="font-size:17px;font-weight:700;color:'+color+'">'+fmt(val)+'</div>'
-      +'<div style="font-size:10px;color:var(--text3)">'+sub+'</div>'
-      +'</div>';
+  // ---- CHECKLIST: o que ainda falta pagar ----
+  // Itens do catálogo de contas fixas que ainda não viraram lançamento.
+  var faltaChecklist=0,nFaltaChecklist=0;
+  if(typeof pagosAllItens==='function'&&typeof pagosIsPaidNome==='function'){
+    pagosAllItens().forEach(function(it){
+      if(!pagosIsPaidNome(it.nome)){
+        var v=Number(it.valor)||0;
+        if(v>0){faltaChecklist+=v;nFaltaChecklist++;}
+      }
+    });
   }
 
-  el.innerHTML='<div class="panel" style="margin-top:4px">'
+  var totalSaidas=contasPagas+totalCartao+totalListas;
+  var saldoPrev=entTotal-totalSaidas;
+  var pctSaidas=entTotal>0?Math.round((totalSaidas/entTotal)*100):0;
+
+  // Já liquidado de fato (dinheiro que saiu) vs ainda em aberto
+  var jaPago=contasPagas+listasPago;
+  var aPagar=(totalListas-listasPago)+totalCartao+faltaChecklist;
+
+  return {
+    entManual:entManual, lucroNegAuto:lucroNegAuto, entTotal:entTotal, nEntradas:nEntradas,
+    contasPagas:contasPagas, nContasPagas:nContasPagas,
+    totalCartao:totalCartao, nCartoes:nCartoes,
+    totalListas:totalListas, listasPago:listasPago, nListaItens:nListaItens,
+    faltaChecklist:faltaChecklist, nFaltaChecklist:nFaltaChecklist,
+    totalSaidas:totalSaidas, saldoPrev:saldoPrev, pctSaidas:pctSaidas,
+    jaPago:jaPago, aPagar:aPagar
+  };
+}
+window.pesNumeros=pesNumeros;
+
+function renderPesSaldo(fatTotalOverride){
+  var el=document.getElementById('pes-saldo-box');
+  if(!el)return;
+  var mes=S.cfg&&S.cfg.mes?S.cfg.mes:'Este mês';
+  var N=pesNumeros(fatTotalOverride);
+
+  // Mesmos cards do Saldo Geral do Negócio
+  function mkC(lbl,val,sub,variant,size,onClickAttr){
+    var bg,txt,txtSub,accent='';
+    if(variant==='blue'){bg='linear-gradient(160deg,#3b76f6 0%,#1d4ed8 55%,#152f7a 100%)';txt='#fff';txtSub='rgba(255,255,255,.7)';}
+    else if(variant==='lime'){bg='linear-gradient(125deg,#eafd8c 0%,#d4f050 28%,#c7ea3a 52%,#a8c92c 78%,#c7ea3a 100%)';txt='#1a2400';txtSub='rgba(26,36,0,.6)';}
+    else if(variant==='roxo'){bg='linear-gradient(160deg,#8b5cf6 0%,#6d28d9 60%,#5b21b6 100%)';txt='#fff';txtSub='rgba(255,255,255,.75)';}
+    else if(variant==='black'){bg='#141414';txt='#fff';txtSub='rgba(255,255,255,.55)';}
+    else if(variant==='vermelho'){bg='linear-gradient(160deg,#f05252 0%,#c81e1e 60%,#8f1414 100%)';txt='#fff';txtSub='rgba(255,255,255,.75)';}
+    else if(variant==='gray-roxo'){bg='linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%)';txt='var(--text)';txtSub='var(--text3)';accent='border-left:3px solid #6d28d9;';}
+    else {bg='linear-gradient(160deg,#eef0fa 0%,#e2e6f7 45%,#e8e0f6 100%)';txt='var(--text)';txtSub='var(--text3)';}
+    var padBig=size==='big'?'20px 18px':'15px 16px';
+    var valSize=size==='big'?'25px':'19px';
+    var clickAttr=onClickAttr?' onclick="'+onClickAttr+'"':'';
+    return '<div'+clickAttr+' style="background:'+bg+';'+accent+'border-radius:'+(size==='big'?'20px':'16px')+';padding:'+padBig+(onClickAttr?';cursor:pointer':'')+'">'
+      +'<div style="font-size:10px;font-weight:700;color:'+txt+';text-transform:uppercase;letter-spacing:.3px;opacity:.75">'+lbl+(onClickAttr?' &#8250;':'')+'</div>'
+      +'<div class="num" style="font-size:'+valSize+';font-weight:800;font-family:\'Open Sans\',Arial,sans-serif;letter-spacing:-.02em;color:'+txt+';margin-top:6px">'+fmt(val)+'</div>'
+      +'<div style="font-size:10px;color:'+txtSub+';margin-top:4px">'+sub+'</div>'
+      +'</div>';
+  }
+  function secLbl(txt){
+    return '<div style="padding:20px 18px 10px;font-size:9.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px">'+txt+'</div>';
+  }
+  var G='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 18px 20px">';
+
+  // Drill-downs
+  window.showResumoSaidasPes=function(){
+    var linhas=[];
+    if(N.contasPagas>0)linhas.push({label:'Contas pagas ('+N.nContasPagas+')',valor:-N.contasPagas});
+    if(N.totalCartao>0)linhas.push({label:'Fatura de cartão',valor:-N.totalCartao});
+    if(N.totalListas>0)linhas.push({label:'Listas pessoais ('+N.nListaItens+' itens)',valor:-N.totalListas});
+    if(!linhas.length)linhas.push({label:'Nenhuma saída registrada',valor:0});
+    showResumoCard('Saídas do mês',linhas);
+  };
+  window.showResumoAPagarPes=function(){
+    var linhas=[];
+    if(N.faltaChecklist>0)linhas.push({label:'Contas fixas não marcadas ('+N.nFaltaChecklist+')',valor:N.faltaChecklist});
+    if(N.totalCartao>0)linhas.push({label:'Fatura de cartão',valor:N.totalCartao});
+    var listaAberto=N.totalListas-N.listasPago;
+    if(listaAberto>0)linhas.push({label:'Listas pessoais em aberto',valor:listaAberto});
+    if(!linhas.length)linhas.push({label:'Tudo quitado neste mês',valor:0});
+    showResumoCard('Ainda a pagar',linhas);
+  };
+
+  var saldoOk=N.saldoPrev>=0;
+
+  var html='<div class="panel" style="margin-top:4px">'
     +'<div class="panel-hdr ph-teal hdr-glow">'
     +'<div class="panel-hdr-l">'
-    +'<div class="panel-hdr-icon">💰</div>'
+    +'<div class="panel-hdr-icon">&#128176;</div>'
     +'<div class="panel-hdr-info">'
-    +'<div style="font-size:13px;font-weight:700;color:#fff">Saldo Pessoal do Mês</div>'
-    +'<div class="panel-sub">'+mes+' · '+pctSaidas+'% das entradas comprometidas</div>'
+    +'<div style="font-size:16.5px;font-weight:800;color:#fff">Saldo Pessoal do M&#234;s</div>'
+    +'<div class="panel-sub">'+mes+' &middot; '+N.pctSaidas+'% das entradas comprometidas</div>'
     +'</div></div>'
-    +'<div class="panel-hdr-r" style="position:relative;z-index:2">'
-    +'<div class="panel-hdr-val num" style="color:'+(saldoPrev>=0?'#d1fae5':'#fecaca')+'">'+fmt(saldoPrev)
-    +'<small style="color:rgba(255,255,255,.75)">saldo previsto</small></div>'
-    +'</div></div>'
-
-    // Linha 1 — entrada + sinal de menos + saída (pagamentos de contas)
-    +'<div style="padding:14px 16px;background:var(--bg);display:flex;gap:8px;flex-wrap:wrap;align-items:center">'
-    +mkItem('📈','Entradas previstas',entTotal,((S.entradasPes||[]).length+(lucroNegAuto>0?1:0))+' item(s)','#059669')
-    +'<div style="font-size:24px;color:var(--text3);font-weight:300;padding:0 4px">−</div>'
-    +mkItem('🏦','Pagamentos de contas',totalPago,nLancPago+' lançamento(s)','#dc2626')
+    +'<div class="panel-hdr-r">'
+    +'<div class="panel-hdr-val num" style="font-size:18px">'+fmt(N.saldoPrev)+'<small>sobra do m&#234;s</small></div>'
     +'</div>'
+    +'<div class="panel-hdr-actions">'
+    +'<button class="panel-hdr-menu panel-help-btn" title="O que &#233; isso?" onclick="showPanelHelp(\'Saldo Pessoal do M&#234;s\',\'Consolida tudo da aba Pessoal: suas entradas menos TODAS as sa&#237;das (contas pagas, fatura de cart&#227;o e listas pessoais). O lucro do neg&#243;cio entra sozinho como entrada. Toque nos cards com a setinha pra ver a quebra item a item.\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.2 9.2a2.8 2.8 0 1 1 3.9 2.55c-.7.35-1.3.95-1.3 1.75"/><circle cx="12" cy="17.2" r=".55" fill="currentColor" stroke="none"/></svg></button>'
+    +'</div></div>';
 
-    // Linha 2 — cálculo final com destaque
-    +'<div style="padding:12px 16px;background:'+saldoBg+';border-top:1px solid '+saldoBorder+';display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">'
-    +'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
-    +'<span style="font-size:12px;color:var(--text2)">'+fmt(entTotal)+' <span style="color:var(--text3)">−</span> '+fmt(totalSaidas)+' <span style="color:var(--text3)">(pagamentos de contas) =</span></span>'
-    +'</div>'
-    +'<div class="num" style="font-size:22px;font-weight:700;color:'+saldoCor+'">'+fmt(saldoPrev)+'</div>'
-    +'</div>'
-
-    // Alerta se comprometido >85%
-    +(pctSaidas>85&&pctSaidas<=100?'<div style="padding:8px 16px;background:var(--amber-bg);border-top:1px solid var(--amber-border);font-size:11px;color:var(--amber)">⚠️ Atenção — '+pctSaidas+'% das entradas já estão comprometidas neste mês.</div>':'')
-    +(pctSaidas>100?'<div style="padding:8px 16px;background:var(--red-bg);border-top:1px solid var(--red-border);font-size:11px;color:var(--red)">🚨 Saídas superam entradas em '+(pctSaidas-100)+'% — necessário ajustar.</div>':'')
+  // 1. Entradas
+  html+=secLbl('1. Entradas')
+    +'<div style="padding:0 18px 20px">'
+    +mkC('Entradas do m&#234;s',N.entTotal,N.nEntradas+' fonte'+(N.nEntradas!==1?'s':'')+(N.lucroNegAuto>0?' &middot; inclui lucro do neg&#243;cio':''),'blue','big')
     +'</div>';
 
+  // 2. Saídas
+  html+=secLbl('2. Sa&#237;das do m&#234;s')+G
+    +'<div style="grid-column:1/3">'+mkC('Total de sa&#237;das',N.totalSaidas,'Contas + cart&#227;o + listas','vermelho','big','showResumoSaidasPes()')+'</div>'
+    +mkC('Contas pagas',N.contasPagas,N.nContasPagas+' lan&#231;amento'+(N.nContasPagas!==1?'s':''),'gray-roxo')
+    +mkC('Fatura de cart&#227;o',N.totalCartao,N.nCartoes>0?(N.nCartoes+' cart&#227;o'+(N.nCartoes>1?'es':'')):'nenhum cart&#227;o lan&#231;ado','gray')
+    +'<div style="grid-column:1/3">'+mkC('Listas pessoais',N.totalListas,N.nListaItens+' item(s) em listas da aba','gray')+'</div>'
+    +'</div>';
+
+  // 3. Resultado
+  html+=secLbl('3. Resultado')
+    +'<div style="padding:0 18px 20px">'
+    +mkC('Sobra do m&#234;s',N.saldoPrev,'Entradas &minus; todas as sa&#237;das acima',saldoOk?'lime':'vermelho','big')
+    +'</div>';
+
+  // 4. Status de pagamento
+  html+=secLbl('4. Status de pagamento')+G
+    +'<div style="grid-column:1/3">'+mkC('J&#225; pago',N.jaPago,'Dinheiro que j&#225; saiu','black','big')+'</div>'
+    +mkC('Ainda a pagar',N.aPagar,'Contas e faturas em aberto','roxo','','showResumoAPagarPes()')
+    +mkC('Contas n&#227;o marcadas',N.faltaChecklist,N.nFaltaChecklist+' conta(s) fixa(s)','gray')
+    +'</div>';
+
+  // Alertas
+  if(N.pctSaidas>85&&N.pctSaidas<=100){
+    html+='<div style="padding:10px 18px;background:var(--amber-bg);border-top:1px solid var(--amber-border);font-size:11px;color:var(--amber)">&#9888;&#65039; Aten&#231;&#227;o &mdash; '+N.pctSaidas+'% das entradas j&#225; est&#227;o comprometidas neste m&#234;s.</div>';
+  }
+  if(N.pctSaidas>100){
+    html+='<div style="padding:10px 18px;background:var(--red-bg);border-top:1px solid var(--red-border);font-size:11px;color:var(--red)">&#128680; Sa&#237;das superam entradas em '+(N.pctSaidas-100)+'% &mdash; necess&#225;rio ajustar.</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
 }
+
+// Faixa de métricas no topo da aba Pessoal (espelha o #mets-op do Negócio)
+function renderPesMets(){
+  var el=document.getElementById('pes-mets');
+  if(!el)return;
+  var N=pesNumeros();
+  function met(lbl,val,sub,cls){
+    return '<div class="met '+(cls||'')+'" style="flex:1;min-width:104px">'
+      +'<div class="met-lbl">'+lbl+'</div>'
+      +'<div class="met-val num '+(cls||'')+'">'+fmt(val)+'</div>'
+      +'<div class="met-sub n">'+sub+'</div></div>';
+  }
+  el.innerHTML='<div class="mets" style="margin-bottom:0">'
+    +met('Entradas',N.entTotal,N.nEntradas+' fonte(s)','g')
+    +met('Sa&#237;das',N.totalSaidas,N.pctSaidas+'% das entradas','r')
+    +met('Sobra',N.saldoPrev,N.saldoPrev>=0?'no azul':'no vermelho',N.saldoPrev>=0?'g':'r')
+    +'</div>';
+}
+window.renderPesMets=renderPesMets;
+
 
 // ================ RECOMENDAÇÕES IA — FIM DA ABA PESSOAL =================
 // Estado do período customizável (anos). Começa em 5.
@@ -6867,6 +6992,7 @@ function ajustarPeriodoRec(valor){
 function renderPesCompleto(){
   renderEntPes();
   renderPesSaldo();
+  renderPesMets();
   renderPesRecomendacoes();
 }
 

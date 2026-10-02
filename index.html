@@ -838,6 +838,42 @@ input:focus,select:focus,textarea:focus{
   .met{padding:18px}
   td{padding:14px 12px}
 }
+
+/* ---- Seletor de modo (segmented) ----
+   Dois caminhos excludentes num controle so, em vez de dois formularios
+   empilhados disputando a atencao. */
+.fat-entry{padding:18px 20px;border-top:1px solid rgba(148,152,180,.16)}
+.seg{display:flex;gap:4px;padding:4px;margin-bottom:16px;border-radius:999px;
+  background:rgba(240,240,248,.75);border:1px solid rgba(255,255,255,.7)}
+.seg-btn{flex:1;font-family:var(--font);font-size:12.5px;font-weight:600;color:var(--text3);
+  padding:9px 14px;border:none;border-radius:999px;background:transparent;cursor:pointer;
+  transition:color .18s,background .18s,box-shadow .18s}
+.seg-btn.on{background:rgba(255,255,255,.95);color:var(--text);font-weight:700;
+  box-shadow:0 1px 2px rgba(31,34,61,.08),0 2px 8px rgba(31,34,61,.06)}
+.fat-field-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fat-field-row input{flex:1;min-width:150px}
+.fat-hint{font-size:11px;color:var(--text3);margin-top:10px;line-height:1.45;max-width:62ch}
+.fat-picker{font-family:var(--font);font-size:14px;padding:12px 14px;
+  border:1.5px solid rgba(255,255,255,.8);border-radius:var(--r-sm);
+  background:rgba(255,255,255,.66);color:var(--text);cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:left}
+.btn-blk-sm{padding:12px 22px;border-radius:999px;font-weight:700;flex:0 0 auto}
+
+/* ---- Acoes ocasionais: presentes, sem competir com a acao principal ---- */
+.fat-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  flex-wrap:wrap;padding:14px 20px;border-top:1px solid rgba(148,152,180,.16)}
+.fat-tools-l{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.lnk-btn{font-family:var(--font);font-size:12px;font-weight:600;color:var(--text2);
+  background:none;border:none;padding:6px 0;cursor:pointer;
+  border-bottom:1px solid rgba(148,152,180,.35);border-radius:0;transition:color .18s,border-color .18s}
+.lnk-btn:hover{color:var(--text);border-bottom-color:rgba(109,40,217,.6)}
+.lnk-btn.danger{color:var(--red);border-bottom-color:rgba(220,38,38,.3)}
+.lnk-btn.danger:hover{border-bottom-color:var(--red)}
+@media(max-width:480px){
+  .fat-entry{padding:16px 16px}
+  .fat-tools{padding:14px 16px;gap:10px}
+  .fat-tools-l{gap:14px}
+}
 </style>
 <script type="module">
   import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
@@ -4377,6 +4413,24 @@ function initAuthGate(){
 document.addEventListener('DOMContentLoaded', initAuthGate);
 
 // =================== FATURA PANEL ===================
+// Modo de lancamento da fatura por painel: 'total' (valor cheio) ou 'itens'.
+// Fica em memoria, como o estado de recolher, pra sobreviver aos re-renders.
+var _fatModo={};
+function setFatModo(tab,pi,modo){
+  _fatModo[tab+'-'+pi]=modo;
+  var t=document.getElementById('fatmodo-total-'+tab+'-'+pi);
+  var i=document.getElementById('fatmodo-itens-'+tab+'-'+pi);
+  if(t)t.style.display=(modo==='total')?'':'none';
+  if(i)i.style.display=(modo==='itens')?'':'none';
+  var wrap=t&&t.parentElement;
+  if(wrap)wrap.querySelectorAll('.seg-btn').forEach(function(b,ix){
+    var on=(ix===0)===(modo==='total');
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-selected',on?'true':'false');
+  });
+}
+window.setFatModo=setFatModo;
+
 function buildFaturaPanel(p,tab,pi){
   const color=p.color||'ph-indigo';
   const total=Number(p.fatTotal)||0;
@@ -4386,6 +4440,7 @@ function buildFaturaPanel(p,tab,pi){
   p.cartaoTypes=normalizeCartaoTypes(p.cartaoTypes);
   const cartaoTypes=p.cartaoTypes;
   const itemsTotal=items.reduce((s,it)=>s+(Number(it.valor)||0),0);
+  const fatModo=_fatModo[tab+'-'+pi]||(items.length>0?'itens':'total');
   const displayTotal=items.length>0?itemsTotal:total;
   const TC={'Alimentação':'bg-amber','Mercado':'bg-green','Transporte':'bg-blue',
     'Saúde':'bg-red','Lazer':'bg-pink','Viagem':'bg-indigo','Fixo':'bg-teal',
@@ -4525,44 +4580,55 @@ function buildFaturaPanel(p,tab,pi){
       </div>
     </div>`:''}
 
-    <div style="padding:12px 14px;border-top:1px solid var(--border);background:var(--bg2)">
-      <div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">💳 Valor total da fatura (rápido)</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <input id="fman-total-${tab}-${pi}" type="number" placeholder="Ex: 5000" value="${items.length===0&&total>0?total:''}"
-          style="flex:1;min-width:140px;font-family:var(--font);font-size:14px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);outline:none">
-        <button class="btn btn-b btn-sm" onclick="setFatTotalDireto('${tab}',${pi})">Salvar total</button>
+    <!-- Dois jeitos de lançar a fatura são excludentes: viram um seletor,
+         não dois formulários empilhados competindo pela atenção. -->
+    <div class="fat-entry">
+      <div class="seg" role="tablist" aria-label="Como lançar a fatura">
+        <button type="button" class="seg-btn${fatModo==='total'?' on':''}" role="tab" aria-selected="${fatModo==='total'}"
+          onclick="setFatModo('${tab}',${pi},'total')">Total da fatura</button>
+        <button type="button" class="seg-btn${fatModo==='itens'?' on':''}" role="tab" aria-selected="${fatModo==='itens'}"
+          onclick="setFatModo('${tab}',${pi},'itens')">Item a item</button>
       </div>
-      <div style="font-size:10px;color:var(--text3);margin-top:6px;line-height:1.4">Se você lançar itens individuais abaixo, o total passa a ser calculado automaticamente pela soma deles.</div>
+
+      <div id="fatmodo-total-${tab}-${pi}" style="${fatModo==='total'?'':'display:none'}">
+        <div class="fat-field-row">
+          <input id="fman-total-${tab}-${pi}" type="number" placeholder="Ex: 5000" value="${items.length===0&&total>0?total:''}" aria-label="Valor total da fatura">
+          <button class="btn btn-g btn-blk-sm" onclick="setFatTotalDireto('${tab}',${pi})">Salvar total</button>
+        </div>
+        <p class="fat-hint">Lançando itens individuais, o total passa a ser a soma deles.</p>
+      </div>
+
+      <div id="fatmodo-itens-${tab}-${pi}" style="${fatModo==='itens'?'':'display:none'}">
+        <div style="display:grid;grid-template-columns:76px 1fr;gap:8px;margin-bottom:8px">
+          <input id="fman-data-${tab}-${pi}" type="number" placeholder="Dia" min="1" max="31" aria-label="Dia"
+            title="Só o dia. O mês é o atual (${S.cfg.mes||''})" style="text-align:center">
+          <input id="fman-desc-${tab}-${pi}" type="text" placeholder="Descrição" aria-label="Descrição">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <button type="button" id="fman-cartao-btn-${tab}-${pi}" data-cartao="${cartaoTypes[0]?cartaoTypes[0].nome:''}" onclick="openCartaoPicker('${tab}',${pi})" class="fat-picker">
+            <span id="fman-cartao-label-${tab}-${pi}">${cartaoTypes.length>0?('💳 '+cartaoTypes[0].nome):'💳 Cartões'}</span>
+            <span style="color:var(--text3);font-size:11px">▾</span>
+          </button>
+          <input type="hidden" id="fman-cartao-${tab}-${pi}" value="${cartaoTypes[0]?cartaoTypes[0].nome:''}">
+          <select id="fman-cat-${tab}-${pi}" aria-label="Categoria">
+            ${Object.keys(TC).map(c=>`<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </div>
+        <div class="fat-field-row">
+          <input id="fman-val-${tab}-${pi}" type="number" placeholder="R$" aria-label="Valor">
+          <button class="btn btn-g btn-blk-sm" onclick="addFatItemManual('${tab}',${pi})">Adicionar</button>
+        </div>
+      </div>
     </div>
 
-    <div style="padding:12px 14px;border-top:1px solid var(--border)">
-      <div style="font-size:10.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Adicionar lançamento</div>
-      <div style="display:grid;grid-template-columns:70px 1fr;gap:6px;margin-bottom:6px">
-        <input id="fman-data-${tab}-${pi}" type="number" placeholder="Dia" min="1" max="31"
-          title="Só o dia. O mês é o atual (${S.cfg.mes||''})"
-          style="font-family:var(--font);font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none;text-align:center">
-        <input id="fman-desc-${tab}-${pi}" type="text" placeholder="Descrição"
-          style="font-family:var(--font);font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none">
+    <!-- Ações ocasionais: fora do caminho, peso menor, destrutiva isolada -->
+    <div class="fat-tools">
+      <div class="fat-tools-l">
+        <button class="lnk-btn" onclick="toggleFatImport('fatimp-${tab}-${pi}')">Importar lista</button>
+        <button class="lnk-btn" onclick="openPdfImport('${tab}',${pi})">Importar PDF</button>
+        <button class="lnk-btn" onclick="manageCartaoTypes('${tab}',${pi})">Meus cartões</button>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 80px;gap:6px;margin-bottom:8px">
-        <button type="button" id="fman-cartao-btn-${tab}-${pi}" data-cartao="${cartaoTypes[0]?cartaoTypes[0].nome:''}" onclick="openCartaoPicker('${tab}',${pi})" style="font-family:var(--font);font-size:12px;padding:5px 10px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;text-align:left">
-          <span id="fman-cartao-label-${tab}-${pi}">${cartaoTypes.length>0?('💳 '+cartaoTypes[0].nome):'💳 Cartões'}</span>
-          <span style="color:var(--text3);font-size:10px">▾</span>
-        </button>
-        <input type="hidden" id="fman-cartao-${tab}-${pi}" value="${cartaoTypes[0]?cartaoTypes[0].nome:''}">
-        <select id="fman-cat-${tab}-${pi}" style="font-family:var(--font);font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text)">
-          ${Object.keys(TC).map(c=>`<option value="${c}">${c}</option>`).join('')}
-        </select>
-        <input id="fman-val-${tab}-${pi}" type="number" placeholder="R$"
-          style="font-family:var(--font);font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text);outline:none">
-      </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn btn-g btn-sm" onclick="addFatItemManual('${tab}',${pi})">+ Adicionar</button>
-        <button class="btn btn-gh btn-sm" onclick="toggleFatImport('fatimp-${tab}-${pi}')">📥 Importar lista</button>
-        <button class="btn btn-gh btn-sm" onclick="openPdfImport('${tab}',${pi})">📄 Importar PDF</button>
-        <button class="btn btn-gh btn-sm" onclick="manageCartaoTypes('${tab}',${pi})">⚙️ Cartões</button>
-        ${(items.length>0||total>0)?`<button class="btn btn-r btn-sm" onclick="clearFatItems('${tab}',${pi})">🗑 Zerar fatura</button>`:''}
-      </div>
+      ${(items.length>0||total>0)?`<button class="lnk-btn danger" onclick="clearFatItems('${tab}',${pi})">Zerar fatura</button>`:''}
     </div>
 
     <div id="fatimp-${tab}-${pi}" style="display:none;padding:10px 14px;border-top:1px solid var(--border)">
